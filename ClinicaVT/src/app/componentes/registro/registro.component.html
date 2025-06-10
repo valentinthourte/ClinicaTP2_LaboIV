@@ -1,0 +1,14 @@
+<div class="container py-5">
+  <h3 class="text-center mb-4">Regístrate ahora</h3>
+  <div class="row justify-content-center">
+    <div class="col-md-4 mb-3" *ngFor="let opcion of opciones">
+      <div class="card text-center shadow-sm h-100 hover-card">
+        <div class="card-body">
+          <img [src]="opcion.imagen" alt="{{ opcion.titulo }}" class="mb-3" width="100" height="100">
+          <h5 class="card-title">{{ opcion.titulo }}</h5>
+          <p class="card-text">{{ opcion.descripcion }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
