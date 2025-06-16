@@ -1,2 +1,26 @@
+<nav class="navbar navbar-expand-lg px-3">
+   <mat-toolbar class="justify-content-between toolbar">
+       <div>
+        <span class="text-white" style="cursor: pointer" routerLink="">ClinicaVT</span>
+       </div>
+       <div>
+          @if(this.usuarioEstaLogueado()) {
+               <button routerLink="/turnos" class="btn text-white fs-5 text-3xl">Turnos</button>
+               <button class="btn text-white fs-5">Asociate</button>
+          }
+       </div>
+       <div>
+          @if (this.usuarioEstaLogueado() == false) {
+               <button routerLink="/login" class="btn fs-6 bg-white boton-login">Iniciar sesión</button>
+               <button routerLink="/register" class="btn fs-6 text-white boton-login bg-success m-2">Registrarme</button>
+          }
+          @else {
+               <button class="btn fs-6 bg-white boton-login" (click)="logout()">Logout</button>
+          }
+       </div>
+   </mat-toolbar>
+</nav>
+
 <app-spinner></app-spinner>
 <router-outlet></router-outlet>
+<ng-toast />

@@ -1,1 +1,64 @@
-<p>login works!</p>
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6 col-lg-4">
+      <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+          <h4 class="m-2 text-center">Iniciar Sesión</h4>
+        </div>
+        <div class="card-body">
+          <form [formGroup]="formLogin" (ngSubmit)="onLogin()">
+
+            <div class="mb-3">
+              <label for="email" class="form-label">Correo electrónico</label>
+              <input
+                type="email"
+                class="form-control"
+                id="email"
+                formControlName="email"
+                [class.is-invalid]="formLogin.get('email')?.invalid && formLogin.get('email')?.touched"
+              >
+              <div class="invalid-feedback">Campo obligatorio y con formato válido</div>
+            </div>
+
+            <div class="mb-3">
+              <label for="password" class="form-label">Contraseña</label>
+              <input
+                type="password"
+                class="form-control"
+                id="password"
+                formControlName="password"
+                [class.is-invalid]="formLogin.get('password')?.invalid && formLogin.get('password')?.touched"
+              >
+              <div class="invalid-feedback">Campo obligatorio</div>
+            </div>
+
+            <div class="d-grid">
+              <button type="submit" class="btn btn-primary">Ingresar</button>
+            </div>
+          </form>
+
+            <div class="d-flex align-items-center justify-content-center">
+                <button class="btn btn-outline-secondary m-2" (click)="mostrarSidebar = true">
+                    Autocompletar usuario
+                </button>
+            </div>
+            <div class="sidebar" *ngIf="mostrarSidebar">
+                <div class="sidebar-content">
+                    <h5 class="mb-3">Usuarios rápidos</h5>
+                    <div
+                    class="usuario-item d-flex align-items-center mb-2 p-2 border rounded hover-shadow"
+                    *ngFor="let usuario of usuariosFicticios"
+                    (click)="autocompletarUsuario(usuario)"
+                    style="cursor: pointer;"
+                    >
+                    <!-- <img [src]="usuario.imagen" width="40" height="40" class="me-2 rounded-circle" /> -->
+                    <span>{{ usuario.nombre }}</span>
+                    </div>
+                    <button class="btn btn-sm btn-secondary mt-3" (click)="mostrarSidebar = false">Cerrar</button>
+                </div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

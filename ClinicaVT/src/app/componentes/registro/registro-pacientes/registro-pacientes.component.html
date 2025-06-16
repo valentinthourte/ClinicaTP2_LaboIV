@@ -1,1 +1,127 @@
-<p>registro-pacientes works!</p>
+<div class="container py-2">
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+      <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+          <h4 class="m-2 text-center">Registro de Paciente</h4>
+        </div>
+        <div class="card-body">
+          <form [formGroup]="formulario" (ngSubmit)="onSubmit()">
+            
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="nombre" class="form-label">Nombre</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="nombre"
+                  formControlName="nombre"
+                  [class.is-invalid]="formulario.get('nombre')?.invalid && formulario.get('nombre')?.touched"
+                >
+                <div class="invalid-feedback">Campo obligatorio</div>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label for="apellido" class="form-label">Apellido</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="apellido"
+                  formControlName="apellido"
+                  [class.is-invalid]="formulario.get('apellido')?.invalid && formulario.get('apellido')?.touched"
+                >
+                <div class="invalid-feedback">Campo obligatorio</div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="edad" class="form-label">Edad</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  id="edad"
+                  formControlName="edad"
+                  [class.is-invalid]="formulario.get('edad')?.invalid && formulario.get('edad')?.touched"
+                >
+                <div class="invalid-feedback">Campo obligatorio</div>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label for="dni" class="form-label">DNI</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="dni"
+                  formControlName="dni"
+                  [class.is-invalid]="formulario.get('dni')?.invalid && formulario.get('dni')?.touched"
+                >
+                <div class="invalid-feedback">Campo obligatorio</div>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="obraSocial" class="form-label">Obra Social</label>
+              <input
+                type="text"
+                class="form-control"
+                id="obraSocial"
+                formControlName="obraSocial"
+              >
+            </div>
+
+            <div class="mb-3">
+              <label for="email" class="form-label">Correo electrónico</label>
+              <input
+                type="email"
+                class="form-control"
+                id="email"
+                formControlName="email"
+                [class.is-invalid]="formulario.get('email')?.invalid && formulario.get('email')?.touched"
+              >
+              <div class="invalid-feedback">Campo obligatorio y con formato válido</div>
+            </div>
+
+            <div class="mb-3">
+              <label for="password" class="form-label">Contraseña</label>
+              <input
+                type="password"
+                class="form-control"
+                id="password"
+                formControlName="password"
+                [class.is-invalid]="formulario.get('password')?.invalid && formulario.get('password')?.touched"
+              >
+              <div class="invalid-feedback">Campo obligatorio</div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Imágenes de perfil</label>
+              <input
+                class="form-control mb-2"
+                type="file"
+                accept="image/*"
+                (change)="onFileChange($event, 0)"
+                [class.is-invalid]="imagenes.at(0).invalid && imagenes.at(0).touched"
+              />
+              <input
+                class="form-control"
+                type="file"
+                accept="image/*"
+                (change)="onFileChange($event, 1)"
+                [class.is-invalid]="imagenes.at(1).invalid && imagenes.at(1).touched"
+              />
+              <div class="form-text">Se requieren dos imágenes diferentes.</div>
+              <div class="invalid-feedback" *ngIf="imagenes.errors?.['repetidas'] && (imagenes.at(0).touched || imagenes.at(1).touched)">
+                Las imágenes no pueden ser iguales.
+              </div>
+            </div>
+
+            <div class="d-grid mt-4">
+              <button type="submit" class="btn btn-primary">Registrarse</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

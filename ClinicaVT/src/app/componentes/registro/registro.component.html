@@ -1,14 +1,29 @@
-<div class="container py-5">
-  <h3 class="text-center mb-4">Regístrate ahora</h3>
-  <div class="row justify-content-center">
-    <div class="col-md-4 mb-3" *ngFor="let opcion of opciones">
-      <div class="card text-center shadow-sm h-100 hover-card">
-        <div class="card-body">
-          <img [src]="opcion.imagen" alt="{{ opcion.titulo }}" class="mb-3" width="100" height="100">
-          <h5 class="card-title">{{ opcion.titulo }}</h5>
-          <p class="card-text">{{ opcion.descripcion }}</p>
+@if(opcionElegida == "") {
+  <div class="container py-5" >
+    <h1 class="text-center mb-4 underline">Hola!</h1>
+    <h3 class="text-center mb-4" style="color: var(--color-primario)">Regístrate ahora</h3>
+    <div class="row justify-content-center">
+      <div class="col-12 mb-3" *ngFor="let opcion of opciones">
+        <div class="card text-center shadow-sm h-100 hover-card w-50 mx-auto" (click)="onClickOpcion(opcion.titulo)">
+          <div class="card-body">
+            <img [src]="opcion.imagen" alt="{{ opcion.titulo }}" class="mb-3 mx-auto d-block" width="100" height="100">
+            <h5 class="card-title">{{ opcion.titulo }}</h5>
+            <p class="card-text">{{ opcion.descripcion }}</p>
+          </div>
         </div>
       </div>
     </div>
   </div>
-</div>
+}
+@else {
+  <div class="container text-center my-4">
+    <button class="btn btn-outline-primary" (click)="onClickOpcion('')">← Volver</button>
+  </div>
+  @if (opcionElegida === "Paciente")
+  {
+    <app-registro-pacientes></app-registro-pacientes>
+  }
+  @else {
+    <app-registro-especialistas></app-registro-especialistas>
+  }
+}

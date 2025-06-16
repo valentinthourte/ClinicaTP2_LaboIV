@@ -1,8 +1,17 @@
+@import "tailwindcss";
+
+
 :root {
   --color-primario: #007BFF;
   --color-secundario: #6C757D;
-  --color-fondo: #F8F9FA;
+  --color-fondo: #d8d8d8;
   --color-fondo-oscuro: #1F2D3D;
   --color-enfasis: #17A2B8;
   --color-texto: #212529;
 }
+
+body {
+  background-color: var(--color-fondo);
+}
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
