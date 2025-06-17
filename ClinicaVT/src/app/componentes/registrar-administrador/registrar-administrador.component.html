@@ -1,0 +1,70 @@
+<div class="px-4 py-3" style="min-width: 400px;">
+  <div class="card shadow-sm w-100">
+    <div class="card-header bg-primary text-white text-center">
+      <h4 class="m-0">Registro de Administrador</h4>
+    </div>
+    <div class="card-body">
+      <form [formGroup]="formulario" (ngSubmit)="onSubmit()">
+        <div class="row">
+          <div class="col-6 mb-3">
+            <label for="nombre" class="form-label">Nombre</label>
+            <input type="text" id="nombre" class="form-control" formControlName="nombre"
+              [class.is-invalid]="formulario.get('nombre')?.invalid && formulario.get('nombre')?.touched" />
+            <div class="invalid-feedback">Campo obligatorio</div>
+          </div>
+
+          <div class="col-6 mb-3">
+            <label for="apellido" class="form-label">Apellido</label>
+            <input type="text" id="apellido" class="form-control" formControlName="apellido"
+              [class.is-invalid]="formulario.get('apellido')?.invalid && formulario.get('apellido')?.touched" />
+            <div class="invalid-feedback">Campo obligatorio</div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-6 mb-3">
+            <label for="edad" class="form-label">Edad</label>
+            <input type="number" id="edad" class="form-control" formControlName="edad"
+              [class.is-invalid]="formulario.get('edad')?.invalid && formulario.get('edad')?.touched" />
+            <div class="invalid-feedback">Campo obligatorio</div>
+          </div>
+
+          <div class="col-6 mb-3">
+            <label for="dni" class="form-label">DNI</label>
+            <input type="text" id="dni" class="form-control" formControlName="dni"
+              [class.is-invalid]="formulario.get('dni')?.invalid && formulario.get('dni')?.touched" />
+            <div class="invalid-feedback">Campo obligatorio</div>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="email" class="form-label">Correo electrónico</label>
+          <input type="email" id="email" class="form-control" formControlName="email"
+            [class.is-invalid]="formulario.get('email')?.invalid && formulario.get('email')?.touched" />
+          <div class="invalid-feedback">Correo obligatorio y válido</div>
+        </div>
+
+        <div class="mb-3">
+          <label for="password" class="form-label">Contraseña</label>
+          <input type="password" id="password" class="form-control" formControlName="password"
+            [class.is-invalid]="formulario.get('password')?.invalid && formulario.get('password')?.touched" />
+          <div class="invalid-feedback">Campo obligatorio</div>
+        </div>
+
+        <div class="mb-3">
+          <label for="imagen" class="form-label">Imagen de perfil</label>
+          <input type="file" id="imagen" class="form-control" accept="image/*" (change)="onFileChange($event)"
+            [class.is-invalid]="formulario.get('imagen')?.invalid && formulario.get('imagen')?.touched" />
+          <div class="invalid-feedback">Selecciona una imagen</div>
+        </div>
+
+        <div class="d-grid mt-3">
+          <button type="submit" class="btn btn-primary">Registrar</button>
+        </div>
+        <div class="d-grid mt-2">
+          <button type="button" class="btn btn-secondary" (click)="cancelar()">Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
