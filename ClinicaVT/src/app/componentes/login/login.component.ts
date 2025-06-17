@@ -5,6 +5,7 @@ import { NgToastService } from 'ng-angular-popup';
 import { AuthService } from '../../services/auth/auth.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { SpinnerService } from '../../services/shared/spinner.service';
 
 @Component({
   selector: 'app-login',
@@ -17,8 +18,8 @@ formLogin: FormGroup;
 mostrarSidebar = false;
 usuariosFicticios = [
   {
-    nombre: 'Juan Pérez',
-    email: 'juan@example.com',
+    nombre: 'Prueba 1',
+    email: 'xexesaj143@finfave.com',
     password: '123456',
     imagen: 'assets/usuarios/juan.png'
   },
@@ -30,14 +31,12 @@ usuariosFicticios = [
   }
 ];
 
-constructor(private fb: FormBuilder, private auth: AuthService, private toast: NgToastService, private router: Router) {
+constructor(private fb: FormBuilder, private auth: AuthService, private toast: NgToastService, private router: Router, private spinner: SpinnerService) {
   this.formLogin = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
     password: ['', Validators.required]
   });
 }
-
-
 
 autocompletarUsuario(usuario: any) {
   this.formLogin.patchValue({
@@ -46,20 +45,23 @@ autocompletarUsuario(usuario: any) {
   });
   this.mostrarSidebar = false;
 }
+
 async onLogin() {
   if (this.formLogin.valid) {
-    const { email, password } = this.formLogin.value;
-    let { data, error } = await this.auth.login(email, password);
-
-    if (error) {
-      this.toast.danger(`Error al iniciar sesion: ${error.message}`);
+      this.spinner.show();
+      const { email, password } = this.formLogin.value;
+      let { data, error } = await this.auth.login(email, password);
+      this.spinner.hide();
+      if (error) {
+        this.toast.danger(`Error al iniciar sesion: ${error.message}`);
+      }
+      else {
+        this.toast.success("Login exitoso!")
+        this.auth.guardarUsuarioLogueado(data);
+        this.router.navigate(['/home']);
+      }
+    } else {
+      this.formLogin.markAllAsTouched();
     }
-    else {
-      this.toast.success("Login exitoso!")
-      this.router.navigate(['/home']);
-    }
-  } else {
-    this.formLogin.markAllAsTouched();
-  }
-}
+  } 
 }

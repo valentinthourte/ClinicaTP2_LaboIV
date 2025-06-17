@@ -36,8 +36,8 @@ export class AuthService {
     sessionStorage.removeItem(CLAVE_USUARIO_SESION);
   }
 
-  guardarUsuarioLogueado(paciente: Paciente) {
-    sessionStorage.setItem(CLAVE_USUARIO_SESION, JSON.stringify(paciente));
+  guardarUsuarioLogueado(usuario: any) {
+    sessionStorage.setItem(CLAVE_USUARIO_SESION, JSON.stringify(usuario));
   }
 
   async login(email: any, password: any) {
