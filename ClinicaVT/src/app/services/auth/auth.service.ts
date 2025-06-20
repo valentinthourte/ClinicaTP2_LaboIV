@@ -1,12 +1,16 @@
 import { Injectable } from '@angular/core';
 import { SupabaseService } from '../supabase/supabase.service';
 import { Paciente } from '../../models/paciente';
+import { FormArray } from '@angular/forms';
+import { Especialista } from '../../models/especialista';
+import { TABLA_ESPECIALISTAS, TABLA_PACIENTES } from '../../constantes';
 
 const CLAVE_USUARIO_SESION = "usuario";
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
+
   
   constructor(private supabaseService: SupabaseService) { }
 
@@ -42,5 +46,22 @@ export class AuthService {
 
   async login(email: any, password: any) {
     return await this.supabaseService.login(email, password);
+  }
+
+  async guardarPaciente(paciente: Paciente, imagenes: FormArray<any>) {
+    
+    const archivos: File[] = imagenes.controls.map(control => control.value);
+    paciente.urlImagenUno = await this.supabaseService.guardarImagen(paciente.dni, archivos[0]);
+    paciente.urlImagenDos = await this.supabaseService.guardarImagen(paciente.dni, archivos[1]);
+
+    await this.supabaseService.insertar(paciente, TABLA_PACIENTES);
+  }
+
+  async registrarEspecialista(especialista: Especialista, imagenes: FormArray<any>) {
+    
+    const archivos: File[] = imagenes.controls.map(control => control.value);
+    especialista.urlImagen = await this.supabaseService.guardarImagen(especialista.dni, archivos[0]);
+
+    await this.supabaseService.insertar(especialista, TABLA_ESPECIALISTAS);
   }
 }

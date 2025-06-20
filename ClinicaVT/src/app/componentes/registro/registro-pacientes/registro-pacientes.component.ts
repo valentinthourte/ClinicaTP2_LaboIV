@@ -6,21 +6,26 @@ import { SpinnerService } from '../../../services/shared/spinner.service';
 import { Paciente } from '../../../models/paciente';
 import { NgToastService } from 'ng-angular-popup';
 import { Router } from '@angular/router';
-
+import { RecaptchaModule, RecaptchaFormsModule } from "ng-recaptcha";
+import { AuthService } from '../../../services/auth/auth.service';
 @Component({
   selector: 'app-registro-pacientes',
   imports: [ 
     ReactiveFormsModule,
     FormsModule,
-    CommonModule],
+    CommonModule,
+    RecaptchaModule,
+    RecaptchaFormsModule],
   templateUrl: './registro-pacientes.component.html',
   styleUrl: './registro-pacientes.component.scss'
 })
 export class RegistroPacientesComponent {
+
  formulario: FormGroup;
  protected errorMsg: string = "";
+ token: boolean = false;
 
-  constructor(private fb: FormBuilder, private pacientesService: PacientesService, private spinner: SpinnerService, private toast: NgToastService, private router: Router) {
+  constructor(private fb: FormBuilder, private spinner: SpinnerService, private toast: NgToastService, private router: Router, private auth: AuthService) {
     this.formulario = this.fb.group({
       nombre: ['', Validators.required],
       apellido: ['', Validators.required],
@@ -41,42 +46,50 @@ export class RegistroPacientesComponent {
   }
 
   async onSubmit() {
-    if (this.formulario.valid) {
-      console.log('Datos del paciente:', this.formulario.value);
-      this.spinner.show();
-      try {
-        let {data, error} = await this.pacientesService.registrarse(this.formulario.get('email')!.value, this.formulario.get('password')!.value, "paciente");
-        if (error) {
-          this.errorMsg = error.message;
-        }
-        else {
-          try {
-            let paciente = this.mapFormToPaciente(this.formulario);
-            paciente.id = data.user?.id;
-            await this.pacientesService.guardarPaciente(paciente, this.imagenes);
-            if (data.session) {
+    if (this.token) {
+      if (this.formulario.valid) {
+        console.log('Datos del paciente:', this.formulario.value);
+        this.spinner.show();
+        try {
+          let {data, error} = await this.auth.registrarse(this.formulario.get('email')!.value, this.formulario.get('password')!.value, "paciente");
+          if (error) {
+            this.errorMsg = error.message;
+          }
+          else {
+            try {
+              let paciente = this.mapFormToPaciente(this.formulario);
+              paciente.id = data.user?.id;
+              await this.auth.guardarPaciente(paciente, this.imagenes);
               this.toast.success("Paciente registrado!");
-              this.router.navigate(["/home"]);
+              if (data.session) {
+                this.auth.guardarUsuarioLogueado(paciente);
+                this.router.navigate(["/home"]);
+              }
+              else {
+                this.toast.info("Debe confirmar el correo electrónico para ingresar");
+                this.router.navigate(["/login"]);
+              }
             }
-            else {
-              this.toast.info("Debe confirmar el correo electrónico para ingresar");
-              this.router.navigate(["/login"]);
+            catch(err) {
+              this.spinner.hide();
+              this.toast.danger((err as Error).message, "Error al registrar paciente.", 5000);
             }
           }
-          catch(err) {
-            this.spinner.hide();
-            this.toast.danger((err as Error).message, "Error al registrar paciente.", 5000);
-          }
+          this.spinner.hide();
         }
-        this.spinner.hide();
+        catch(err) {
+          this.spinner.hide();
+          this.toast.danger((err as Error).message, "Error al registrar paciente.", 5000);
+        }
+      } else {
+        this.formulario.markAllAsTouched();
+        this.toast.warning("Por favor completá todos los campos obligatorios, incluida la imagen.");
       }
-      catch(err) {
-        this.spinner.hide();
-        this.toast.danger((err as Error).message, "Error al registrar paciente.", 5000);
-      }
-    } else {
-      this.formulario.markAllAsTouched();
     }
+    else {
+      this.toast.warning("Verifica que no eres un robot!");
+    }
+    
   }
 
   onFileChange(event: Event, index: number): void {
@@ -115,6 +128,13 @@ export class RegistroPacientesComponent {
       id: "",
       created_at: undefined
     };
-}
+  }
+
+  executeRecaptchaVisible(token:any)
+  {
+    this.token = !this.token;
+
+    console.log(this.token);
+  }
 
 }

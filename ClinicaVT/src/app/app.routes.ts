@@ -7,7 +7,7 @@ import { HomeComponent } from './componentes/home/home.component';
 import { VistaUsuariosComponent } from './componentes/vista-usuarios/vista-usuarios.component';
 
 export const routes: Routes = [
-    {path: '', pathMatch: "full", component: LandingPageComponent},
+    {path: '', pathMatch: "full", component: HomeComponent},
     {path: 'register', component: RegistroComponent},
     {path: 'login', component: LoginComponent},
     {path: 'home', component: HomeComponent},

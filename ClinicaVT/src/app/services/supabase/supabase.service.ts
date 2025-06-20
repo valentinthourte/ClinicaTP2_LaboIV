@@ -36,18 +36,13 @@ export class SupabaseService {
   }
 
   async insertar(objeto: any, tabla: string) {
-    console.log(objeto);
-    
-    await this.supabase.from(tabla)
-    .insert(objeto)
-    .then(({data, error}) => {
-      if (error) {
+    let {data, error} = await this.supabase.from(tabla).insert(objeto)
+    if (error) {
         console.log(error);
         throw new Error(error?.message);
-      }
-      else
-        return data; 
-    })
+    }
+    else
+      return data; 
   }
 
   obtenerUsuarioLogueado() {
