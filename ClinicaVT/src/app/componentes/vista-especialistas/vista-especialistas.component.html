@@ -1,0 +1,51 @@
+<div class="container py-4">
+
+  <div class="card shadow-sm">
+    <div class="card-header bg-primary text-white text-center">
+      <h5 class="m-0">Listado de Especialistas</h5>
+    </div>
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-bordered table-hover mb-0">
+          <thead class="table-light">
+            <tr>
+              <th>Nombre</th>
+              <th>Apellido</th>
+              <th>Email</th>
+              <th>Edad</th>
+              <th>DNI</th>
+              <th>Especialidad</th>
+              <th>Aprobado</th>
+              <th class="text-center">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let e of especialistas">
+              <td>{{ e.nombre }}</td>
+              <td>{{ e.apellido }}</td>
+              <td>{{ e.email }}</td>
+              <td>{{ e.edad }}</td>
+              <td>{{ e.dni }}</td>
+              <td>{{ (e.especialidad | especialidad) ?? '-' }}</td>
+              <td [appAprobadoColor]="e.aprobado">
+                {{ e.aprobado ? 'Sí' : 'No' }}
+              </td>
+              <td class="text-center">
+                <button class="btn btn-success btn-sm" (click)="onAprobarEspecialista(e)" [disabled]="e.aprobado" style="margin-right: 2px;">
+                    <i class="bi bi-check"></i>
+                </button>
+                <button class="btn btn-danger btn-sm" (click)="onRechazarEspecialista(e)" [disabled]="e.aprobado">
+                    <i class="bi bi-x"></i>
+                </button>
+               </td>
+            </tr>
+            <tr *ngIf="especialistas.length === 0">
+              <td colspan="7" class="text-center py-3 text-muted">No hay especialistas registrados.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div>

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NgToastService } from 'ng-angular-popup';
 import { RecaptchaModule, RecaptchaFormsModule } from "ng-recaptcha";
@@ -9,13 +9,15 @@ import { SpinnerService } from '../../../services/shared/spinner.service';
 import { Router } from '@angular/router';
 import { Especialidad } from '../../../models/especialidad';
 import { EspecialidadesService } from '../../../services/especialidades.service';
+import { EspecialidadPipe } from "../../../pipes/especialidad.pipe";
+import { TipoUsuario } from '../../../enums/tipo-usuario.enum';
 @Component({
   selector: 'app-registro-especialistas',
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, RecaptchaModule, RecaptchaFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, RecaptchaModule, RecaptchaFormsModule, EspecialidadPipe],
   templateUrl: './registro-especialistas.component.html',
   styleUrl: './registro-especialistas.component.scss'
 })
-export class RegistroEspecialistasComponent {
+export class RegistroEspecialistasComponent implements OnInit {
     formulario: FormGroup;
   especialidades: Especialidad[] = [];
   nuevaEspecialidad: string = '';
@@ -28,24 +30,27 @@ export class RegistroEspecialistasComponent {
       apellido: ['', Validators.required],
       edad: ['', [Validators.required, Validators.min(18)]],
       dni: ['', Validators.required],
-      especialidad: ['', Validators.required],
+      especialidadId: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      password: ['', Validators.required]
+      password: ['', Validators.required],
+      imagen: ['', Validators.required]
     });
   }
-  get imagenes(): FormArray {
-    return this.formulario.get('imagenes') as FormArray;
+
+  async ngOnInit() {
+    this.especialidades = await this.especialidadesService.obtenerEspecialidades();
   }
 
   async agregarEspecialidad() {
     const nueva = this.nuevaEspecialidad.trim();
     if (nueva && this.especialidadExiste(nueva) == false) {
       let especialidad = await this.especialidadesService.crearEspecialidad(nueva);
-      this.especialidades.push(nueva);
-      this.formulario.get('especialidad')?.setValue(nueva);
+      this.especialidades.push(especialidad);
+      this.formulario.get('especialidad')?.setValue(especialidad);
       this.nuevaEspecialidad = '';
     }
   }
+
   especialidadExiste(nueva: string) {
     return this.especialidades.filter(s => s.especialidad == nueva).length > 0;
   }
@@ -65,8 +70,7 @@ export class RegistroEspecialistasComponent {
       else {
         this.spinner.show();
         try {
-
-          let {data, error} = await this.auth.registrarse(this.formulario.get('email')!.value, this.formulario.get('password')!.value, "paciente");
+          let {data, error} = await this.auth.registrarse(this.formulario.get('email')!.value, this.formulario.get('password')!.value, TipoUsuario.Especialista);
             if (error) {
               this.toast.danger(`Se ha producido un error: ${error.message}`);
             }
@@ -74,7 +78,7 @@ export class RegistroEspecialistasComponent {
               try {
                 let especialista = this.mapEspecialistaFromForm(this.formulario);
                 especialista.id = data.user?.id;
-                await this.auth.registrarEspecialista(especialista, this.imagenes);
+                await this.auth.registrarEspecialista(especialista, this.formulario.get("imagen"));
                 this.toast.success("Especialista registrado!");
                  if (data.session) {
                   this.auth.guardarUsuarioLogueado(especialista);
@@ -88,13 +92,17 @@ export class RegistroEspecialistasComponent {
               catch(err) {
                 this.spinner.hide();
                 this.toast.danger((err as Error).message, "Error al registrar especialista.", 5000);
+                console.log(err);
               }
             }
         }
         catch(err) {
           this.spinner.hide();
           this.toast.danger((err as Error).message, "Error al registrar especialista.", 5000);
+          console.log(err);
+          
         }   
+        this.spinner.hide();
       }
     }
     else {
@@ -102,14 +110,14 @@ export class RegistroEspecialistasComponent {
     }
   }
 
-  mapEspecialistaFromForm(form: FormGroup): Especialista {
+  mapEspecialistaFromForm(form: FormGroup): any {
       return {
       nombre: form.get('nombre')!.value,
       apellido: form.get('apellido')!.value,
       edad: form.get('edad')!.value,
       dni: form.get('dni')!.value,
       email: form.get('email')!.value,
-      especialidad: form.get('especialidad')!.value,
+      especialidadId: form.get('especialidadId')!.value,
       urlImagen: "",
       id: "",
       created_at: undefined,

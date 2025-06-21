@@ -1,0 +1,37 @@
+<div class="container py-4">
+
+  <div class="card shadow-sm">
+    <div class="card-header bg-primary text-white text-center">
+      <h5 class="m-0">Listado de Usuarios</h5>
+    </div>
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-bordered table-hover mb-0">
+          <thead class="table-light">
+            <tr>
+              <th>Nombre</th>
+              <th>Apellido</th>
+              <th>Email</th>
+              <th>Edad</th>
+              <th>DNI</th>
+              <th>Obra Social</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let usuario of pacientes">
+              <td>{{ usuario.nombre }}</td>
+              <td>{{ usuario.apellido }}</td>
+              <td>{{ usuario.email }}</td>
+              <td>{{ usuario.edad }}</td>
+              <td>{{ usuario.dni }}</td>
+              <td>{{ usuario.obraSocial || '-' }}</td>
+            </tr>
+            <tr *ngIf="pacientes.length === 0">
+              <td colspan="6" class="text-center py-3 text-muted">No hay pacientes registrados.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

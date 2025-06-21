@@ -1,6 +1,10 @@
 import { Injectable } from '@angular/core';
 import { createClient } from '@supabase/supabase-js';
 import { environment } from '../../../environments/environment';
+import { Especialidad } from '../../models/especialidad';
+import { TABLA_ESPECIALIDADES, TABLA_ESPECIALISTAS } from '../../constantes';
+import { NgToastService } from 'ng-angular-popup';
+import { Especialista } from '../../models/especialista';
 
 @Injectable({
   providedIn: 'root'
@@ -8,7 +12,7 @@ import { environment } from '../../../environments/environment';
 export class SupabaseService {
 
   private supabase = createClient(environment.apiUrl, environment.publicAnonKey);
-  constructor() { }
+  constructor(private toast: NgToastService) { }
 
   async registrarse(email: any, password: any,rol: string) {
     return await this.supabase.auth.signUp({
@@ -16,7 +20,8 @@ export class SupabaseService {
       password: password,
       options: {
         data: {
-          displayName: rol
+          displayName: rol,
+          role: rol
         }
       } 
     })
@@ -36,13 +41,13 @@ export class SupabaseService {
   }
 
   async insertar(objeto: any, tabla: string) {
-    let {data, error} = await this.supabase.from(tabla).insert(objeto)
+    let {data, error} = await this.supabase.from(tabla).insert(objeto).select()
     if (error) {
         console.log(error);
         throw new Error(error?.message);
     }
     else
-      return data; 
+      return data![0]; 
   }
 
   obtenerUsuarioLogueado() {
@@ -56,5 +61,44 @@ export class SupabaseService {
   async login(email: string, password: string) {
     return await this.supabase.auth.signInWithPassword({email: email, password: password});
   }
+
+  async obtenerTodasEspecialidades(): Promise<Especialidad[]> {
+    const {data, error} = await this.supabase.from(TABLA_ESPECIALIDADES).select("*");
+    if (error) {
+      console.error('Error al obtener especialidades:', error.message);
+      this.toast.danger(`Error al obtener especialidades: ${error.message}`);
+    }
+    return data as Especialidad[];
+  }
+
+  async obtenerTodosEspecialistas(): Promise<Especialista[]> {
+    const {data, error} = await this.supabase.from(TABLA_ESPECIALISTAS).select(`*, especialidad:especialidadId (*)`);
+    if (error)
+      throw new Error(`Error al obtener especialistas: ${error.message}`);
+    else 
+      return data as Especialista[];
+  }
+
+  async obtenerEspecialistaPorEmail(email: string | undefined): Promise<Especialista | undefined> {
+    const {data, error} = await this.supabase.from(TABLA_ESPECIALISTAS).select(`*, especialidad:especialidadId (*)`)
+                                        .eq("email", email);
+    if (error)
+      throw new Error(`Error al obtener especialista por email: ${error.message}`);                                        
+    else {
+      let esp = data[0];
+      return esp !== null ? esp as Especialista : undefined;
+    }
+  }
+
+  async aprobarEspecialista(especialista: Especialista) {
+    const { data, error } = await this.supabase
+        .from('especialistas')
+        .update({ aprobado: true })
+        .eq('id', especialista.id)
+        .select();
+    if (error)
+      throw new Error(`Error al aprobar especialista: ${error.message}`)  
+  }
+
   
 }

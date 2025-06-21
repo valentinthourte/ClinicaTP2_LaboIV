@@ -8,6 +8,7 @@ import { NgToastService } from 'ng-angular-popup';
 import { Router } from '@angular/router';
 import { RecaptchaModule, RecaptchaFormsModule } from "ng-recaptcha";
 import { AuthService } from '../../../services/auth/auth.service';
+import { TipoUsuario } from '../../../enums/tipo-usuario.enum';
 @Component({
   selector: 'app-registro-pacientes',
   imports: [ 
@@ -51,7 +52,7 @@ export class RegistroPacientesComponent {
         console.log('Datos del paciente:', this.formulario.value);
         this.spinner.show();
         try {
-          let {data, error} = await this.auth.registrarse(this.formulario.get('email')!.value, this.formulario.get('password')!.value, "paciente");
+          let {data, error} = await this.auth.registrarse(this.formulario.get('email')!.value, this.formulario.get('password')!.value, TipoUsuario.Paciente);
           if (error) {
             this.errorMsg = error.message;
           }

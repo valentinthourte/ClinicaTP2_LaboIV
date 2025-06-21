@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
+import { UsuariosService } from '../../services/usuarios.service';
 
 @Component({
   selector: 'app-registrar-administrador',
@@ -13,7 +14,8 @@ export class RegistrarAdministradorComponent {
 
   constructor(
     private fb: FormBuilder,
-    private dialogRef: MatDialogRef<RegistrarAdministradorComponent>
+    private dialogRef: MatDialogRef<RegistrarAdministradorComponent>,
+    private usuariosService: UsuariosService
   ) {
     this.formulario = this.fb.group({
       nombre: ['', Validators.required],
@@ -35,10 +37,10 @@ export class RegistrarAdministradorComponent {
     }
   }
 
-  onSubmit(): void {
+  async onSubmit() {
     if (this.formulario.valid) {
       const admin = { ...this.formulario.value };
-      console.log('Administrador a guardar:', admin);
+      await this.usuariosService.crearAdministrador(admin);
       this.dialogRef.close(admin);
     } else {
       this.formulario.markAllAsTouched();

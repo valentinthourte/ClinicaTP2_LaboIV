@@ -6,6 +6,8 @@ import { AuthService } from '../../services/auth/auth.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { SpinnerService } from '../../services/shared/spinner.service';
+import { TipoUsuario } from '../../enums/tipo-usuario.enum';
+import { Especialista } from '../../models/especialista';
 
 @Component({
   selector: 'app-login',
@@ -56,12 +58,28 @@ async onLogin() {
         this.toast.danger(`Error al iniciar sesion: ${error.message}`);
       }
       else {
-        this.toast.success("Login exitoso!")
-        this.auth.guardarUsuarioLogueado(data);
-        this.router.navigate(['/home']);
+        if (data.user?.user_metadata['displayName'] == TipoUsuario.Especialista)
+        {
+          let especialista: Especialista | undefined = await this.auth.obtenerEspecialista(data.user.email);
+          if (especialista === undefined)
+            throw new Error(`El especialista ${email} no se encontró en la base de datos. `);
+
+          if (especialista.aprobado == false)
+            this.toast.danger("Un administrador debe aprobar el usuario especialista antes de que pueda ser utilizado.");
+          else 
+            this.loginExitoso(data.user?.user_metadata)
+        }
+        else 
+            this.loginExitoso(data.user?.user_metadata)
+          
       }
     } else {
       this.formLogin.markAllAsTouched();
     }
   } 
+  loginExitoso(data: any) {
+    this.toast.success("Login exitoso!")
+    this.auth.guardarUsuarioLogueado(data);
+    this.router.navigate(['/home']);
+  }
 }

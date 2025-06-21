@@ -11,6 +11,7 @@ const CLAVE_USUARIO_SESION = "usuario";
 })
 export class AuthService {
 
+
   
   constructor(private supabaseService: SupabaseService) { }
 
@@ -57,11 +58,16 @@ export class AuthService {
     await this.supabaseService.insertar(paciente, TABLA_PACIENTES);
   }
 
-  async registrarEspecialista(especialista: Especialista, imagenes: FormArray<any>) {
+  async registrarEspecialista(especialista: Especialista, imagen: any) {
     
-    const archivos: File[] = imagenes.controls.map(control => control.value);
-    especialista.urlImagen = await this.supabaseService.guardarImagen(especialista.dni, archivos[0]);
+    const archivo: File = imagen as File;
+    especialista.urlImagen = await this.supabaseService.guardarImagen(especialista.dni, archivo);
 
     await this.supabaseService.insertar(especialista, TABLA_ESPECIALISTAS);
+  }
+
+  async obtenerEspecialista(email: string | undefined): Promise<Especialista | undefined> {
+    let especialista = await this.supabaseService.obtenerEspecialistaPorEmail(email);
+    return especialista;
   }
 }
