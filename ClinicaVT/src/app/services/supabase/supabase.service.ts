@@ -2,14 +2,16 @@ import { Injectable } from '@angular/core';
 import { createClient } from '@supabase/supabase-js';
 import { environment } from '../../../environments/environment';
 import { Especialidad } from '../../models/especialidad';
-import { TABLA_ESPECIALIDADES, TABLA_ESPECIALISTAS } from '../../constantes';
+import { TABLA_ESPECIALIDADES, TABLA_ESPECIALISTAS, TABLA_PACIENTES } from '../../constantes';
 import { NgToastService } from 'ng-angular-popup';
 import { Especialista } from '../../models/especialista';
+import { Paciente } from '../../models/paciente';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SupabaseService {
+
 
   private supabase = createClient(environment.apiUrl, environment.publicAnonKey);
   constructor(private toast: NgToastService) { }
@@ -77,6 +79,14 @@ export class SupabaseService {
       throw new Error(`Error al obtener especialistas: ${error.message}`);
     else 
       return data as Especialista[];
+  }
+
+  async obtenerTodosPacientes(): Promise<Paciente[]> {
+    const {data, error} = await this.supabase.from(TABLA_PACIENTES).select(`*`);
+    if (error)
+      throw new Error(`Error al obtener especialistas: ${error.message}`);
+    else 
+      return data as Paciente[];
   }
 
   async obtenerEspecialistaPorEmail(email: string | undefined): Promise<Especialista | undefined> {
