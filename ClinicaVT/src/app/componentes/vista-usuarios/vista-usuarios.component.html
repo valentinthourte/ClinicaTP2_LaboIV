@@ -8,17 +8,19 @@
       <button class="px-4 py-2 font-semibold ml-4"
               [ngClass]="solapaActiva === 'especialistas' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-600'"
               (click)="solapaActiva = 'especialistas'">Especialistas</button>
+      <button class="px-4 py-2 font-semibold ml-4"
+              [ngClass]="solapaActiva === 'administradores' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-600'"
+              (click)="solapaActiva = 'administradores'">Administradores</button>              
     </div>
-
-    <button class="btn btn-primary" (click)="onAgregarAdministrador()">
-      Agregar administrador
-    </button>
   </div>
 
   @if(solapaActiva === 'pacientes') {
-    <app-vista-pacientes *ngIf="solapaActiva === 'pacientes'"></app-vista-pacientes>
+    <app-vista-pacientes></app-vista-pacientes>
   }
-  @else {
-    <app-vista-especialistas *ngIf="solapaActiva === 'especialistas'"></app-vista-especialistas>
+  @else if (solapaActiva === 'especialistas'){
+    <app-vista-especialistas></app-vista-especialistas>
+  }
+  @else if (solapaActiva === 'administradores') {
+    <app-vista-administradores></app-vista-administradores>
   }
 </div>

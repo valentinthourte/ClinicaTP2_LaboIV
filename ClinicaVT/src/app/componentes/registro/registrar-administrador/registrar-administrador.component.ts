@@ -1,7 +1,10 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
-import { UsuariosService } from '../../services/usuarios.service';
+import { UsuariosService } from '../../../services/usuarios.service';
+import { SpinnerService } from '../../../services/shared/spinner.service';
+import { NgToastService } from 'ng-angular-popup';
+import { AuthService } from '../../../services/auth/auth.service';
 
 @Component({
   selector: 'app-registrar-administrador',
@@ -15,7 +18,9 @@ export class RegistrarAdministradorComponent {
   constructor(
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<RegistrarAdministradorComponent>,
-    private usuariosService: UsuariosService
+    private auth: AuthService,
+    private spinner: SpinnerService,
+    private toast: NgToastService
   ) {
     this.formulario = this.fb.group({
       nombre: ['', Validators.required],
@@ -39,9 +44,22 @@ export class RegistrarAdministradorComponent {
 
   async onSubmit() {
     if (this.formulario.valid) {
-      const admin = { ...this.formulario.value };
-      await this.usuariosService.crearAdministrador(admin);
-      this.dialogRef.close(admin);
+      try {
+        this.spinner.show();
+        debugger
+        let admin = this.mapAdministradorFromForm(this.formulario);
+        admin = await this.auth.crearAdministrador(admin, this.formulario.get("imagen"), this.formulario.get('password'));
+        console.log(admin);
+        this.toast.success("Administrador creado exitosamente!");
+        this.dialogRef.close(admin);
+      }
+      catch(err: any) {
+        console.log(`Error creando especialista: ${err}`);
+        this.toast.danger(`Error creando especialista: ${err}`);
+      }
+      finally {
+        this.spinner.hide();
+      }
     } else {
       this.formulario.markAllAsTouched();
     }
@@ -51,4 +69,15 @@ export class RegistrarAdministradorComponent {
     this.dialogRef.close();
   }
 
+  mapAdministradorFromForm(form: FormGroup): any {
+    return {
+      nombre: form.get('nombre')!.value,
+      apellido: form.get('apellido')!.value,
+      edad: form.get('edad')!.value,
+      dni: form.get('dni')!.value,
+      email: form.get('email')!.value,
+      imagen: "",
+      created_at: undefined
+    };
+  }
 }
