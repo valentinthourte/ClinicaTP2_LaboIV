@@ -2,9 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { UsuariosService } from '../../../services/usuarios.service';
 import { Especialista } from '../../../models/especialista';
 import { AuthService } from '../../../services/auth/auth.service';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-perfil-especialista',
+  imports: [RouterModule],
   templateUrl: './perfil-especialista.component.html',
 })
 export class PerfilEspecialistaComponent implements OnInit {

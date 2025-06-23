@@ -3,10 +3,11 @@ import { UsuariosService } from '../../../services/usuarios.service';
 import { Paciente } from '../../../models/paciente';
 import { AuthService } from '../../../services/auth/auth.service';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-perfil-paciente',
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule],
   templateUrl: './perfil-paciente.component.html',
 })
 export class PerfilPacienteComponent implements OnInit {

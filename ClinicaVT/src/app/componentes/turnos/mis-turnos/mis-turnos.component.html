@@ -1,1 +1,9 @@
-<p>mis-turnos works!</p>
+<div *appMostrarSiRol="TipoUsuario.Administrador">
+    <app-turnos-administrador></app-turnos-administrador>
+</div>
+<div *appMostrarSiRol="TipoUsuario.Paciente">
+    <app-turnos-paciente></app-turnos-paciente>
+</div>
+<div *appMostrarSiRol="TipoUsuario.Especialista">
+    <app-turnos-especialista></app-turnos-especialista>
+</div>

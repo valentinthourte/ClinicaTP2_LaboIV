@@ -2,12 +2,13 @@ import { Injectable } from '@angular/core';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { environment } from '../../../environments/environment';
 import { Especialidad } from '../../models/especialidad';
-import { TABLA_ADMINISTRADORES, TABLA_ESPECIALIDADES, TABLA_ESPECIALISTAS, TABLA_PACIENTES } from '../../constantes';
+import { TABLA_ADMINISTRADORES, TABLA_ESPECIALIDADES, TABLA_ESPECIALISTAS, TABLA_PACIENTES, TABLA_TURNOS } from '../../constantes';
 import { NgToastService } from 'ng-angular-popup';
 import { Especialista } from '../../models/especialista';
 import { Paciente } from '../../models/paciente';
 import { TipoUsuario } from '../../enums/tipo-usuario.enum';
 import { Administrador } from '../../models/administrador';
+import { Turno } from '../../models/turno';
 
 @Injectable({
   providedIn: 'root'
@@ -130,55 +131,63 @@ async obtenerEspecialistaPorEmail(email: string | undefined): Promise<Especialis
   const {data, error} = await this.supabase.from(TABLA_ESPECIALISTAS).select(`*, especialidad:especialidadId (*)`)
   .eq("email", email);
   if (error)
-      throw new Error(`Error al obtener especialista por email: ${error.message}`);                                        
-    else {
-      let esp = data[0];
-      return esp !== null ? esp as Especialista : undefined;
-    }
+    throw new Error(`Error al obtener especialista por email: ${error.message}`);                                        
+  else {
+    let esp = data[0];
+    return esp !== null ? esp as Especialista : undefined;
   }
+}
 
-  async aprobarEspecialista(especialista: Especialista) {
-    const { data, error } = await this.supabase
-        .from('especialistas')
-        .update({ aprobado: true })
-        .eq('id', especialista.id)
-        .select();
-    if (error)
-      throw new Error(`Error al aprobar especialista: ${error.message}`)  
-  }
+async aprobarEspecialista(especialista: Especialista) {
+  const { data, error } = await this.supabase
+  .from('especialistas')
+  .update({ aprobado: true })
+  .eq('id', especialista.id)
+  .select();
+  if (error)
+    throw new Error(`Error al aprobar especialista: ${error.message}`)  
+}
 
-  static async crearAdministrador(admin: any, password: string) {
-    const supabase = createClient(environment.apiUrl, environment.publicAnonKey);
-
-    let administrador = await SupabaseService.signUp(supabase, admin, password);
-
-    admin.id = administrador.user?.id;
-
-    supabase.auth.signOut();
-
-    const { data, error } = await supabase.from(TABLA_ADMINISTRADORES).insert(admin).select();
-    if (error)
-      throw new Error(error.message);
-
-    return data[0] as Administrador;
-  }
-
-  private static async signUp(supabase: any, admin: any, password: string) {
-    let { data, error } = await supabase.auth.signUp({
-      email: admin.email, 
-      password: password,
-      options: {
-        data: {
-          displayName: TipoUsuario.Administrador,
-          role: TipoUsuario.Administrador
-        }
-      } 
-    });
-
-    if (error)
-      throw new Error(error.message);
-    return data;
-  }
-
+static async crearAdministrador(admin: any, password: string) {
+  const supabase = createClient(environment.apiUrl, environment.publicAnonKey);
   
+  let administrador = await SupabaseService.signUp(supabase, admin, password);
+  
+  admin.id = administrador.user?.id;
+  
+  supabase.auth.signOut();
+  
+  const { data, error } = await supabase.from(TABLA_ADMINISTRADORES).insert(admin).select();
+  if (error)
+    throw new Error(error.message);
+  
+  return data[0] as Administrador;
+}
+
+private static async signUp(supabase: any, admin: any, password: string) {
+  let { data, error } = await supabase.auth.signUp({
+    email: admin.email, 
+    password: password,
+    options: {
+      data: {
+        displayName: TipoUsuario.Administrador,
+        role: TipoUsuario.Administrador
+      }
+    } 
+  });
+  
+  if (error)
+    throw new Error(error.message);
+  return data;
+}
+
+async obtenerTurnosDePaciente(id: string | undefined): Promise<Turno[]> {
+  const {data, error} = await this.supabase.from(TABLA_TURNOS).select('*')
+                                  .eq('pacienteId', id);
+  if (error)
+    throw new Error(`Error al obtener turnos de paciente: ${error.message}`);
+
+  return data as Turno[];                        
+}
+
 }

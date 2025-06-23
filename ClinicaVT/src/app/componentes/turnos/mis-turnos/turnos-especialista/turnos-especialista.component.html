@@ -1,1 +1,84 @@
-<p>turnos-especialista works!</p>
+<div class="container py-4">
+  <div class="card shadow-sm">
+    <div class="card-header bg-primary text-white">
+      <h5 class="mb-0 text-center">Mis Turnos</h5>
+    </div>
+
+    <div class="card-body">
+      <!-- Filtro -->
+      <div class="input-group mb-4">
+        <input type="text" class="form-control" placeholder="Filtrar por paciente o especialidad"
+               [(ngModel)]="filtro" (ngModelChange)="filtrarTurnos()" />
+        <span class="input-group-text bg-light">
+          <i class="bi bi-search"></i>
+        </span>
+      </div>
+
+      <!-- Tabla -->
+      <div class="table-responsive">
+        <table class="table table-hover table-bordered">
+          <thead class="table-light">
+            <tr>
+              <th>Fecha</th>
+              <th>Paciente</th>
+              <th>Especialidad</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let turno of turnosFiltrados">
+              <td>{{ turno.fecha | date:'short' }}</td>
+              <td>{{ obtenerNombrePaciente(turno.pacienteId) }}</td>
+              <td>{{ turno.especialidad }}</td>
+              <td>
+                <span class="badge bg-secondary" *ngIf="turno.estado === 'pendiente'">Pendiente</span>
+                <span class="badge bg-success" *ngIf="turno.estado === 'aceptado'">Aceptado</span>
+                <span class="badge bg-danger" *ngIf="turno.estado === 'cancelado'">Cancelado</span>
+                <span class="badge bg-warning text-dark" *ngIf="turno.estado === 'rechazado'">Rechazado</span>
+                <span class="badge bg-primary" *ngIf="turno.estado === 'realizado'">Realizado</span>
+              </td>
+              <td>
+                <div class="d-flex flex-wrap gap-2">
+                  <!-- Cancelar -->
+                  <button *ngIf="turno.estado === 'pendiente'" class="btn btn-sm btn-outline-danger"
+                          (click)="cancelarTurno(turno)">
+                    <i class="bi bi-x-circle"></i> Cancelar
+                  </button>
+
+                  <!-- Rechazar -->
+                  <button *ngIf="turno.estado === 'pendiente'" class="btn btn-sm btn-outline-secondary"
+                          (click)="rechazarTurno(turno)">
+                    <i class="bi bi-x-lg"></i> Rechazar
+                  </button>
+
+                  <!-- Aceptar -->
+                  <button *ngIf="turno.estado === 'pendiente'" class="btn btn-sm btn-outline-success"
+                          (click)="aceptarTurno(turno)">
+                    <i class="bi bi-check-circle"></i> Aceptar
+                  </button>
+
+                  <!-- Finalizar -->
+                  <button *ngIf="turno.estado === 'aceptado'" class="btn btn-sm btn-outline-primary"
+                          (click)="finalizarTurno(turno)">
+                    <i class="bi bi-check2-square"></i> Finalizar
+                  </button>
+
+                  <!-- Ver Reseña -->
+                  <button *ngIf="turno.reseniaPaciente" class="btn btn-sm btn-outline-info"
+                          (click)="verResenia(turno)">
+                    <i class="bi bi-chat-text"></i> Reseña
+                  </button>
+                </div>
+              </td>
+            </tr>
+
+            <tr *ngIf="turnosFiltrados.length === 0">
+              <td colspan="5" class="text-center text-muted py-3">No hay turnos asignados.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
