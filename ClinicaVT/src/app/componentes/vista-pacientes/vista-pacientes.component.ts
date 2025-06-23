@@ -5,6 +5,8 @@ import { Paciente } from '../../models/paciente';
 import { UsuariosService } from '../../services/usuarios.service';
 import { SpinnerService } from '../../services/shared/spinner.service';
 import { NgToastService } from 'ng-angular-popup';
+import { RegistroPacientesComponent } from '../registro/registro-pacientes/registro-pacientes.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-vista-pacientes',
@@ -13,10 +15,10 @@ import { NgToastService } from 'ng-angular-popup';
   styleUrl: './vista-pacientes.component.scss'
 })
 export class VistaPacientesComponent implements OnInit{
-
+  
   pacientes: Paciente[] = [];
   
-  constructor(private usuariosService: UsuariosService, private spinner: SpinnerService, private toast: NgToastService) {}
+  constructor(private usuariosService: UsuariosService, private spinner: SpinnerService, private toast: NgToastService, private dialog: MatDialog) {}
   
   async ngOnInit() {
     try {
@@ -30,5 +32,15 @@ export class VistaPacientesComponent implements OnInit{
     finally {
       this.spinner.hide();
     }
+  }
+  
+  onAgregarPaciente() {
+    const dialogRef = this.dialog.open(RegistroPacientesComponent);
+
+      dialogRef.afterClosed().subscribe((nuevoPaciente: Paciente | undefined) => {
+      if (nuevoPaciente) {
+        this.pacientes.push(nuevoPaciente);
+      }
+    });
   }
 }

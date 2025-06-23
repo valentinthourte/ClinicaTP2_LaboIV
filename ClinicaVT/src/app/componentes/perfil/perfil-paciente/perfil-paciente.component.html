@@ -1,0 +1,38 @@
+<div class="d-flex">
+  <!-- Sidebar -->
+  <div class="p-3 bg-light border-end" style="width: 240px;">
+    <h5 class="mb-4">Accesos</h5>
+    <button class="btn btn-outline-primary w-100 mb-2 d-flex align-items-center">
+      <i class="bi bi-calendar-check me-2"></i> Mis turnos
+    </button>
+    <button class="btn btn-outline-success w-100 d-flex align-items-center">
+      <i class="bi bi-calendar-plus me-2"></i> Solicitar turno
+    </button>
+  </div>
+
+  <!-- Perfil -->
+  <div class="flex-grow-1 p-4">
+    <div class="card shadow-sm overflow-hidden position-relative">
+      
+      <!-- Banner / portada -->
+      <div class="bg-secondary" style="height: 180px; background-position: center; background-size: cover;"
+           [ngStyle]="{ 'background-image': 'url(' + usuario.urlImagenDos + ')' }">
+      </div>
+
+      <!-- Imagen de perfil -->
+      <div class="text-center" style="margin-top: -60px;">
+        <img [src]="usuario.urlImagenUno" alt="Foto de perfil"
+             class="rounded-circle border border-white shadow" width="120" height="120" />
+      </div>
+
+      <!-- Datos -->
+      <div class="card-body text-center">
+        <h5 class="card-title">{{ usuario.nombre }} {{ usuario.apellido }}</h5>
+        <p class="card-text text-muted">{{ usuario.email }}</p>
+        <p>Edad: {{ usuario.edad }}</p>
+        <p>DNI: {{ usuario.dni }}</p>
+        <p>Obra Social: {{ usuario.obraSocial || 'Sin especificar' }}</p>
+      </div>
+    </div>
+  </div>
+</div>

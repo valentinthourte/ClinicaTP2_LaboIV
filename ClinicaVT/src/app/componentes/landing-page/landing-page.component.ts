@@ -9,10 +9,4 @@ import { RouterModule } from '@angular/router';
   styleUrl: './landing-page.component.scss'
 })
 export class LandingPageComponent {
-  imagenes: string[] = [
-    'assets/clinica1.jpg',
-    'assets/clinica2.jpg',
-    'assets/clinica3.jpg',
-    'assets/clinica4.jpg'
-  ];
 }

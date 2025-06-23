@@ -18,20 +18,22 @@ import { Especialista } from '../../models/especialista';
 export class LoginComponent {
 formLogin: FormGroup;
 mostrarSidebar = false;
-usuariosFicticios = [
-  {
-    nombre: 'Prueba 1',
-    email: 'xexesaj143@finfave.com',
-    password: '123456',
-    imagen: 'assets/usuarios/juan.png'
-  },
-  {
-    nombre: 'María López',
-    email: 'maria@example.com',
-    password: 'abcdef',
-    imagen: 'assets/usuarios/maria.png'
-  }
-];
+usuariosFicticios = {
+  administradores: [
+    { email: 'robertoadmin@yopmail.com', password: '123456', nombre: "Roberto", apellido: "Admin", imagen: "https://ciolyhwwleeuwtoussjm.supabase.co/storage/v1/object/public/imagenes//99090909_juan%20admin.jpg" }
+  ],
+  especialistas: [
+    { email: 'mariapsicologa@yopmail.com', password: '123456', nombre: "Maria", apellido: "Psicologa", imagen: "https://ciolyhwwleeuwtoussjm.supabase.co/storage/v1/object/public/imagenes//mariapsico.jpg"},
+    { email: 'gregoryhouse@yopmail.com', password: '123456', nombre: "Gregory", apellido: "House", imagen: "https://ciolyhwwleeuwtoussjm.supabase.co/storage/v1/object/public/imagenes//house.jpg"}
+    
+  ],
+  pacientes: [
+    { email: 'pedropaciente@yopmail.com', password: '123456', nombre: "Pedro", apellido: "Paciente", imagen: "https://ciolyhwwleeuwtoussjm.supabase.co/storage/v1/object/public/imagenes//11223344_pedro.jpg" },
+    { email: 'tylerdurden@yopmail.com', password: '123456', nombre: "Tyler", apellido: "Durden", imagen: "https://ciolyhwwleeuwtoussjm.supabase.co/storage/v1/object/public/imagenes//22022052_tyler.jpg" },
+    { email: 'bobross@yopmail.com', password: '123456', nombre: "Bob", apellido: "Ross", imagen: "https://ciolyhwwleeuwtoussjm.supabase.co/storage/v1/object/public/imagenes//43333999_bobross.jpg" }
+  ]
+};
+
 
 constructor(private fb: FormBuilder, private auth: AuthService, private toast: NgToastService, private router: Router, private spinner: SpinnerService) {
   this.formLogin = this.fb.group({

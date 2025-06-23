@@ -1,0 +1,24 @@
+import { Component, OnInit } from '@angular/core';
+import { UsuariosService } from '../../../services/usuarios.service';
+import { Paciente } from '../../../models/paciente';
+import { AuthService } from '../../../services/auth/auth.service';
+import { CommonModule } from '@angular/common';
+
+@Component({
+  selector: 'app-perfil-paciente',
+  imports: [CommonModule],
+  templateUrl: './perfil-paciente.component.html',
+})
+export class PerfilPacienteComponent implements OnInit {
+  usuario!: Paciente;
+
+  constructor(private auth: AuthService, private usuariosService: UsuariosService) {}
+
+  async ngOnInit(){
+    const usuario = (await this.auth.getUsuarioLogueadoSupabase()).data.user;
+    if (usuario != null) {
+      const paciente = await this.usuariosService.obtenerPacientePorId(usuario.id);
+      this.usuario = paciente as Paciente;
+    }
+  }
+}

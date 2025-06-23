@@ -23,6 +23,9 @@ export class AuthService {
   async getUsuarioLogueadoSupabase() {
     return await this.supabaseService.obtenerUsuarioLogueado();
   }
+  async obtenerRolUsuario() {
+    return (await this.getUsuarioLogueadoSupabase()).data.user?.user_metadata['displayName'];
+  }
   
   usuarioEstaLogueado() {
     let usuario = this.getUsuarioLogueado();
@@ -52,8 +55,8 @@ export class AuthService {
   async guardarPaciente(paciente: Paciente, imagenes: FormArray<any>) {
     
     const archivos: File[] = imagenes.controls.map(control => control.value);
-    paciente.urlImagenUno = await this.supabaseService.guardarImagen(paciente.dni, archivos[0]);
-    paciente.urlImagenDos = await this.supabaseService.guardarImagen(paciente.dni, archivos[1]);
+    paciente.urlImagenUno = this.getUrlPublica(await this.supabaseService.guardarImagen(paciente.dni, archivos[0]));
+    paciente.urlImagenDos = this.getUrlPublica(await this.supabaseService.guardarImagen(paciente.dni, archivos[1]));
     
     await this.supabaseService.insertar(paciente, TABLA_PACIENTES);
   }
@@ -61,14 +64,14 @@ export class AuthService {
   async registrarEspecialista(especialista: Especialista, imagen: any) {
     
     const archivo: File = imagen as File;
-    especialista.urlImagen = await this.supabaseService.guardarImagen(especialista.dni, archivo);
+    especialista.urlImagen = this.getUrlPublica(await this.supabaseService.guardarImagen(especialista.dni, archivo));
     
     await this.supabaseService.insertar(especialista, TABLA_ESPECIALISTAS);
   }
 
   async crearAdministrador(admin: any, imagen: any, password: any) {
     const archivo: File = imagen as File;
-    admin.imagen = await this.supabaseService.guardarImagen(admin.dni, archivo);
+    admin.imagen = this.getUrlPublica(await this.supabaseService.guardarImagen(admin.dni, archivo));
 
     return await SupabaseService.crearAdministrador(admin, password);
   }
@@ -76,5 +79,9 @@ export class AuthService {
   async obtenerEspecialista(email: string | undefined): Promise<Especialista | undefined> {
     let especialista = await this.supabaseService.obtenerEspecialistaPorEmail(email);
     return especialista;
+  }
+
+  getUrlPublica(nombreImagen: string): string {
+    return `https://ciolyhwwleeuwtoussjm.supabase.co/storage/v1/object/public/${nombreImagen}`;
   }
 }

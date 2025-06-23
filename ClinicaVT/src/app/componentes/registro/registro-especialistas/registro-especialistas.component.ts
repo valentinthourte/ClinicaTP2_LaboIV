@@ -21,7 +21,6 @@ export class RegistroEspecialistasComponent implements OnInit {
     formulario: FormGroup;
   especialidades: Especialidad[] = [];
   nuevaEspecialidad: string = '';
-  imagenSeleccionada: File | null = null;
   token: boolean = false;
 
   constructor(private spinner: SpinnerService, private fb: FormBuilder, private toast: NgToastService, private auth: AuthService, private router: Router, private especialidadesService: EspecialidadesService) {
@@ -33,7 +32,7 @@ export class RegistroEspecialistasComponent implements OnInit {
       especialidadId: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required],
-      imagen: ['', Validators.required]
+      imagen: [null, Validators.required]
     });
   }
 
@@ -55,14 +54,19 @@ export class RegistroEspecialistasComponent implements OnInit {
     return this.especialidades.filter(s => s.especialidad == nueva).length > 0;
   }
 
-  onFileChange(event: Event) {
+  onFileChange(event: Event): void {
     const input = event.target as HTMLInputElement;
-    this.imagenSeleccionada = input.files?.[0] || null;
+    const file = input.files?.[0];
+    if (file) {
+      let imagen = this.formulario.get('imagen'); 
+      imagen?.setValue(file);
+      imagen?.markAsTouched();
+    }
   }
 
   async onSubmit() {
     if (this.token) {
-      if (this.formulario.invalid || !this.imagenSeleccionada) {
+      if (this.formulario.invalid || !this.obtenerImagenSeleccionada()) {
         this.formulario.markAllAsTouched();
         this.toast.warning("Por favor completá todos los campos obligatorios, incluida la imagen.");
         return;
@@ -78,7 +82,7 @@ export class RegistroEspecialistasComponent implements OnInit {
               try {
                 let especialista = this.mapEspecialistaFromForm(this.formulario);
                 especialista.id = data.user?.id;
-                await this.auth.registrarEspecialista(especialista, this.formulario.get("imagen"));
+                await this.auth.registrarEspecialista(especialista, this.formulario.get("imagen")?.value);
                 this.toast.success("Especialista registrado!");
                  if (data.session) {
                   this.auth.guardarUsuarioLogueado(especialista);
@@ -108,6 +112,9 @@ export class RegistroEspecialistasComponent implements OnInit {
     else {
       this.toast.warning("Verifica que no eres un robot!");
     }
+  }
+  obtenerImagenSeleccionada() {
+    return this.formulario.get("imagen")?.value;
   }
 
   mapEspecialistaFromForm(form: FormGroup): any {

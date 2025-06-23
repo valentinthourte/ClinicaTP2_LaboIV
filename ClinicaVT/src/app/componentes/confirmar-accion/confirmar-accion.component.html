@@ -1,0 +1,18 @@
+<div class="p-4">
+  <h5 class="mb-3 text-lg font-semibold text-center">
+    ¿Estás seguro de {{ data.accion }} al especialista?
+  </h5>
+
+  <p class="text-center mb-4 text-muted">
+    {{ data.nombre }}
+  </p>
+
+  <div class="d-flex justify-content-center gap-3">
+    <button mat-flat-button color="primary" class="btn btn-success" (click)="confirmar()">
+      Confirmar
+    </button>
+    <button mat-stroked-button class="btn btn-danger" (click)="cancelar()">
+      Cancelar
+    </button>
+  </div>
+</div>

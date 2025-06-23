@@ -1,13 +1,14 @@
 <nav class="navbar navbar-expand-lg px-3">
    <mat-toolbar class="justify-content-between toolbar">
        <div>
-        <span class="text-white" style="cursor: pointer" routerLink="">ClinicaVT</span>
+        <span class="text-white" style="cursor: pointer" routerLink="/home">ClinicaVT</span>
        </div>
        <div>
           @if(this.usuarioEstaLogueado()) {
-               <button routerLink="/turnos" class="btn text-white fs-5 text-3xl">Turnos</button>
-               <button class="btn text-white fs-5">Asociate</button>
-               <button routerLink="/usuarios" class="btn text-white fs-5 text-3xl">Usuarios</button>
+               <button routerLink="/turnos" class="btn text-white fs-5 text-3xl" *appMostrarSiRol="TipoUsuario.Administrador">Turnos</button>
+               <button routerLink="/misTurnos" class="btn text-white fs-5 text-3xl" *appMostrarSiRol="[TipoUsuario.Paciente, TipoUsuario.Especialista]">Mis turnos</button>
+               <button routerLink="/register" class="btn text-white fs-5">Asociate</button>
+               <button routerLink="/usuarios" class="btn text-white fs-5 text-3xl" *appMostrarSiRol="TipoUsuario.Administrador">Usuarios</button>
           }
        </div>
        <div>

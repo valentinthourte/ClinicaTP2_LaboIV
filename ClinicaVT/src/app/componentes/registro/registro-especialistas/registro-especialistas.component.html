@@ -75,21 +75,17 @@
                 [class.is-invalid]="formulario.get('password')?.invalid && formulario.get('password')?.touched">
               <div class="invalid-feedback">Campo obligatorio</div>
             </div>
-
             
             <div class="mb-3">
-              <label>Imagen de perfil</label>
-              <input type="file" class="form-control" accept="image/*" (change)="onFileChange($event)" formControlName="imagen">
-              <div class="form-text">Debe seleccionar una imagen.</div>
-              <div class="invalid-feedback" *ngIf="!imagenSeleccionada && formulario.touched">
-                Imagen requerida
-              </div>
+              <label for="imagen" class="form-label">Imagen de perfil</label>
+              <input type="file" id="imagen" class="form-control" accept="image/*" (change)="onFileChange($event)"
+                [class.is-invalid]="formulario.get('imagen')?.invalid && formulario.get('imagen')?.touched" />
+              <div class="invalid-feedback">Selecciona una imagen</div>
             </div>
 
             <div class="capcha mt-2">
                 <re-captcha (resolved)="executeRecaptchaVisible($event)" siteKey="6LcnzlMrAAAAAAHepo-g-hini-Ah0SQZd-wQUMfH"></re-captcha>
             </div>
-
             
             <div class="d-grid mt-4">
               <button type="submit" class="btn btn-primary">Registrarse</button>

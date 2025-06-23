@@ -1,0 +1,30 @@
+<div class="d-flex">
+  <div class="p-3 bg-light border-end" style="width: 240px;">
+    <h5 class="mb-4">Accesos</h5>
+    <button class="btn btn-outline-primary w-100 mb-2 d-flex align-items-center">
+      <i class="bi bi-calendar-check me-2"></i> Mis turnos
+    </button>
+    <button class="btn btn-outline-info w-100 mb-2 d-flex align-items-center">
+      <i class="bi bi-clock me-2"></i> Mis horarios
+    </button>
+    <button class="btn btn-outline-secondary w-100 d-flex align-items-center">
+      <i class="bi bi-person-lines-fill me-2"></i> Pacientes atendidos
+    </button>
+  </div>
+
+  <div class="flex-grow-1 p-4">
+    <div class="card shadow-sm">
+      <div class="card-body text-center">
+        <div class="d-flex align-items-center justify-content-center">
+            <img [src]="usuario.urlImagen" alt="Imagen de perfil" class="rounded-circle mb-3" width="100" height="100" />
+        </div>
+        <h5 class="card-title">{{ usuario.nombre }} {{ usuario.apellido }}</h5>
+        <p class="card-text text-muted">{{ usuario.email }}</p>
+        <p>Edad: {{ usuario.edad }}</p>
+        <p>DNI: {{ usuario.dni }}</p>
+        <p>Especialidad: {{ usuario.especialidad }}</p>
+        <p class="text-muted small">Cuenta {{ usuario.aprobado ? 'Aprobada' : 'Pendiente de aprobación' }}</p>
+      </div>
+    </div>
+  </div>
+</div>

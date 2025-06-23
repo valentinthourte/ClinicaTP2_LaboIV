@@ -7,7 +7,6 @@
         </div>
         <div class="card-body">
           <form [formGroup]="formLogin" (ngSubmit)="onLogin()">
-
             <div class="mb-3">
               <label for="email" class="form-label">Correo electrónico</label>
               <input
@@ -15,8 +14,7 @@
                 class="form-control"
                 id="email"
                 formControlName="email"
-                [class.is-invalid]="formLogin.get('email')?.invalid && formLogin.get('email')?.touched"
-              >
+                [class.is-invalid]="formLogin.get('email')?.invalid && formLogin.get('email')?.touched">
               <div class="invalid-feedback">Campo obligatorio y con formato válido</div>
             </div>
 
@@ -27,8 +25,7 @@
                 class="form-control"
                 id="password"
                 formControlName="password"
-                [class.is-invalid]="formLogin.get('password')?.invalid && formLogin.get('password')?.touched"
-              >
+                [class.is-invalid]="formLogin.get('password')?.invalid && formLogin.get('password')?.touched">
               <div class="invalid-feedback">Campo obligatorio</div>
             </div>
 
@@ -37,28 +34,54 @@
             </div>
           </form>
 
-            <div class="d-flex align-items-center justify-content-center">
-                <button class="btn btn-outline-secondary m-2" (click)="mostrarSidebar = true">
-                    Autocompletar usuario
-                </button>
-            </div>
-            <div class="sidebar" *ngIf="mostrarSidebar">
-                <div class="sidebar-content">
-                    <h5 class="mb-3">Usuarios rápidos</h5>
-                    <div
-                    class="usuario-item d-flex align-items-center mb-2 p-2 border rounded hover-shadow"
-                    *ngFor="let usuario of usuariosFicticios"
-                    (click)="autocompletarUsuario(usuario)"
-                    style="cursor: pointer;"
-                    >
-                    <!-- <img [src]="usuario.imagen" width="40" height="40" class="me-2 rounded-circle" /> -->
-                    <span>{{ usuario.nombre }}</span>
-                    </div>
-                    <button class="btn btn-sm btn-secondary mt-3" (click)="mostrarSidebar = false">Cerrar</button>
-                </div>
-            </div>
+          <div class="text-center mt-3">
+            <button class="btn btn-outline-secondary" (click)="mostrarSidebar = true">
+              Autocompletar usuario
+            </button>
+          </div>
         </div>
       </div>
+    </div>
+  </div>
+
+  <div class="sidebar bg-light shadow position-fixed top-0 end-0 p-4 h-100 overflow-auto" *ngIf="mostrarSidebar" style="width: 300px; z-index: 1050;">
+    <h5 class="mb-3 border-bottom pb-2">Usuarios rápidos</h5>
+
+    <div *ngIf="usuariosFicticios.administradores?.length">
+      <h6 class="text-primary">Administradores</h6>
+      <div *ngFor="let admin of usuariosFicticios.administradores"
+           class="usuario-item d-flex align-items-center mb-2 p-2 border rounded hover-shadow"
+           (click)="autocompletarUsuario(admin)"
+           style="cursor: pointer;">
+        <img [src]="admin.imagen" alt="Imagen perfil" width="48" height="48" class="rounded-circle object-fit-cover">
+        <span>{{ admin.nombre }} {{ admin.apellido }}</span>
+      </div>
+    </div>
+
+    <div *ngIf="usuariosFicticios.especialistas?.length" class="mt-3">
+      <h6 class="text-success">Especialistas</h6>
+      <div *ngFor="let esp of usuariosFicticios.especialistas"
+           class="usuario-item d-flex align-items-center mb-2 p-2 border rounded hover-shadow"
+           (click)="autocompletarUsuario(esp)"
+           style="cursor: pointer;">
+        <img [src]="esp.imagen" alt="Imagen perfil" width="48" height="48" class="rounded-circle object-fit-cover">
+        <span>{{ esp.nombre }} {{ esp.apellido }}</span>
+      </div>
+    </div>
+
+    <div *ngIf="usuariosFicticios.pacientes?.length" class="mt-3">
+      <h6 class="text-secondary">Pacientes</h6>
+      <div *ngFor="let pac of usuariosFicticios.pacientes"
+           class="usuario-item d-flex align-items-center mb-2 p-2 border rounded hover-shadow"
+           (click)="autocompletarUsuario(pac)"
+           style="cursor: pointer;">
+        <img [src]="pac.imagen" alt="Imagen perfil" width="48" height="48" class="rounded-circle object-fit-cover">
+        <span>{{ pac.nombre }} {{ pac.apellido }}</span>
+      </div>
+    </div>
+
+    <div class="text-center mt-4">
+      <button class="btn btn-sm btn-outline-secondary" (click)="mostrarSidebar = false">Cerrar</button>
     </div>
   </div>
 </div>

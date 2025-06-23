@@ -48,7 +48,7 @@ export class RegistrarAdministradorComponent {
         this.spinner.show();
         debugger
         let admin = this.mapAdministradorFromForm(this.formulario);
-        admin = await this.auth.crearAdministrador(admin, this.formulario.get("imagen"), this.formulario.get('password'));
+        admin = await this.auth.crearAdministrador(admin, this.formulario.get("imagen")?.value, this.formulario.get('password')?.value);
         console.log(admin);
         this.toast.success("Administrador creado exitosamente!");
         this.dialogRef.close(admin);
