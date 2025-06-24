@@ -1,15 +1,20 @@
 import { EstadoTurno } from "../enums/estado-turno";
+import { Especialidad } from "./especialidad";
+import { Especialista } from "./especialista";
 import { HistoriaClinica } from "./historia-clinica";
 
 export interface Turno {
     id: string;
     pacienteId: string;
     especialistaId: string;
-    especialidad: string;
+    especialidadId: string;
     fecha: Date; 
     estado: EstadoTurno;
     comentarioPaciente?: string;
     comentarioEspecialista?: string;
     reseniaPaciente?: string;
     historiaClinica?: HistoriaClinica;
+
+    especialista?: Especialista;
+    especialidad?: Especialidad;
 }

@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Turno } from '../../../../models/turno';
 import { Paciente } from '../../../../models/paciente';
+import { EspecialidadPipe } from '../../../../pipes/especialidad.pipe';
 
 @Component({
   selector: 'app-turnos-especialista',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, EspecialidadPipe],
   templateUrl: './turnos-especialista.component.html',
   styleUrl: './turnos-especialista.component.scss'
 })
@@ -20,7 +21,7 @@ export class TurnosEspecialistaComponent {
   filtrarTurnos() {
     const filtroLower = this.filtro.toLowerCase();
     this.turnosFiltrados = this.turnos.filter(t =>
-      t.especialidad.toLowerCase().includes(filtroLower) ||
+      t.especialidad?.especialidad.toLowerCase().includes(filtroLower) ||
       this.obtenerNombrePaciente(t.pacienteId).toLowerCase().includes(filtroLower)
     );
   }

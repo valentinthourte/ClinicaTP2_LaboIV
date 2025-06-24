@@ -10,6 +10,7 @@ import { TipoUsuario } from '../../enums/tipo-usuario.enum';
 import { Administrador } from '../../models/administrador';
 import { Turno } from '../../models/turno';
 import { DiaHoraTurno } from '../../models/dia-hora-turno';
+import { EstadoTurno } from '../../enums/estado-turno';
 
 @Injectable({
   providedIn: 'root'
@@ -89,7 +90,8 @@ export class SupabaseService {
       especialistaId: especialista.id,
       especialidadId: especialidad.id,
       fecha: diaHora.Dia,
-      hora: diaHora.Hora
+      hora: diaHora.Hora,
+      estado: EstadoTurno.Pendiente
     });
 
     if (error)
@@ -303,13 +305,28 @@ async obtenerTodosEspecialistas(): Promise<Especialista[]> {
   }
   
   async obtenerTurnosDePaciente(id: string | undefined): Promise<Turno[]> {
-    const {data, error} = await this.supabase.from(TABLA_TURNOS).select('*')
-                                    .eq('pacienteId', id);
+    const { data, error } = await this.supabase
+      .from(TABLA_TURNOS)
+      .select(`
+        *,
+        especialista:especialistas (
+          id,
+          nombre,
+          apellido,
+          email,
+          urlImagen,
+          aprobado
+        ),
+        especialidad:especialidades (
+          id,
+          especialidad
+        )
+      `)
+      .eq('pacienteId', id);
+
     if (error)
       throw new Error(`Error al obtener turnos de paciente: ${error.message}`);
-  
-    return data as Turno[];                        
+
+    return data as Turno[];
   }
-
-
 }

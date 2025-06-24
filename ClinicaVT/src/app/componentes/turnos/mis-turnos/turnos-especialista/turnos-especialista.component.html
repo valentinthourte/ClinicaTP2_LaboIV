@@ -30,7 +30,7 @@
             <tr *ngFor="let turno of turnosFiltrados">
               <td>{{ turno.fecha | date:'short' }}</td>
               <td>{{ obtenerNombrePaciente(turno.pacienteId) }}</td>
-              <td>{{ turno.especialidad }}</td>
+              <td>{{ turno.especialidad! | especialidad }}</td>
               <td>
                 <span class="badge bg-secondary" *ngIf="turno.estado === 'pendiente'">Pendiente</span>
                 <span class="badge bg-success" *ngIf="turno.estado === 'aceptado'">Aceptado</span>

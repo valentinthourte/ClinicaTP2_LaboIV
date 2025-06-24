@@ -5,10 +5,12 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TurnosService } from '../../../../services/turnos.service';
 import { AuthService } from '../../../../services/auth/auth.service';
+import { EspecialidadPipe } from '../../../../pipes/especialidad.pipe';
+import { EspecialistaPipe } from '../../../../pipes/especialista.pipe';
 
 @Component({
   selector: 'app-turnos-paciente',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, EspecialidadPipe, EspecialistaPipe],
   templateUrl: './turnos-paciente.component.html',
   styleUrl: './turnos-paciente.component.scss'
 })
@@ -23,7 +25,7 @@ export class TurnosPacienteComponent implements OnInit {
   filtrarTurnos() {
     const filtroLower = this.filtro.toLowerCase();
     this.turnosFiltrados = this.turnos.filter(t =>
-      t.especialidad.toLowerCase().includes(filtroLower) ||
+      t.especialidad?.especialidad.toLowerCase().includes(filtroLower) ||
       this.obtenerNombreEspecialista(t.especialistaId).toLowerCase().includes(filtroLower)
     );
   }
@@ -35,9 +37,15 @@ export class TurnosPacienteComponent implements OnInit {
     console.log(this.turnos);
     
   }
-  
+
+  obtenerEspecialistas() {
+    let esp = this.turnos.filter(t => t.especialista !== null).map(t => t.especialista!);
+    return esp;
+  }
+
+
   obtenerNombreEspecialista(id: string): string {
-    const esp = this.listaDeEspecialistas.find(e => e.id === id);
+    const esp = this.obtenerEspecialistas().find(e => e.id === id);
     return esp ? `${esp.nombre} ${esp.apellido}` : 'Desconocido';
   }
 
