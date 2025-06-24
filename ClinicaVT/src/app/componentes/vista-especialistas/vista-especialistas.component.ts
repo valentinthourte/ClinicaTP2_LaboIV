@@ -9,17 +9,20 @@ import { EspecialidadPipe } from '../../pipes/especialidad.pipe';
 import { RegistroEspecialistasComponent } from '../registro/registro-especialistas/registro-especialistas.component';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmarAccionComponent } from '../confirmar-accion/confirmar-accion.component';
+import { Especialidad } from '../../models/especialidad';
+import { EspecialidadesService } from '../../services/especialidades.service';
+import { EspecialidadEspecialista } from '../../models/especialidad-especialista';
 
 @Component({
   selector: 'app-vista-especialistas',
   standalone: true,
-  imports: [CommonModule, AprobadoColorDirective, EspecialidadPipe],
+  imports: [CommonModule, AprobadoColorDirective],
   templateUrl: './vista-especialistas.component.html',
   styleUrl: './vista-especialistas.component.scss'
 })
 export class VistaEspecialistasComponent implements OnInit {
   especialistas: Especialista[] = [];
-  constructor(private usuariosService: UsuariosService, private spinner: SpinnerService, private toast: NgToastService, private dialog: MatDialog) {}
+  constructor(private usuariosService: UsuariosService, private spinner: SpinnerService, private toast: NgToastService, private dialog: MatDialog, private especialidadesService: EspecialidadesService) {}
   
   async ngOnInit() {
     try {
@@ -93,5 +96,9 @@ export class VistaEspecialistasComponent implements OnInit {
     });
 
     return dialogRef.afterClosed().toPromise(); // convierte el Observable en Promise
+  }
+
+  formatearEspecialidades(especialidades: EspecialidadEspecialista[]): string {
+    return this.especialidadesService.formatearEspecialidades(especialidades.map(e => e.especialidad));
   }
 }

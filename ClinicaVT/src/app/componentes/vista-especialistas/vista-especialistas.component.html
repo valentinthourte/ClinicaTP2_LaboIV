@@ -11,6 +11,7 @@
         <table class="table table-bordered table-hover mb-0">
           <thead class="table-light">
             <tr>
+              <th>Imagen</th>
               <th>Nombre</th>
               <th>Apellido</th>
               <th>Email</th>
@@ -22,13 +23,16 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let e of especialistas">
+            <tr *ngFor="let e of especialistas">              
+              <td>
+                <img [src]="e.urlImagen" alt="Imagen perfil" width="48" height="48" class="rounded-circle object-fit-cover">
+              </td>
               <td>{{ e.nombre }}</td>
               <td>{{ e.apellido }}</td>
               <td>{{ e.email }}</td>
               <td>{{ e.edad }}</td>
               <td>{{ e.dni }}</td>
-              <td>{{ (e.especialidad | especialidad) ?? '-' }}</td>
+              <td>{{ formatearEspecialidades(e.especialidades) }}</td>
               <td [appAprobadoColor]="e.aprobado">
                 {{ e.aprobado ? 'Sí' : 'No' }}
               </td>

@@ -1,23 +1,12 @@
 <div class="d-flex">
-  <!-- Sidebar -->
-  <div class="p-3 bg-light border-end" style="width: 240px;">
-    <h5 class="mb-4">Accesos</h5>
-    <button class="btn btn-outline-primary w-100 mb-2 d-flex align-items-center">
-      <i class="bi bi-people-fill me-2"></i> Usuarios
-    </button>
-    <button class="btn btn-outline-success w-100 mb-2 d-flex align-items-center">
-      <i class="bi bi-calendar-plus me-2"></i> Solicitar turno
-    </button>
-    <button class="btn btn-outline-info w-100 d-flex align-items-center">
-      <i class="bi bi-calendar-range me-2"></i> Turnos
-    </button>
-  </div>
+  <app-sidebar-accesos></app-sidebar-accesos>
 
-  <!-- Perfil -->
   <div class="flex-grow-1 p-4">
     <div class="card shadow-sm">
       <div class="card-body text-center">
-        <img [src]="usuario.imagen" alt="Imagen de perfil" class="rounded-circle mb-3" width="100" height="100" />
+        <div class="d-flex align-items-center justify-content-center">
+          <img [src]="usuario.imagen" alt="Imagen de perfil" class="rounded-circle mb-3" width="100" height="100" />
+        </div>
         <h5 class="card-title">{{ usuario.nombre }} {{ usuario.apellido }}</h5>
         <p class="card-text text-muted">{{ usuario.email }}</p>
         <p>Edad: {{ usuario.edad }}</p>

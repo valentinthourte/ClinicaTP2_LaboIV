@@ -42,13 +42,30 @@
 
             
             <div class="mb-3">
-              <label for="especialidad">Especialidad</label>
-              <select id="especialidad" class="form-select" formControlName="especialidadId"
-                [class.is-invalid]="formulario.get('especialidadId')?.invalid && formulario.get('especialidadId')?.touched">
-                <option value="">Seleccione una especialidad</option>
-                <option *ngFor="let esp of especialidades" [value]="esp.id">{{ esp | especialidad }}</option>
-              </select>
-              <div class="invalid-feedback">Campo obligatorio</div>
+              <label for="especialidad">Agregar Especialidad</label>
+              <div class="d-flex">
+                <select id="especialidades" class="form-select me-2" [(ngModel)]="especialidadSeleccionada" [ngModelOptions]="{standalone: true}">
+                  <option value="">Seleccione una especialidad</option>
+                  <option *ngFor="let esp of especialidades" [value]="esp.id">{{ esp | especialidad }}</option>
+                </select>
+                <button type="button" class="btn btn-outline-primary" (click)="agregarEspecialidadSeleccionada()">
+                  Agregar
+                </button>
+              </div>
+            </div>
+
+            <!-- Lista visual de especialidades seleccionadas -->
+            <div class="mb-3">
+              <label>Especialidades seleccionadas:</label>
+              <div *ngIf="especialidadesSeleccionadas.length > 0; else sinEspecialidades">
+                <span *ngFor="let espId of especialidadesSeleccionadas" class="badge bg-primary me-2 mb-2">
+                  {{ obtenerNombreEspecialidad(espId) }}
+                  <button type="button" class="btn-close btn-close-white ms-1" aria-label="Eliminar" (click)="eliminarEspecialidad(espId)"></button>
+                </span>
+              </div>
+              <ng-template #sinEspecialidades>
+                <p class="text-muted">No se han seleccionado especialidades aún.</p>
+              </ng-template>
             </div>
 
             

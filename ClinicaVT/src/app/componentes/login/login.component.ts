@@ -50,16 +50,13 @@ autocompletarUsuario(usuario: any) {
   this.mostrarSidebar = false;
 }
 
-async onLogin() {
-  if (this.formLogin.valid) {
-      this.spinner.show();
-      const { email, password } = this.formLogin.value;
-      let { data, error } = await this.auth.login(email, password);
-      this.spinner.hide();
-      if (error) {
-        this.toast.danger(`Error al iniciar sesion: ${error.message}`);
-      }
-      else {
+  async onLogin() {
+    if (this.formLogin.valid) {
+      try {
+        this.spinner.show();
+        const { email, password } = this.formLogin.value;
+        let data = await this.auth.login(email, password);
+        this.spinner.hide();
         if (data.user?.user_metadata['displayName'] == TipoUsuario.Especialista)
         {
           let especialista: Especialista | undefined = await this.auth.obtenerEspecialista(data.user.email);
@@ -74,6 +71,12 @@ async onLogin() {
         else 
             this.loginExitoso(data.user?.user_metadata)
           
+      }
+      catch(err: any) {
+          this.toast.danger(`Error al iniciar sesion: ${err.message}`);
+      }
+      finally{
+        this.spinner.hide();
       }
     } else {
       this.formLogin.markAllAsTouched();

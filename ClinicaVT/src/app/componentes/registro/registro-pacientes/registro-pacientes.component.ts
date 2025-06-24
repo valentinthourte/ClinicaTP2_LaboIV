@@ -52,30 +52,27 @@ export class RegistroPacientesComponent {
         console.log('Datos del paciente:', this.formulario.value);
         this.spinner.show();
         try {
-          let {data, error} = await this.auth.registrarse(this.formulario.get('email')!.value, this.formulario.get('password')!.value, TipoUsuario.Paciente);
-          if (error) {
-            this.errorMsg = error.message;
-          }
-          else {
-            try {
-              let paciente = this.mapFormToPaciente(this.formulario);
-              paciente.id = data.user?.id;
-              await this.auth.guardarPaciente(paciente, this.imagenes);
-              this.toast.success("Paciente registrado!");
-              if (data.session) {
-                this.auth.guardarUsuarioLogueado(paciente);
-                this.router.navigate(["/home"]);
-              }
-              else {
-                this.toast.info("Debe confirmar el correo electrónico para ingresar");
-                this.router.navigate(["/login"]);
-              }
+          let data = await this.auth.registrarse(this.formulario.get('email')!.value, this.formulario.get('password')!.value, TipoUsuario.Paciente);
+
+          try {
+            let paciente = this.mapFormToPaciente(this.formulario);
+            paciente.id = data.user?.id;
+            await this.auth.guardarPaciente(paciente, this.imagenes);
+            this.toast.success("Paciente registrado!");
+            if (data.session) {
+              this.auth.guardarUsuarioLogueado(paciente);
+              this.router.navigate(["/home"]);
             }
-            catch(err) {
-              this.spinner.hide();
-              this.toast.danger((err as Error).message, "Error al registrar paciente.", 5000);
+            else {
+              this.toast.info("Debe confirmar el correo electrónico para ingresar");
+              this.router.navigate(["/login"]);
             }
           }
+          catch(err) {
+            this.spinner.hide();
+            this.toast.danger((err as Error).message, "Error al registrar paciente.", 5000);
+          }
+          
           this.spinner.hide();
         }
         catch(err) {

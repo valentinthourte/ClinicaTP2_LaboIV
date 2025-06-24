@@ -6,6 +6,7 @@ import { LoginComponent } from './componentes/login/login.component';
 import { HomeComponent } from './componentes/home/home.component';
 import { VistaUsuariosComponent } from './componentes/vista-usuarios/vista-usuarios.component';
 import { MisTurnosComponent } from './componentes/turnos/mis-turnos/mis-turnos.component';
+import { SolicitarTurnoComponent } from './componentes/turnos/solicitar-turno/solicitar-turno.component';
 
 export const routes: Routes = [
     {path: '', pathMatch: "full", component: LandingPageComponent},
@@ -13,6 +14,7 @@ export const routes: Routes = [
     {path: 'login', component: LoginComponent},
     {path: 'home', component: HomeComponent},
     {path: 'usuarios', component: VistaUsuariosComponent},
-    {path: 'mis-turnos', component: MisTurnosComponent},
+    {path: 'misTurnos', component: MisTurnosComponent},
+    {path: 'solicitarTurno', component: SolicitarTurnoComponent},
     {path: '**', component: NotFoundComponent}
 ];

@@ -17,7 +17,7 @@ import { TipoUsuario } from './enums/tipo-usuario.enum';
 export class AppComponent {
   title = 'ClinicaVT';
   TipoUsuario = TipoUsuario;
-  constructor(private auth: AuthService, private router: Router) { }
+  constructor(protected auth: AuthService, private router: Router) { }
   async logout() {
     await this.auth.logout();
     this.router.navigate([''])

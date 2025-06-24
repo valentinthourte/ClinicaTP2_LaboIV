@@ -1,0 +1,15 @@
+<div *ngIf="visible" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+  <div class="bg-white rounded-lg shadow-lg p-6 w-80">
+    <h3 class="text-lg font-semibold mb-4 text-center">Seleccioná un horario</h3>
+
+    <select [(ngModel)]="horarioActual" class="form-select w-full mb-4">
+      <option value="" disabled selected>Seleccione un horario</option>
+      <option *ngFor="let h of horarios" [value]="h">{{ h }}</option>
+    </select>
+
+    <div class="flex justify-end gap-3">
+      <button (click)="cancelar()" class="btn btn-secondary">Cancelar</button>
+      <button (click)="seleccionarHorario()" class="btn btn-primary" [disabled]="!horarioActual">Seleccionar</button>
+    </div>
+  </div>
+</div>

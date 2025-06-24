@@ -4,10 +4,11 @@ import { Paciente } from '../../../models/paciente';
 import { AuthService } from '../../../services/auth/auth.service';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { SidebarAccesosComponent } from '../../sidebar-accesos/sidebar-accesos.component';
 
 @Component({
   selector: 'app-perfil-paciente',
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, SidebarAccesosComponent],
   templateUrl: './perfil-paciente.component.html',
 })
 export class PerfilPacienteComponent implements OnInit {

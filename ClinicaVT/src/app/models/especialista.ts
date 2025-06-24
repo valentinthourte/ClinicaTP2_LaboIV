@@ -1,4 +1,4 @@
-import { Especialidad } from "./especialidad";
+import { EspecialidadEspecialista } from "./especialidad-especialista";
 
 export interface Especialista {
     id: string | undefined;
@@ -6,7 +6,7 @@ export interface Especialista {
     apellido: string;
     edad: number;
     dni: string;
-    especialidad: Especialidad;
+    especialidades: EspecialidadEspecialista[];
     email: string;
     urlImagen: string;
     created_at: Date | undefined;

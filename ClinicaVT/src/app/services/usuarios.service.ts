@@ -34,6 +34,9 @@ export class UsuariosService {
   async rechazarEspecialista(especialista: Especialista) {
     return await this.supabaseService.rechazarEspecialista(especialista);
   }
+  async obtenerEspecialistasPorEspecialidad(id: string): Promise<Especialista[]> {
+    return await this.supabaseService.obtenerEspecialistasPorEspecialidadId(id);
+  }
   //#endregion
   //#region Administradores
   async obtenerAdministradores(): Promise<Administrador[]> {
@@ -43,13 +46,19 @@ export class UsuariosService {
   async crearAdministrador(admin: any, password: string) {
     return await SupabaseService.crearAdministrador(admin, password);
   }
-
+  
   async obtenerAdministradorPorId(id: string) {
     return await this.supabaseService.obtenerAdministradorPorId(id);
   }
   //#endregion
   
   
+  async eliminarEspecialidadAEsp(id: string | undefined, id1: string) {
+    throw new Error('Method not implemented.');
+  }
+  async agregarEspecialidadAEsp(id: string | undefined, especialidadId: any, duracion: any) {
+    throw new Error('Method not implemented.');
+  }
   
   
 }

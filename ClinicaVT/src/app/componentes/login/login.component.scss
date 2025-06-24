@@ -12,3 +12,10 @@
 .hover-shadow:hover {
   box-shadow: 0 4px 10px rgba(0,0,0,0.2);
 }
+
+.perfil-img {
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+  border-radius: 50%; // redundante si usás rounded-circle, pero asegura
+}

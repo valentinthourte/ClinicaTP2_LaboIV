@@ -18,4 +18,10 @@ export class EspecialidadesService {
   async obtenerEspecialidades(): Promise<Especialidad[]> {
     return await this.supabaseService.obtenerTodasEspecialidades(); 
   }
+
+  formatearEspecialidades(especialidades: Especialidad[]): string {
+    if (especialidades === null || especialidades.length === 0)
+      return "Sin especialidades";
+    return especialidades.map(e => e.especialidad).join(', ');
+  }
 }

@@ -4,6 +4,8 @@ import { Paciente } from '../../models/paciente';
 import { AbstractControl, FormArray } from '@angular/forms';
 import { Especialista } from '../../models/especialista';
 import { TABLA_ESPECIALISTAS, TABLA_PACIENTES } from '../../constantes';
+import { Especialidad } from '../../models/especialidad';
+import { User } from '@supabase/supabase-js';
 
 const CLAVE_USUARIO_SESION = "usuario";
 @Injectable({
@@ -11,13 +13,16 @@ const CLAVE_USUARIO_SESION = "usuario";
 })
 export class AuthService {
   
-  
+  usuarioLogueado?: User | null = undefined;
   
   constructor(private supabaseService: SupabaseService) { }
   
   async registrarse(email: any, password: any, rol: string) {
     let {data, error} = await this.supabaseService.registrarse(email, password, rol);
-    return {data, error};
+    if (error)
+      throw new Error(`Error al registrarse: ${error.message}`);
+    this.usuarioLogueado = data.user;
+    return data;
   }
   
   async getUsuarioLogueadoSupabase() {
@@ -41,6 +46,7 @@ export class AuthService {
   
   async logout() {
     await this.supabaseService.logout();
+    this.usuarioLogueado = undefined;
     sessionStorage.removeItem(CLAVE_USUARIO_SESION);
   }
   
@@ -49,7 +55,12 @@ export class AuthService {
   }
   
   async login(email: any, password: any) {
-    return await this.supabaseService.login(email, password);
+    const {data, error} = await this.supabaseService.login(email, password);
+    if (error)
+      throw new Error(`Error en login: ${error.message}`)
+    this.usuarioLogueado = data.user;
+
+    return data;
   }
   
   async guardarPaciente(paciente: Paciente, imagenes: FormArray<any>) {
@@ -61,14 +72,23 @@ export class AuthService {
     await this.supabaseService.insertar(paciente, TABLA_PACIENTES);
   }
   
-  async registrarEspecialista(especialista: Especialista, imagen: any) {
-    
+  
+  async registrarEspecialista(especialista: Especialista, imagen: any, especialidadesIds: string[]) {
     const archivo: File = imagen as File;
-    especialista.urlImagen = this.getUrlPublica(await this.supabaseService.guardarImagen(especialista.dni, archivo));
+    especialista.urlImagen = this.getUrlPublica(
+      await this.supabaseService.guardarImagen(especialista.dni, archivo)
+    );
+  
+    const especialistaInsertado = await this.supabaseService.insertar(especialista, TABLA_ESPECIALISTAS);
+  
     
-    await this.supabaseService.insertar(especialista, TABLA_ESPECIALISTAS);
+    const relaciones = especialidadesIds.map((especialidadId: string) => ({
+      especialistaId: especialistaInsertado.id,
+      especialidadId: especialidadId
+    }));
+  
+    await this.supabaseService.insertarMultiples(relaciones, 'especialistas_especialidades');
   }
-
   async crearAdministrador(admin: any, imagen: any, password: any) {
     const archivo: File = imagen as File;
     admin.imagen = this.getUrlPublica(await this.supabaseService.guardarImagen(admin.dni, archivo));
