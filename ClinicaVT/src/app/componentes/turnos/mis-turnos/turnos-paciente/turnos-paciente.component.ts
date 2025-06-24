@@ -31,6 +31,9 @@ export class TurnosPacienteComponent implements OnInit {
   async ngOnInit() {
     const usuario = await this.auth.getUsuarioLogueadoSupabase();
     this.turnos = await this.turnoService.obtenerTurnosPacientePorId(usuario.data.user?.id);
+    this.turnosFiltrados = this.turnos;
+    console.log(this.turnos);
+    
   }
   
   obtenerNombreEspecialista(id: string): string {

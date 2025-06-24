@@ -23,7 +23,7 @@ export class TurnosService {
 
   async obtenerHorariosEspecialistaParaDia(especialista: Especialista, dia: Date): Promise<string[]> {
     const fechaStr = dia.toISOString().split('T')[0]; 
-    const horariosReservados = await this.supabaseService.obtenerHorariosEspecialistaParaDia(especialista, dia);
+    const horariosReservados = await this.supabaseService.obtenerHorariosEspecialistaParaDia(especialista, fechaStr);
 
     const horariosDisponibles: string[] = [];
     const inicio = 9 * 60; // minutos desde 00:00

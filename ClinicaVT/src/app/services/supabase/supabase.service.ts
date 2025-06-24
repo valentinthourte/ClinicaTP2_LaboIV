@@ -82,19 +82,21 @@ export class SupabaseService {
     }
     return data as Especialidad[];
   }
-
+ 
   async crearTurno(paciente: Paciente, especialidad: Especialidad, especialista: Especialista, diaHora: DiaHoraTurno) {
-    this.supabase.from('turnos').insert({
-      idPaciente: paciente.id,
+    const {data, error} =  await this.supabase.from(TABLA_TURNOS).insert({
+      pacienteId: paciente.id,
       especialistaId: especialista.id,
-      idEspecialidad: especialidad.id,
+      especialidadId: especialidad.id,
       fecha: diaHora.Dia,
-      hora: diaHora.Hora,
-      fechaHora: new Date(`${diaHora.Dia}T${diaHora.Hora}:00`)
+      hora: diaHora.Hora
     });
+
+    if (error)
+      throw new Error(`Error al crear turno: ${error.message}`);
   }
 
-  async obtenerHorariosEspecialistaParaDia(especialista: Especialista, dia: Date): Promise<string[]> {
+  async obtenerHorariosEspecialistaParaDia(especialista: Especialista, dia: string): Promise<string[]> {
     const { data, error } = await this.supabase
       .from(TABLA_TURNOS)
       .select('hora')

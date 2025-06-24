@@ -10,6 +10,7 @@ import { SeleccionDiaComponent } from './seleccion-dia/seleccion-dia.component';
 import { DiaHoraTurno } from '../../../models/dia-hora-turno';
 import { TurnosService } from '../../../services/turnos.service';
 import { UsuariosService } from '../../../services/usuarios.service';
+import { NgToastService } from 'ng-angular-popup';
 @Component({
   selector: 'app-solicitar-turno',
   imports: [SeleccionEspecialidadComponent, SeleccionProfesionalComponent, SeleccionDiaComponent, SidebarAccesosComponent],
@@ -22,7 +23,7 @@ export class SolicitarTurnoComponent {
   especialidadSeleccionada?: Especialidad;
   profesionalSeleccionado?: Especialista;
 
-  constructor(private turnosService: TurnosService, private usuariosService: UsuariosService) {}
+  constructor(private turnosService: TurnosService, private usuariosService: UsuariosService, private toast: NgToastService) {}
 
   avanzarEtapa() {
     if(this.etapa === EtapaSolicitudTurno.Especialidad) this.etapa = EtapaSolicitudTurno.Profesional;
@@ -47,7 +48,14 @@ export class SolicitarTurnoComponent {
   }
 
   async onDiaSeleccionado(diaHora: DiaHoraTurno) {
-    let paciente = await this.usuariosService.obtenerPacienteLogueado();
-    await this.turnosService.crearTurno(paciente, this.especialidadSeleccionada!, this.profesionalSeleccionado!, diaHora);
+    try {
+      let paciente = await this.usuariosService.obtenerPacienteLogueado();
+      await this.turnosService.crearTurno(paciente, this.especialidadSeleccionada!, this.profesionalSeleccionado!, diaHora);
+      this.toast.success("Turno creado!")
+      this.etapa = EtapaSolicitudTurno.Especialidad;
+    }
+    catch(err: any) {
+      this.toast.danger(`Error al crear turno: ${err.message}`);
+    }
   }
 }

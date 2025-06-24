@@ -13,7 +13,6 @@ import { TurnosService } from '../../../../services/turnos.service';
 })
 export class SeleccionHorarioModalComponent implements OnInit {
   @Input() horarios: string[] = [];
-  @Output() cerrar = new EventEmitter<void>();
   @Output() horarioSeleccionado = new EventEmitter<string>();
   horarioActual?: string;
 
@@ -27,13 +26,11 @@ export class SeleccionHorarioModalComponent implements OnInit {
   seleccionarHorario() {
     if (this.horarioActual) {
       this.horarioSeleccionado.emit(this.horarioActual);
-      this.cerrar.emit();
+      this.dialogRef.close(this.horarioActual);
     }
   }
 
-
-
   cancelar() {
-    this.cerrar.emit();
+      this.dialogRef.close(this.horarioActual);
   }
 }
