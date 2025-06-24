@@ -32,11 +32,7 @@
               <td>{{ obtenerNombrePaciente(turno.pacienteId) }}</td>
               <td>{{ turno.especialidad! | especialidad }}</td>
               <td>
-                <span class="badge bg-secondary" *ngIf="turno.estado === 'pendiente'">Pendiente</span>
-                <span class="badge bg-success" *ngIf="turno.estado === 'aceptado'">Aceptado</span>
-                <span class="badge bg-danger" *ngIf="turno.estado === 'cancelado'">Cancelado</span>
-                <span class="badge bg-warning text-dark" *ngIf="turno.estado === 'rechazado'">Rechazado</span>
-                <span class="badge bg-primary" *ngIf="turno.estado === 'realizado'">Realizado</span>
+                <span class="badge" [appEstadoTurnoColor]="turno.estado">{{ turno.estado | titlecase }}</span>
               </td>
               <td>
                 <div class="d-flex flex-wrap gap-2">

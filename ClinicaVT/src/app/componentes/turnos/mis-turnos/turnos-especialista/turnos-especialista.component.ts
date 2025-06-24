@@ -6,11 +6,12 @@ import { Paciente } from '../../../../models/paciente';
 import { EspecialidadPipe } from '../../../../pipes/especialidad.pipe';
 import { TurnosService } from '../../../../services/turnos.service';
 import { AuthService } from '../../../../services/auth/auth.service';
+import { EstadoTurnoColorDirective } from '../../../../directivas/estado-turno-color.directive';
 
 @Component({
   selector: 'app-turnos-especialista',
   standalone: true,
-  imports: [CommonModule, FormsModule, EspecialidadPipe],
+  imports: [CommonModule, FormsModule, EspecialidadPipe, EstadoTurnoColorDirective],
   templateUrl: './turnos-especialista.component.html',
   styleUrl: './turnos-especialista.component.scss'
 })

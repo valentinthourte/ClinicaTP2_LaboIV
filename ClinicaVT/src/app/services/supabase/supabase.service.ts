@@ -72,6 +72,21 @@ export class SupabaseService {
     await this.supabase.auth.signOut();
   }
 
+  async cancelarTurno(turno: Turno): Promise<Turno> {
+    return await this.cambiarEstadoTurno(turno, EstadoTurno.Cancelado);
+  }
+
+  async cambiarEstadoTurno(turno: Turno, estadoTurno: EstadoTurno): Promise<Turno> {
+    debugger
+    const {data, error} = await this.supabase.from(TABLA_TURNOS)
+                            .update({estado: estadoTurno})
+                            .eq('id', turno.id).select();
+    if (error)
+      throw new Error(`Error al cambiar estado de turno: ${error.message}`);
+    return data![0] as Turno;                            
+  }
+
+
   async login(email: string, password: string) {
     return await this.supabase.auth.signInWithPassword({email: email, password: password});
   }
@@ -309,7 +324,7 @@ async obtenerTodosEspecialistas(): Promise<Especialista[]> {
     const { data, error } = await this.supabase
       .from(TABLA_TURNOS)
       .select(CONSULTA_TURNOS)
-      .eq('pacienteId', id);
+      .eq('pacienteId', id).order('created_at', {ascending: false});
 
     if (error)
       throw new Error(`Error al obtener turnos de paciente: ${error.message}`);

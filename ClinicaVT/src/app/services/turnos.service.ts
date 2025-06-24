@@ -10,6 +10,7 @@ import { Paciente } from '../models/paciente';
   providedIn: 'root'
 })
 export class TurnosService {
+
  
   
   constructor(private supabaseService: SupabaseService) { }
@@ -41,6 +42,9 @@ export class TurnosService {
     }
 
     return horariosDisponibles;
+  }
+  async cancelarTurno(turno: Turno): Promise<Turno> {
+    return await this.supabaseService.cancelarTurno(turno);
   }
 
    async obtenerTurnosPorEspecialistaId(id: string):Promise<Turno[]> {

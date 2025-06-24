@@ -95,13 +95,15 @@ export class SolicitarTurnoComponent {
 
   async onDiaSeleccionado(diaHora: DiaHoraTurno) {
     try {
-      let paciente = this.pacienteSeleccionado === null ? await this.usuariosService.obtenerPacienteLogueado() : this.pacienteSeleccionado!;
+      debugger
+      let paciente = this.pacienteSeleccionado === null || this.pacienteSeleccionado === undefined ? await this.usuariosService.obtenerPacienteLogueado() : this.pacienteSeleccionado!;
       await this.turnosService.crearTurno(paciente, this.especialidadSeleccionada!, this.profesionalSeleccionado!, diaHora);
       this.toast.success("Turno creado!")
       this.etapa = EtapaSolicitudTurno.Especialidad;
     }
     catch(err: any) {
       this.toast.danger(`Error al crear turno: ${err.message}`);
+      console.log(err);
     }
   }
 }
