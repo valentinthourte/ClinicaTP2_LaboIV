@@ -2,6 +2,9 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Especialista } from '../../../../models/especialista';
 import { CommonModule } from '@angular/common';
+import { MatDialog } from '@angular/material/dialog';
+import { SeleccionHorarioModalComponent } from '../seleccion-horario-modal/seleccion-horario-modal.component';
+import { DiaHoraTurno } from '../../../../models/dia-hora-turno';
 
 @Component({
   selector: 'app-seleccion-dia',
@@ -10,11 +13,11 @@ import { CommonModule } from '@angular/common';
 })
 export class SeleccionDiaComponent implements OnInit {
   @Input() profesional!: Especialista;
-  @Output() diaSeleccionado = new EventEmitter<Date>();
+  @Output() diaSeleccionado = new EventEmitter<DiaHoraTurno>();
 
   diasDisponibles: Date[] = [];
   seleccionado?: Date;
-
+  constructor(private dialog: MatDialog) {}
   ngOnInit() {
     this.generarDiasDisponibles();
   }
@@ -37,7 +40,17 @@ export class SeleccionDiaComponent implements OnInit {
 
   seleccionarDia(dia: Date) {
     this.seleccionado = dia;
-    this.diaSeleccionado.emit(dia);
+    let especialista = this.profesional;
+    
+    const dialogRef = this.dialog.open(SeleccionHorarioModalComponent, {
+      data: {especialista, dia}
+    })
+
+    dialogRef.afterClosed().subscribe((horario: string | undefined) => {
+        if (horario) {
+          this.diaSeleccionado.emit({Dia: dia, Hora: horario});
+        }
+    });
   }
 
   esSeleccionado(dia: Date): boolean {

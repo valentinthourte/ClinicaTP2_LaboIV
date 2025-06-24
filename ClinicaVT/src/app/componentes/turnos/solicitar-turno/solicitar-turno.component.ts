@@ -7,6 +7,9 @@ import { SeleccionProfesionalComponent } from './seleccion-profesional/seleccion
 import { animate, style, transition, trigger } from '@angular/animations';
 import { Especialista } from '../../../models/especialista';
 import { SeleccionDiaComponent } from './seleccion-dia/seleccion-dia.component';
+import { DiaHoraTurno } from '../../../models/dia-hora-turno';
+import { TurnosService } from '../../../services/turnos.service';
+import { UsuariosService } from '../../../services/usuarios.service';
 @Component({
   selector: 'app-solicitar-turno',
   imports: [SeleccionEspecialidadComponent, SeleccionProfesionalComponent, SeleccionDiaComponent, SidebarAccesosComponent],
@@ -18,7 +21,8 @@ export class SolicitarTurnoComponent {
   EtapaSolicitudTurno = EtapaSolicitudTurno;
   especialidadSeleccionada?: Especialidad;
   profesionalSeleccionado?: Especialista;
-  selectedDia?: Date;
+
+  constructor(private turnosService: TurnosService, private usuariosService: UsuariosService) {}
 
   avanzarEtapa() {
     if(this.etapa === EtapaSolicitudTurno.Especialidad) this.etapa = EtapaSolicitudTurno.Profesional;
@@ -37,15 +41,13 @@ export class SolicitarTurnoComponent {
     this.avanzarEtapa();
   }
 
-
   onProfesionalSeleccionado(prof: Especialista) {
     this.profesionalSeleccionado = prof;
     this.avanzarEtapa();
   }
 
-
-  onDiaSeleccionado(dia: Date) {
-    this.selectedDia = dia;
-    this.avanzarEtapa(); 
+  async onDiaSeleccionado(diaHora: DiaHoraTurno) {
+    let paciente = await this.usuariosService.obtenerPacienteLogueado();
+    await this.turnosService.crearTurno(paciente, this.especialidadSeleccionada!, this.profesionalSeleccionado!, diaHora);
   }
 }

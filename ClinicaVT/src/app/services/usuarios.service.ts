@@ -19,6 +19,14 @@ export class UsuariosService {
   async obtenerPacientePorId(id: string): Promise<Paciente | undefined> {
     return await this.supabaseService.obtenerPacientePorId(id);
   }
+
+  async obtenerPacienteLogueado(): Promise<Paciente> {
+    const { data, error } = await this.supabaseService.obtenerUsuarioLogueado();
+    if (error)
+      throw new Error(`Error al obtener paciente logueado. ${error.message}`);
+    return await this.supabaseService.obtenerPacientePorId(data.user.id);
+  }
+
   //#endregion
   //#region Especialistas
   async obtenerEspecialistas(): Promise<Especialista[]> {

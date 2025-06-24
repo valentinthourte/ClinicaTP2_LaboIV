@@ -9,11 +9,13 @@ import { Paciente } from '../../models/paciente';
 import { TipoUsuario } from '../../enums/tipo-usuario.enum';
 import { Administrador } from '../../models/administrador';
 import { Turno } from '../../models/turno';
+import { DiaHoraTurno } from '../../models/dia-hora-turno';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SupabaseService {
+
   private supabase = createClient(environment.apiUrl, environment.publicAnonKey);
   constructor(private toast: NgToastService) { }
   
@@ -52,34 +54,60 @@ export class SupabaseService {
     return data![0]; 
 }
 
-async insertarMultiples(objetos: any[], tabla: string) {
-  const { error } = await this.supabase.from(tabla).insert(objetos);
-  if (error) {
-    console.error(error);
-    throw new Error(error.message);
+  async insertarMultiples(objetos: any[], tabla: string) {
+    const { error } = await this.supabase.from(tabla).insert(objetos);
+    if (error) {
+      console.error(error);
+      throw new Error(error.message);
+    }
   }
-}
 
-obtenerUsuarioLogueado() {
-  return this.supabase.auth.getUser();
-}
-
-async logout() {
-  await this.supabase.auth.signOut();
-}
-
-async login(email: string, password: string) {
-  return await this.supabase.auth.signInWithPassword({email: email, password: password});
-}
-
-async obtenerTodasEspecialidades(): Promise<Especialidad[]> {
-  const {data, error} = await this.supabase.from(TABLA_ESPECIALIDADES).select("*");
-  if (error) {
-    console.error('Error al obtener especialidades:', error.message);
-    this.toast.danger(`Error al obtener especialidades: ${error.message}`);
+  obtenerUsuarioLogueado() {
+    return this.supabase.auth.getUser();
   }
-  return data as Especialidad[];
-}
+
+  async logout() {
+    await this.supabase.auth.signOut();
+  }
+
+  async login(email: string, password: string) {
+    return await this.supabase.auth.signInWithPassword({email: email, password: password});
+  }
+
+  async obtenerTodasEspecialidades(): Promise<Especialidad[]> {
+    const {data, error} = await this.supabase.from(TABLA_ESPECIALIDADES).select("*");
+    if (error) {
+      console.error('Error al obtener especialidades:', error.message);
+      this.toast.danger(`Error al obtener especialidades: ${error.message}`);
+    }
+    return data as Especialidad[];
+  }
+
+  async crearTurno(paciente: Paciente, especialidad: Especialidad, especialista: Especialista, diaHora: DiaHoraTurno) {
+    this.supabase.from('turnos').insert({
+      idPaciente: paciente.id,
+      especialistaId: especialista.id,
+      idEspecialidad: especialidad.id,
+      fecha: diaHora.Dia,
+      hora: diaHora.Hora,
+      fechaHora: new Date(`${diaHora.Dia}T${diaHora.Hora}:00`)
+    });
+  }
+
+  async obtenerHorariosEspecialistaParaDia(especialista: Especialista, dia: Date): Promise<string[]> {
+    const { data, error } = await this.supabase
+      .from(TABLA_TURNOS)
+      .select('hora')
+      .eq('especialistaId', especialista.id)
+      .eq('fecha', dia);
+
+    if (error) {
+      console.error('Error al obtener horarios reservados:', error.message);
+      throw new Error(error.message);
+    }
+
+    return data.map(t => t.hora);
+  }
 
 async obtenerTodosEspecialistas(): Promise<Especialista[]> {
   const { data, error } = await this.supabase
@@ -114,47 +142,47 @@ async obtenerTodosEspecialistas(): Promise<Especialista[]> {
         }));
       }
       
-      async obtenerEspecialistasPorEspecialidadId(id: string): Promise<Especialista[]> {
-         const { data, error } = await this.supabase
-          .from('especialistas_especialidades')
-          .select(`
-            especialista:especialistas (
-              id,
-              nombre,
-              apellido,
-              urlImagen
-            )
-          `)
-          .eq('especialidadId', id);
-
-        if (error) throw new Error('Error al obtener especialistas: ' + error.message);
-
-        return data.map((e: any) => e.especialista);
-      }
-      
-      async obtenerEspecialistaPorId(id: string) {
-        const { data, error } = await this.supabase
-      .from(TABLA_ESPECIALISTAS)
+  async obtenerEspecialistasPorEspecialidadId(id: string): Promise<Especialista[]> {
+      const { data, error } = await this.supabase
+      .from('especialistas_especialidades')
       .select(`
-        id,
-        nombre,
-        apellido,
-        edad,
-        dni,
-        email,
-        urlImagen,
-        created_at,
-        aprobado,
-        especialidades: especialistas_especialidades (
-          especialidadId,
-          duracion,
-          especialidad: especialidades (
-            id,
-            especialidad
-          )
+        especialista:especialistas (
+          id,
+          nombre,
+          apellido,
+          urlImagen
         )
-    `).eq('id', id)
-    .single();
+      `)
+      .eq('especialidadId', id);
+
+    if (error) throw new Error('Error al obtener especialistas: ' + error.message);
+
+    return data.map((e: any) => e.especialista);
+  }
+      
+    async obtenerEspecialistaPorId(id: string) {
+      const { data, error } = await this.supabase
+    .from(TABLA_ESPECIALISTAS)
+    .select(`
+      id,
+      nombre,
+      apellido,
+      edad,
+      dni,
+      email,
+      urlImagen,
+      created_at,
+      aprobado,
+      especialidades: especialistas_especialidades (
+        especialidadId,
+        duracion,
+        especialidad: especialidades (
+          id,
+          especialidad
+        )
+      )
+  `).eq('id', id)
+  .single();
 
     if (error)
       throw new Error(`Error al obtener especialista por id: ${error.message}`);
