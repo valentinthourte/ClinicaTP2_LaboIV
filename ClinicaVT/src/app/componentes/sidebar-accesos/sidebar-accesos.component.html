@@ -1,39 +1,36 @@
 <div class="d-flex vh-100 bg-light border-end flex-column p-3" style="width: 240px;">
-  <!-- Admin -->
   <div *appMostrarSiRol="TipoUsuario.Administrador" class="mb-4">
     <h5 class="mb-3">Accesos</h5>
-    <button class="btn btn-outline-primary w-100 mb-2 d-flex align-items-center">
+    <button class="btn btn-outline-primary w-100 mb-2 d-flex align-items-center" routerLink="/usuarios">
       <i class="bi bi-people-fill me-2"></i> Usuarios
     </button>
-    <button class="btn btn-outline-success w-100 mb-2 d-flex align-items-center">
+    <button class="btn btn-outline-success w-100 mb-2 d-flex align-items-center"  routerLink="/solicitarTurno">
       <i class="bi bi-calendar-plus me-2"></i> Solicitar turno
     </button>
-    <button class="btn btn-outline-info w-100 d-flex align-items-center">
+    <button class="btn btn-outline-info w-100 d-flex align-items-center"  routerLink="/turnos">
       <i class="bi bi-calendar-range me-2"></i> Turnos
     </button>
   </div>
 
-  <!-- Especialista -->
   <div *appMostrarSiRol="TipoUsuario.Especialista" class="mb-4">
     <h5 class="mb-3 text-primary fw-bold border-bottom pb-2">Accesos</h5>
-    <button routerLink="/misTurnos" class="btn btn-outline-primary w-100 mb-3 d-flex align-items-center">
+    <button routerLink="/misTurnos" class="btn btn-outline-primary w-100 mb-3 d-flex align-items-center"  routerLink="/misTurnos">
       <i class="bi bi-calendar-check me-2 fs-5"></i> Mis turnos
     </button>
-    <button class="btn btn-outline-info w-100 mb-3 d-flex align-items-center">
+    <button class="btn btn-outline-info w-100 mb-3 d-flex align-items-center"  routerLink="/misHorarios">
       <i class="bi bi-clock me-2 fs-5"></i> Mis horarios
     </button>
-    <button class="btn btn-outline-secondary w-100 d-flex align-items-center">
+    <button class="btn btn-outline-secondary w-100 d-flex align-items-center"  routerLink="/pacientesAtendidos">
       <i class="bi bi-person-lines-fill me-2 fs-5"></i> Pacientes atendidos
     </button>
   </div>
 
-  <!-- Paciente -->
   <div *appMostrarSiRol="TipoUsuario.Paciente">
     <h5 class="mb-3">Accesos</h5>
-    <button routerLink="/misTurnos" class="btn btn-outline-primary w-100 mb-2 d-flex align-items-center">
+    <button routerLink="/misTurnos" class="btn btn-outline-primary w-100 mb-2 d-flex align-items-center"  routerLink="/misTurnos">
       <i class="bi bi-calendar-check me-2"></i> Mis turnos
     </button>
-    <button class="btn btn-outline-success w-100 d-flex align-items-center">
+    <button class="btn btn-outline-success w-100 d-flex align-items-center"  routerLink="/solicitarTurno">
       <i class="bi bi-calendar-plus me-2"></i> Solicitar turno
     </button>
   </div>

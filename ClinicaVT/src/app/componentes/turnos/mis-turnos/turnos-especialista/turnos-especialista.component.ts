@@ -1,9 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Turno } from '../../../../models/turno';
 import { Paciente } from '../../../../models/paciente';
 import { EspecialidadPipe } from '../../../../pipes/especialidad.pipe';
+import { TurnosService } from '../../../../services/turnos.service';
+import { AuthService } from '../../../../services/auth/auth.service';
 
 @Component({
   selector: 'app-turnos-especialista',
@@ -12,11 +14,20 @@ import { EspecialidadPipe } from '../../../../pipes/especialidad.pipe';
   templateUrl: './turnos-especialista.component.html',
   styleUrl: './turnos-especialista.component.scss'
 })
-export class TurnosEspecialistaComponent {
+export class TurnosEspecialistaComponent implements OnInit {
+
   turnos: Turno[] = [];
   turnosFiltrados: Turno[] = [];
   pacientes: Paciente[] = [];
   filtro: string = '';
+
+  constructor(private turnosService: TurnosService, private auth: AuthService) {}
+
+  async ngOnInit() {
+    let especialista = await this.auth.getUsuarioLogueadoSupabase();
+    this.turnos = await this.turnosService.obtenerTurnosPorEspecialistaId(especialista.id);
+    this.turnosFiltrados = this.turnos;
+  }
 
   filtrarTurnos() {
     const filtroLower = this.filtro.toLowerCase();
@@ -26,8 +37,14 @@ export class TurnosEspecialistaComponent {
     );
   }
 
+  obtenerPacientes() {
+    let esp = this.turnos.filter(t => t.paciente !== null).map(t => t.paciente!);
+    return esp;
+  }
+
+
   obtenerNombrePaciente(id: string): string {
-    const p = this.pacientes.find(p => p.id === id);
+    const p = this.obtenerPacientes().find(p => p.id === id);
     return p ? `${p.nombre} ${p.apellido}` : 'Desconocido';
   }
 

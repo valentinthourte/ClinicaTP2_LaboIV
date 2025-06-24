@@ -11,31 +11,72 @@ import { DiaHoraTurno } from '../../../models/dia-hora-turno';
 import { TurnosService } from '../../../services/turnos.service';
 import { UsuariosService } from '../../../services/usuarios.service';
 import { NgToastService } from 'ng-angular-popup';
+import { SeleccionPacienteComponent } from "./seleccion-paciente/seleccion-paciente.component";
+import { Paciente } from '../../../models/paciente';
+import { AuthService } from '../../../services/auth/auth.service';
+import { TipoUsuario } from '../../../enums/tipo-usuario.enum';
 @Component({
   selector: 'app-solicitar-turno',
-  imports: [SeleccionEspecialidadComponent, SeleccionProfesionalComponent, SeleccionDiaComponent, SidebarAccesosComponent],
+  imports: [SeleccionEspecialidadComponent, SeleccionProfesionalComponent, SeleccionDiaComponent, SeleccionPacienteComponent, SidebarAccesosComponent, SeleccionPacienteComponent],
   templateUrl: './solicitar-turno.component.html',
   styleUrls: ['./solicitar-turno.component.scss']
 })
 export class SolicitarTurnoComponent {
+
   etapa: EtapaSolicitudTurno = EtapaSolicitudTurno.Especialidad;
   EtapaSolicitudTurno = EtapaSolicitudTurno;
   especialidadSeleccionada?: Especialidad;
   profesionalSeleccionado?: Especialista;
+  pacienteSeleccionado?: Paciente;
 
-  constructor(private turnosService: TurnosService, private usuariosService: UsuariosService, private toast: NgToastService) {}
+  constructor(private turnosService: TurnosService, private usuariosService: UsuariosService, private toast: NgToastService, private auth: AuthService) {}
 
-  avanzarEtapa() {
-    if(this.etapa === EtapaSolicitudTurno.Especialidad) this.etapa = EtapaSolicitudTurno.Profesional;
-    else if(this.etapa === EtapaSolicitudTurno.Profesional) this.etapa = EtapaSolicitudTurno.Dia;
-    else if(this.etapa === EtapaSolicitudTurno.Dia) this.etapa = EtapaSolicitudTurno.Horario;
+  async avanzarEtapa() {
+
+    switch(this.etapa) {
+      case EtapaSolicitudTurno.Especialidad: {
+        this.etapa = EtapaSolicitudTurno.Profesional
+        break;
+      }
+      case EtapaSolicitudTurno.Profesional: {
+        this.etapa = await this.auth.obtenerRolUsuario() == TipoUsuario.Administrador ? EtapaSolicitudTurno.Paciente : EtapaSolicitudTurno.Dia;
+        break;
+      }
+      case EtapaSolicitudTurno.Paciente: {
+        this.etapa = EtapaSolicitudTurno.Dia;
+        break;
+      }
+      case EtapaSolicitudTurno.Dia: {
+        this.etapa = EtapaSolicitudTurno.Horario;
+        break;
+      }
+      
+    }
   }
 
-  retrocederEtapa() {
-    if(this.etapa === EtapaSolicitudTurno.Horario) this.etapa = EtapaSolicitudTurno.Dia;
-    else if(this.etapa === EtapaSolicitudTurno.Dia) this.etapa = EtapaSolicitudTurno.Profesional;
-    else if(this.etapa === EtapaSolicitudTurno.Profesional) this.etapa = EtapaSolicitudTurno.Especialidad;
+  async retrocederEtapa() {
+    switch (this.etapa) {
+      case EtapaSolicitudTurno.Horario: {
+        this.etapa = EtapaSolicitudTurno.Dia;
+        break;
+      }
+      case EtapaSolicitudTurno.Dia: {
+        const rol = await this.auth.obtenerRolUsuario();
+        this.etapa = rol == TipoUsuario.Administrador ? EtapaSolicitudTurno.Paciente : EtapaSolicitudTurno.Profesional;
+        break;
+      }
+      case EtapaSolicitudTurno.Paciente: {
+        this.etapa = EtapaSolicitudTurno.Profesional;
+        break;
+      }
+      case EtapaSolicitudTurno.Profesional: {
+        this.etapa = EtapaSolicitudTurno.Especialidad;
+        break;
+      }
+    }
+
   }
+
 
   onEspecialidadSeleccionada(especialidad: Especialidad) {
     this.especialidadSeleccionada = especialidad;
@@ -47,9 +88,14 @@ export class SolicitarTurnoComponent {
     this.avanzarEtapa();
   }
 
+  onPacienteSeleccionado(paciente: Paciente) {
+    this.pacienteSeleccionado = paciente;
+    this.avanzarEtapa();
+  }
+
   async onDiaSeleccionado(diaHora: DiaHoraTurno) {
     try {
-      let paciente = await this.usuariosService.obtenerPacienteLogueado();
+      let paciente = this.pacienteSeleccionado === null ? await this.usuariosService.obtenerPacienteLogueado() : this.pacienteSeleccionado!;
       await this.turnosService.crearTurno(paciente, this.especialidadSeleccionada!, this.profesionalSeleccionado!, diaHora);
       this.toast.success("Turno creado!")
       this.etapa = EtapaSolicitudTurno.Especialidad;

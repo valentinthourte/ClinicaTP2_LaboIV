@@ -12,6 +12,7 @@ const CLAVE_USUARIO_SESION = "usuario";
   providedIn: 'root'
 })
 export class AuthService {
+
   
   usuarioLogueado?: User | null = undefined;
   
@@ -26,10 +27,13 @@ export class AuthService {
   }
   
   async getUsuarioLogueadoSupabase() {
-    return await this.supabaseService.obtenerUsuarioLogueado();
+    const {data, error} = await this.supabaseService.obtenerUsuarioLogueado();
+    if (error)
+      throw new Error(`Error al obtener usuario logueado de supabase: ${error.message}`);
+    return data.user;
   }
   async obtenerRolUsuario() {
-    return (await this.getUsuarioLogueadoSupabase()).data.user?.user_metadata['displayName'];
+    return (await this.getUsuarioLogueadoSupabase()).user_metadata['displayName'];
   }
   
   usuarioEstaLogueado() {
@@ -59,7 +63,7 @@ export class AuthService {
     if (error)
       throw new Error(`Error en login: ${error.message}`)
     this.usuarioLogueado = data.user;
-
+    
     return data;
   }
   

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { environment } from '../../../environments/environment';
 import { Especialidad } from '../../models/especialidad';
-import { TABLA_ADMINISTRADORES, TABLA_ESPECIALIDADES, TABLA_ESPECIALISTAS, TABLA_PACIENTES, TABLA_TURNOS } from '../../constantes';
+import { CONSULTA_TURNOS, TABLA_ADMINISTRADORES, TABLA_ESPECIALIDADES, TABLA_ESPECIALISTAS, TABLA_PACIENTES, TABLA_TURNOS } from '../../constantes';
 import { NgToastService } from 'ng-angular-popup';
 import { Especialista } from '../../models/especialista';
 import { Paciente } from '../../models/paciente';
@@ -16,6 +16,7 @@ import { EstadoTurno } from '../../enums/estado-turno';
   providedIn: 'root'
 })
 export class SupabaseService {
+
 
   private supabase = createClient(environment.apiUrl, environment.publicAnonKey);
   constructor(private toast: NgToastService) { }
@@ -307,25 +308,23 @@ async obtenerTodosEspecialistas(): Promise<Especialista[]> {
   async obtenerTurnosDePaciente(id: string | undefined): Promise<Turno[]> {
     const { data, error } = await this.supabase
       .from(TABLA_TURNOS)
-      .select(`
-        *,
-        especialista:especialistas (
-          id,
-          nombre,
-          apellido,
-          email,
-          urlImagen,
-          aprobado
-        ),
-        especialidad:especialidades (
-          id,
-          especialidad
-        )
-      `)
+      .select(CONSULTA_TURNOS)
       .eq('pacienteId', id);
 
     if (error)
       throw new Error(`Error al obtener turnos de paciente: ${error.message}`);
+
+    return data as Turno[];
+  }
+
+  async obtenerTurnosPorEspecialistaId(id: string): Promise<Turno[]> {
+    const { data, error } = await this.supabase
+      .from(TABLA_TURNOS)
+      .select(CONSULTA_TURNOS)
+      .eq('especialistaId', id);
+
+    if (error)
+      throw new Error(`Error al obtener turnos de especialista: ${error.message}`);
 
     return data as Turno[];
   }

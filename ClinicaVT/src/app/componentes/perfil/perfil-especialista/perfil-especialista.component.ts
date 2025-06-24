@@ -28,7 +28,7 @@ export class PerfilEspecialistaComponent implements OnInit {
   ) {}
 
   async ngOnInit() {
-    const usuario = (await this.auth.getUsuarioLogueadoSupabase()).data.user;
+    const usuario = (await this.auth.getUsuarioLogueadoSupabase());
     if (usuario != null) {
       this.usuario = await this.usuariosService.obtenerEspecialistaPorId(usuario.id) as Especialista;
     }

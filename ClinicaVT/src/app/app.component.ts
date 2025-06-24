@@ -15,9 +15,11 @@ import { TipoUsuario } from './enums/tipo-usuario.enum';
   styleUrl: './app.component.scss'
 })
 export class AppComponent {
+
   title = 'ClinicaVT';
   TipoUsuario = TipoUsuario;
   constructor(protected auth: AuthService, private router: Router) { }
+  
   async logout() {
     await this.auth.logout();
     this.router.navigate([''])
@@ -26,5 +28,17 @@ export class AppComponent {
   usuarioEstaLogueado() {
     let estaLogueado = this.auth.usuarioEstaLogueado();
     return estaLogueado;
+  }
+
+  async usuarioEstaLogueadoAsync() {
+    return await this.auth.getUsuarioLogueadoSupabase() != null;
+  }
+
+  async onClickLogo() {
+    let ruta = '';
+    if (await this.usuarioEstaLogueadoAsync())
+      ruta = 'home'
+    this.router.navigate([ruta]);
+
   }
 }

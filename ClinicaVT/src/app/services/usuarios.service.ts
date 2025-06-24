@@ -8,7 +8,7 @@ import { Administrador } from '../models/administrador';
   providedIn: 'root'
 })
 export class UsuariosService {
-  
+ 
   constructor(private supabaseService: SupabaseService) { }
   
   //#region Pacientes

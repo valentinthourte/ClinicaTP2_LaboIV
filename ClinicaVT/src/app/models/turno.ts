@@ -2,6 +2,7 @@ import { EstadoTurno } from "../enums/estado-turno";
 import { Especialidad } from "./especialidad";
 import { Especialista } from "./especialista";
 import { HistoriaClinica } from "./historia-clinica";
+import { Paciente } from "./paciente";
 
 export interface Turno {
     id: string;
@@ -17,4 +18,5 @@ export interface Turno {
 
     especialista?: Especialista;
     especialidad?: Especialidad;
+    paciente?: Paciente;
 }

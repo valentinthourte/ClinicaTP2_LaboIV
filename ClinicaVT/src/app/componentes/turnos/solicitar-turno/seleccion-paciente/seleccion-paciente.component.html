@@ -1,0 +1,29 @@
+<div class="bg-white p-4 rounded shadow-sm">
+  <h4 class="mb-4 text-center text-primary">Seleccioná un paciente</h4>
+
+  @if (pacientes == null || pacientes.length == 0) {
+    <div class="text-center text-secondary">
+      <p class="fw-medium">No hay pacientes registrados.</p>
+    </div>
+  }
+
+  <div class="flex justify-center">
+    <div class="grid gap-4"
+         [ngClass]="{
+           'grid-cols-1': pacientes.length === 1,
+           'grid-cols-2': pacientes.length === 2,
+           'grid-cols-3': pacientes.length >= 3 && pacientes.length < 4,
+           'grid-cols-4': pacientes.length >= 4
+         }">
+      <div
+        *ngFor="let pac of pacientes"
+        (click)="seleccionar(pac)"
+        class="cursor-pointer bg-white border rounded shadow hover:shadow-lg p-3 text-center transition duration-200"
+      >
+        <img [src]="pac.urlImagenUno" alt="Foto de {{ pac.nombre }}" class="rounded-full mx-auto mb-2" width="100" height="100" />
+        <div class="fw-bold">{{ pac.nombre }} {{ pac.apellido }}</div>
+        <div class="text-muted text-sm">{{ pac.dni }}</div>
+      </div>
+    </div>
+  </div>
+</div>

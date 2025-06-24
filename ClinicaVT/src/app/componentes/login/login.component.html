@@ -1,4 +1,4 @@
-<div class="container py-5">
+<div class="container-fluid py-5 position-relative">
   <div class="row justify-content-center">
     <div class="col-md-6 col-lg-4">
       <div class="card shadow-sm">
@@ -44,7 +44,12 @@
     </div>
   </div>
 
-  <div class="sidebar bg-light shadow position-fixed top-0 end-0 p-4 h-100 overflow-auto" *ngIf="mostrarSidebar" style="width: 300px; z-index: 1050;">
+  <!-- Sidebar a la izquierda -->
+  <div
+    class="sidebar bg-light shadow position-fixed top-0 start-0 p-4 h-100 overflow-auto"
+    *ngIf="mostrarSidebar"
+    style="width: 300px; z-index: 1050;">
+    
     <h5 class="mb-3 border-bottom pb-2">Usuarios rápidos</h5>
 
     <div *ngIf="usuariosFicticios.administradores?.length">

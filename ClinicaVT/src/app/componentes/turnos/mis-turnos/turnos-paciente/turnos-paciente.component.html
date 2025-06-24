@@ -40,26 +40,22 @@
               </td>
               <td>
                 <div class="d-flex flex-wrap gap-2">
-                  <!-- Cancelar turno -->
                   <button *ngIf="turno.estado === 'pendiente'" class="btn btn-sm btn-outline-danger"
                           (click)="cancelarTurno(turno)">
                     <i class="bi bi-x-circle"></i> Cancelar
                   </button>
 
-                  <!-- Ver reseña -->
                   <button *ngIf="turno.reseniaPaciente" class="btn btn-sm btn-outline-secondary"
                           (click)="verResenia(turno)">
                     <i class="bi bi-eye"></i> Ver reseña
                   </button>
 
-                  <!-- Encuesta -->
                   <button *ngIf="turno.estado === 'realizado' && !turno.reseniaPaciente"
                           class="btn btn-sm btn-outline-primary"
                           (click)="completarEncuesta(turno)">
                     <i class="bi bi-journal-text"></i> Encuesta
                   </button>
 
-                  <!-- Calificar -->
                   <button *ngIf="turno.estado === 'realizado' && !turno.reseniaPaciente"
                           class="btn btn-sm btn-outline-success"
                           (click)="calificarAtencion(turno)">

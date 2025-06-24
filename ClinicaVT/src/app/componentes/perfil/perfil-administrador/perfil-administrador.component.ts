@@ -15,7 +15,7 @@ export class PerfilAdministradorComponent implements OnInit {
   constructor(private auth: AuthService,private usuariosService: UsuariosService) {}
 
   async ngOnInit() {
-    const usuario = (await this.auth.getUsuarioLogueadoSupabase()).data.user;
+    const usuario = (await this.auth.getUsuarioLogueadoSupabase());
     if (usuario != null) {
       const admin = await this.usuariosService.obtenerAdministradorPorId(usuario.id);
       this.usuario = admin as Administrador;

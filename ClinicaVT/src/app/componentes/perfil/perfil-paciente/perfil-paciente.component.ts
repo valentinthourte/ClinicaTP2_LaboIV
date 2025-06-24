@@ -17,7 +17,7 @@ export class PerfilPacienteComponent implements OnInit {
   constructor(private auth: AuthService, private usuariosService: UsuariosService) {}
 
   async ngOnInit(){
-    const usuario = (await this.auth.getUsuarioLogueadoSupabase()).data.user;
+    const usuario = (await this.auth.getUsuarioLogueadoSupabase());
     if (usuario != null) {
       const paciente = await this.usuariosService.obtenerPacientePorId(usuario.id);
       this.usuario = paciente as Paciente;
