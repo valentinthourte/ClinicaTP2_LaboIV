@@ -7,6 +7,10 @@ import { EspecialidadPipe } from '../../../../pipes/especialidad.pipe';
 import { TurnosService } from '../../../../services/turnos.service';
 import { AuthService } from '../../../../services/auth/auth.service';
 import { EstadoTurnoColorDirective } from '../../../../directivas/estado-turno-color.directive';
+import { SpinnerService } from '../../../../services/shared/spinner.service';
+import { NgToastService } from 'ng-angular-popup';
+import { MatDialog } from '@angular/material/dialog';
+import { ModalCancelarTurnosComponent } from '../../modal-cancelar-turnos/modal-cancelar-turnos.component';
 
 @Component({
   selector: 'app-turnos-especialista',
@@ -22,7 +26,7 @@ export class TurnosEspecialistaComponent implements OnInit {
   pacientes: Paciente[] = [];
   filtro: string = '';
 
-  constructor(private turnosService: TurnosService, private auth: AuthService) {}
+  constructor(private turnosService: TurnosService, private auth: AuthService, private spinner: SpinnerService, private toast: NgToastService, private dialog: MatDialog) {}
 
   async ngOnInit() {
     let especialista = await this.auth.getUsuarioLogueadoSupabase();
@@ -49,24 +53,108 @@ export class TurnosEspecialistaComponent implements OnInit {
     return p ? `${p.nombre} ${p.apellido}` : 'Desconocido';
   }
 
-  aceptarTurno(turno: Turno) {
-    console.log('Aceptar turno:', turno);
-    // TODO: implementar lógica
+  async aceptarTurno(turno: Turno) {
+    try {
+      let turnoNuevo = await this.turnosService.aceptarTurno(turno);            
+      this.reemplazarTurno(turnoNuevo);
+      this.toast.success("Turno aceptado con éxito. ");
+    }
+    catch(err: any) {
+      this.toast.danger(`Error al aceptar turno: ${err.message}`);
+    }
+    finally {
+      this.spinner.hide();
+    }
   }
 
   cancelarTurno(turno: Turno) {
-    console.log('Cancelar turno:', turno);
-    // TODO: implementar lógica
+    try {
+      this.spinner.show()
+      
+      const dialogRef = this.dialog.open(ModalCancelarTurnosComponent);
+
+          dialogRef.afterClosed().subscribe(async (comentario: string | undefined) => {
+          if (comentario) {
+            turno.comentarioPaciente = comentario;
+            let turnoNuevo = await this.turnosService.cancelarTurno(turno);
+            this.reemplazarTurno(turnoNuevo);
+            this.toast.success("Turno cancelado con éxito. ");
+          }
+        });
+      
+    }
+    catch(err: any) {
+      this.toast.danger(`Error al cancelar turno: ${err.message}`);
+    }
+    finally {
+      this.spinner.hide();
+    }
+  }
+
+  private reemplazarTurno(turnoNuevo: Turno) {
+    const idx = this.turnos.findIndex(t => t.id === turnoNuevo.id);
+    if (idx !== -1) {
+      this.turnos[idx].estado = turnoNuevo.estado;
+    }
   }
 
   rechazarTurno(turno: Turno) {
-    console.log('Rechazar turno:', turno);
-    // TODO: implementar lógica
+    try {
+      this.spinner.show()
+      const dialogRef = this.dialog.open(ModalCancelarTurnosComponent);
+
+      dialogRef.afterClosed().subscribe(async (comentario: string | undefined) => {
+        if (comentario) {
+          try {
+            turno.comentarioEspecialista = comentario;
+            let turnoNuevo = await this.turnosService.rechazarTurno(turno);
+            this.reemplazarTurno(turnoNuevo);
+            this.toast.success("Turno rechazado con éxito. ");
+          }
+          catch(err: any) {
+            this.toast.danger(`Error al rechazar turno: ${err.message}`);
+          }
+        }
+      });
+    }
+    catch(err: any) {
+      this.toast.danger(`Error al rechazar turno: ${err.message}`);
+    }
+    finally {
+      this.spinner.hide();
+    }
   }
 
   finalizarTurno(turno: Turno) {
-    console.log('Finalizar turno:', turno);
-    // TODO: implementar lógica
+    try {
+      this.spinner.show()
+      
+      const dialogRef = this.dialog.open(ModalCancelarTurnosComponent);
+
+      dialogRef.afterClosed().subscribe(async (comentario: string | undefined) => {
+      if (comentario) {
+        try {
+
+          turno.comentarioEspecialista = comentario;
+          debugger
+          let turnoNuevo = await this.turnosService.finalizarTurno(turno);
+          debugger
+          this.reemplazarTurno(turnoNuevo);
+          this.toast.success("Turno finalizado con éxito. ");
+        }    
+        catch(err: any) {
+          this.toast.danger(`Error al finalizar turno: ${err.message}`);
+        }
+      }
+    });
+      
+    }
+    catch(err: any) {
+      this.toast.danger(`Error al finalizar turno: ${err.message}`);
+    }
+    finally {
+      this.spinner.hide();
+    }
   }
 
   verResenia(turno: Turno) {

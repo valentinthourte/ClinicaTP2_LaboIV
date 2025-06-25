@@ -18,6 +18,9 @@ import { EstadoTurno } from '../../enums/estado-turno';
 export class SupabaseService {
 
 
+
+
+
   private supabase = createClient(environment.apiUrl, environment.publicAnonKey);
   constructor(private toast: NgToastService) { }
   
@@ -72,19 +75,7 @@ export class SupabaseService {
     await this.supabase.auth.signOut();
   }
 
-  async cancelarTurno(turno: Turno): Promise<Turno> {
-    return await this.cambiarEstadoTurno(turno, EstadoTurno.Cancelado);
-  }
-
-  async cambiarEstadoTurno(turno: Turno, estadoTurno: EstadoTurno): Promise<Turno> {
-    debugger
-    const {data, error} = await this.supabase.from(TABLA_TURNOS)
-                            .update({estado: estadoTurno})
-                            .eq('id', turno.id).select();
-    if (error)
-      throw new Error(`Error al cambiar estado de turno: ${error.message}`);
-    return data![0] as Turno;                            
-  }
+  
 
 
   async login(email: string, password: string) {
@@ -112,6 +103,46 @@ export class SupabaseService {
 
     if (error)
       throw new Error(`Error al crear turno: ${error.message}`);
+  }
+
+  async aceptarTurno(turno: Turno) {
+    return await this.cambiarEstadoTurnoYActualizar(turno, EstadoTurno.Aceptado);
+  }
+
+  async cancelarTurno(turno: Turno): Promise<Turno> {
+    return await this.cambiarEstadoTurnoYActualizar(turno, EstadoTurno.Cancelado);
+  }
+
+  async rechazarTurno(turno: Turno) {
+    return await this.cambiarEstadoTurnoYActualizar(turno, EstadoTurno.Rechazado);
+  }
+
+  async finalizarTurno(turno: Turno) {
+    return await this.cambiarEstadoTurnoYActualizar(turno, EstadoTurno.Realizado);
+  }
+
+
+
+  async cambiarEstadoTurnoYActualizar(turno: Turno, estadoTurno: EstadoTurno): Promise<Turno> {
+    turno.estado = estadoTurno;
+    return await this.actualizarTurno(turno);                
+  }
+
+  async actualizarTurno(turno: Turno): Promise<Turno> {
+    const { id, ...camposActualizados } = turno;
+    debugger
+    const { data, error } = await this.supabase
+      .from(TABLA_TURNOS)
+      .update(camposActualizados)
+      .eq('id', id)
+      .select();
+
+    if (error) {
+      throw new Error(`Error al actualizar turno: ${error.message}`);
+    }
+    console.log(`Actualizar turno: data -> ${data}, error -> ${error}`);
+    
+    return data![0] as Turno;
   }
 
   async obtenerHorariosEspecialistaParaDia(especialista: Especialista, dia: string): Promise<string[]> {
@@ -336,7 +367,7 @@ async obtenerTodosEspecialistas(): Promise<Especialista[]> {
     const { data, error } = await this.supabase
       .from(TABLA_TURNOS)
       .select(CONSULTA_TURNOS)
-      .eq('especialistaId', id);
+      .eq('especialistaId', id).order('created_at', {ascending: false});
 
     if (error)
       throw new Error(`Error al obtener turnos de especialista: ${error.message}`);

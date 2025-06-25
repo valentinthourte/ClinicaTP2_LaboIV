@@ -12,7 +12,6 @@ import { Paciente } from '../models/paciente';
 export class TurnosService {
 
  
-  
   constructor(private supabaseService: SupabaseService) { }
   
   async obtenerTurnosPacientePorId(id: string | undefined): Promise<Turno[]> {
@@ -43,11 +42,21 @@ export class TurnosService {
 
     return horariosDisponibles;
   }
+
   async cancelarTurno(turno: Turno): Promise<Turno> {
     return await this.supabaseService.cancelarTurno(turno);
   }
+  async aceptarTurno(turno: Turno) {
+    return await this.supabaseService.aceptarTurno(turno);
+  }
+  async rechazarTurno(turno: Turno) {
+    return await this.supabaseService.rechazarTurno(turno);
+  }
+  async finalizarTurno(turno: Turno) {
+    return await this.supabaseService.finalizarTurno(turno);
+  }
 
-   async obtenerTurnosPorEspecialistaId(id: string):Promise<Turno[]> {
+  async obtenerTurnosPorEspecialistaId(id: string):Promise<Turno[]> {
     return await this.supabaseService.obtenerTurnosPorEspecialistaId(id);
   }
 
