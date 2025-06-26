@@ -2,17 +2,17 @@
 
 <mat-dialog-content class="mt-2">
   <form (ngSubmit)="guardarCambios()">
-    <div *ngFor="let dia of diasSemana; let i = index" class="flex items-center gap-3 mb-4">
-      <mat-checkbox [(ngModel)]="dia.habilitado" name="habilitado{{ i }}" class="min-w-[130px]">
-        {{ dia.nombre | titlecase }}
+    <div *ngFor="let horario of horarios; let i = index" class="flex items-center gap-3 mb-4">
+      <mat-checkbox [(ngModel)]="horario.habilitado" name="habilitado{{ i }}" class="min-w-[130px]">
+        {{ horario.dia | diaHorario | titlecase }}
       </mat-checkbox>
 
       <input
         type="time"
         class="form-control w-28"
-        [(ngModel)]="dia.horaDesde"
+        [(ngModel)]="horario.horaDesde"
         name="desde{{ i }}"
-        [disabled]="!dia.habilitado"
+        [disabled]="!horario.habilitado"
       />
 
       <span class="text-gray-500">a</span>
@@ -20,9 +20,9 @@
       <input
         type="time"
         class="form-control w-28"
-        [(ngModel)]="dia.horaHasta"
+        [(ngModel)]="horario.horaHasta"
         name="hasta{{ i }}"
-        [disabled]="!dia.habilitado"
+        [disabled]="!horario.habilitado"
       />
     </div>
 

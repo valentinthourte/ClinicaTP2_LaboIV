@@ -95,7 +95,6 @@ export class SolicitarTurnoComponent {
 
   async onDiaSeleccionado(diaHora: DiaHoraTurno) {
     try {
-      debugger
       let paciente = this.pacienteSeleccionado === null || this.pacienteSeleccionado === undefined ? await this.usuariosService.obtenerPacienteLogueado() : this.pacienteSeleccionado!;
       await this.turnosService.crearTurno(paciente, this.especialidadSeleccionada!, this.profesionalSeleccionado!, diaHora);
       this.toast.success("Turno creado!")

@@ -24,7 +24,8 @@
       }
       @else if (etapa === EtapaSolicitudTurno.Dia) {
         <app-seleccion-dia 
-          [profesional]="profesionalSeleccionado!" 
+          [profesional]="profesionalSeleccionado!"
+          [especialidad]="especialidadSeleccionada!"
           (diaSeleccionado)="onDiaSeleccionado($event)">
         </app-seleccion-dia>
       }

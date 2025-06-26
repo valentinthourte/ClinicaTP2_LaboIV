@@ -22,25 +22,42 @@ export class TurnosService {
     await this.supabaseService.crearTurno(paciente, especialidad, especialista, diaHora);
   }
 
-  async obtenerHorariosEspecialistaParaDia(especialista: Especialista, dia: Date): Promise<string[]> {
-    const fechaStr = dia.toISOString().split('T')[0]; 
+  async obtenerHorariosEspecialistaParaDia(
+    especialista: Especialista,
+    dia: Date,
+    especialidad: Especialidad
+  ): Promise<string[]> {
+    const fechaStr = dia.toISOString().split('T')[0];
     const horariosReservados = await this.supabaseService.obtenerHorariosEspecialistaParaDia(especialista, fechaStr);
+    debugger
+    const horariosDia = especialista.horarios.find(h => h.dia === dia.getDay());
+    const duracionTurnos = especialista.especialidades.find(e => e.especialidad.id === especialidad.id)?.duracion;
 
-    const horariosDisponibles: string[] = [];
-    const inicio = 9 * 60; // minutos desde 00:00
-    const fin = 18 * 60;
-
-    for (let minutos = inicio; minutos < fin; minutos += 30) {
-      const hora = Math.floor(minutos / 60).toString().padStart(2, '0');
-      const min = (minutos % 60).toString().padStart(2, '0');
-      const horario = `${hora}:${min}`;
-
-      if (!horariosReservados.includes(horario)) {
-        horariosDisponibles.push(horario);
-      }
+    if (!horariosDia || !duracionTurnos || !horariosDia.habilitado) {
+      return [];
     }
 
-    return horariosDisponibles;
+    const disponibles: string[] = [];
+
+    const [hDesde, mDesde] = horariosDia.horaDesde.split(':').map(Number);
+    const [hHasta, mHasta] = horariosDia.horaHasta.split(':').map(Number);
+
+    let minutosInicio = hDesde * 60 + mDesde;
+    const minutosFin = hHasta * 60 + mHasta;
+
+    while (minutosInicio + duracionTurnos <= minutosFin) {
+      const horas = Math.floor(minutosInicio / 60);
+      const minutos = minutosInicio % 60;
+      const horario = `${horas.toString().padStart(2, '0')}:${minutos.toString().padStart(2, '0')}`;
+
+      if (!horariosReservados.includes(horario)) {
+        disponibles.push(horario);
+      }
+
+      minutosInicio += duracionTurnos;
+    }
+
+    return disponibles;
   }
 
   async cancelarTurno(turno: Turno): Promise<Turno> {

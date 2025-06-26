@@ -32,5 +32,31 @@ export const CONSULTA_TURNOS = `
         urlImagenDos,
         created_at
       )
-    `
+    `;
 
+export const QUERY_ESPECIALISTAS = `
+      id,
+      nombre,
+      apellido,
+      edad,
+      dni,
+      email,
+      urlImagen,
+      created_at,
+      aprobado,
+      especialidades: especialistas_especialidades (
+        especialidadId,
+        duracion,
+        especialidad: especialidades (
+          id,
+          especialidad
+        )
+      ),
+      horarios: horarios (
+        id,
+        dia,
+        horaDesde,
+        horaHasta,
+        habilitado
+      )
+    `;

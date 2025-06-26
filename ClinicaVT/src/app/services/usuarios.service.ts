@@ -3,11 +3,13 @@ import { SupabaseService } from './supabase/supabase.service';
 import { Especialista } from '../models/especialista';
 import { Paciente } from '../models/paciente';
 import { Administrador } from '../models/administrador';
+import { Horario } from '../models/horario';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UsuariosService {
+
  
   constructor(private supabaseService: SupabaseService) { }
   
@@ -44,6 +46,9 @@ export class UsuariosService {
   }
   async obtenerEspecialistasPorEspecialidad(id: string): Promise<Especialista[]> {
     return await this.supabaseService.obtenerEspecialistasPorEspecialidadId(id);
+  }
+  async setearHorariosEspecialista(especialista: Especialista, horarios: Horario[]) {
+      return await this.supabaseService.setearHorariosEspecialista(especialista, horarios);
   }
   //#endregion
   //#region Administradores

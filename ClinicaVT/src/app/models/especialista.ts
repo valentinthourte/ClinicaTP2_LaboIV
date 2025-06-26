@@ -1,4 +1,5 @@
 import { EspecialidadEspecialista } from "./especialidad-especialista";
+import { Horario } from "./horario";
 
 export interface Especialista {
     id: string | undefined;
@@ -11,4 +12,5 @@ export interface Especialista {
     urlImagen: string;
     created_at: Date | undefined;
     aprobado: boolean;
+    horarios: Horario[];
 }

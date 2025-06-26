@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { environment } from '../../../environments/environment';
 import { Especialidad } from '../../models/especialidad';
-import { CONSULTA_TURNOS, TABLA_ADMINISTRADORES, TABLA_ESPECIALIDADES, TABLA_ESPECIALISTAS, TABLA_ESPECIALISTAS_ESPECIALIDADES, TABLA_PACIENTES, TABLA_TURNOS } from '../../constantes';
+import { CONSULTA_TURNOS, QUERY_ESPECIALISTAS, TABLA_ADMINISTRADORES, TABLA_ESPECIALIDADES, TABLA_ESPECIALISTAS, TABLA_ESPECIALISTAS_ESPECIALIDADES, TABLA_PACIENTES, TABLA_TURNOS } from '../../constantes';
 import { NgToastService } from 'ng-angular-popup';
 import { Especialista } from '../../models/especialista';
 import { Paciente } from '../../models/paciente';
@@ -11,11 +11,13 @@ import { Administrador } from '../../models/administrador';
 import { Turno } from '../../models/turno';
 import { DiaHoraTurno } from '../../models/dia-hora-turno';
 import { EstadoTurno } from '../../enums/estado-turno';
+import { Horario } from '../../models/horario';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SupabaseService {
+
   private supabase = createClient(environment.apiUrl, environment.publicAnonKey);
   constructor(private toast: NgToastService) { }
   
@@ -122,7 +124,6 @@ export class SupabaseService {
 
   async actualizarTurno(turno: Turno): Promise<Turno> {
     const turnoActualizado = this.convertirTurnoParaUpdate(turno);
-    debugger
     const { data, error } = await this.supabase
       .from(TABLA_TURNOS)
       .update(turnoActualizado)
@@ -169,28 +170,10 @@ export class SupabaseService {
     return data.map(t => t.hora);
   }
 
-async obtenerTodosEspecialistas(): Promise<Especialista[]> {
-  const { data, error } = await this.supabase
-  .from(TABLA_ESPECIALISTAS)
-  .select(`
-    id,
-    nombre,
-    apellido,
-    edad,
-    dni,
-    email,
-    urlImagen,
-    created_at,
-    aprobado,
-    especialidades: especialistas_especialidades (
-      especialidadId,
-      duracion,
-      especialidad: especialidades (
-        id,
-        especialidad
-        )
-        )
-        `).order('created_at', {ascending: false});
+  async obtenerTodosEspecialistas(): Promise<Especialista[]> {
+    const { data, error } = await this.supabase
+    .from(TABLA_ESPECIALISTAS)
+    .select(QUERY_ESPECIALISTAS).order('created_at', {ascending: false});
         
         if (error)
           throw new Error(`Error al obtener especialistas: ${error.message}`);
@@ -203,14 +186,11 @@ async obtenerTodosEspecialistas(): Promise<Especialista[]> {
       }
       
   async obtenerEspecialistasPorEspecialidadId(id: string): Promise<Especialista[]> {
-      const { data, error } = await this.supabase
+    const { data, error } = await this.supabase
       .from('especialistas_especialidades')
       .select(`
         especialista:especialistas (
-          id,
-          nombre,
-          apellido,
-          urlImagen
+          ${QUERY_ESPECIALISTAS}
         )
       `)
       .eq('especialidadId', id);
@@ -223,25 +203,7 @@ async obtenerTodosEspecialistas(): Promise<Especialista[]> {
     async obtenerEspecialistaPorId(id: string) {
       const { data, error } = await this.supabase
     .from(TABLA_ESPECIALISTAS)
-    .select(`
-      id,
-      nombre,
-      apellido,
-      edad,
-      dni,
-      email,
-      urlImagen,
-      created_at,
-      aprobado,
-      especialidades: especialistas_especialidades (
-        especialidadId,
-        duracion,
-        especialidad: especialidades (
-          id,
-          especialidad
-        )
-      )
-  `).eq('id', id)
+    .select(QUERY_ESPECIALISTAS).eq('id', id)
   .single();
 
     if (error)
@@ -404,5 +366,29 @@ async obtenerTodosEspecialistas(): Promise<Especialista[]> {
       console.log(error);
       throw new Error(`Error al agregar especialidad de especialista: ${error.message}`);
     }                        
+  }
+ 
+  async setearHorariosEspecialista(especialista: Especialista, horarios: Horario[]) {
+    const { error: errorDelete } = await this.supabase
+    .from('horarios')
+    .delete()
+    .eq('especialistaId', especialista.id);
+
+    if (errorDelete) {
+      throw new Error(`Error al eliminar horarios anteriores: ${errorDelete.message}`);
+    }
+
+    const horariosConEspecialista = horarios.map(h => ({
+      ...h,
+      especialistaId: especialista.id
+    }));
+
+    const { error: errorInsert } = await this.supabase
+      .from('horarios')
+      .insert(horariosConEspecialista);
+
+    if (errorInsert) {
+      throw new Error(`Error al insertar nuevos horarios: ${errorInsert.message}`);
+    }
   }
 }

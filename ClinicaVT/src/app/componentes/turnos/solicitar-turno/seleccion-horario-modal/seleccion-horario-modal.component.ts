@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Especialista } from '../../../../models/especialista';
 import { TurnosService } from '../../../../services/turnos.service';
+import { Especialidad } from '../../../../models/especialidad';
 
 @Component({
   selector: 'app-seleccion-horario-modal',
@@ -16,11 +17,11 @@ export class SeleccionHorarioModalComponent implements OnInit {
   @Output() horarioSeleccionado = new EventEmitter<string>();
   horarioActual?: string;
 
-  constructor(public dialogRef: MatDialogRef<SeleccionHorarioModalComponent>,@Inject(MAT_DIALOG_DATA) public data: {especialista: Especialista, dia: Date}, private turnosService: TurnosService) {}
+  constructor(public dialogRef: MatDialogRef<SeleccionHorarioModalComponent>,@Inject(MAT_DIALOG_DATA) public data: {especialista: Especialista, dia: Date, especialidad: Especialidad}, private turnosService: TurnosService) {}
   
   async ngOnInit() {
     console.log(this.data);
-    this.horarios = await this.turnosService.obtenerHorariosEspecialistaParaDia(this.data.especialista, this.data.dia);
+    this.horarios = await this.turnosService.obtenerHorariosEspecialistaParaDia(this.data.especialista, this.data.dia, this.data.especialidad);
   }
     
   seleccionarHorario() {
