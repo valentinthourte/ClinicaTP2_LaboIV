@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { environment } from '../../../environments/environment';
 import { Especialidad } from '../../models/especialidad';
-import { CONSULTA_TURNOS, TABLA_ADMINISTRADORES, TABLA_ESPECIALIDADES, TABLA_ESPECIALISTAS, TABLA_PACIENTES, TABLA_TURNOS } from '../../constantes';
+import { CONSULTA_TURNOS, TABLA_ADMINISTRADORES, TABLA_ESPECIALIDADES, TABLA_ESPECIALISTAS, TABLA_ESPECIALISTAS_ESPECIALIDADES, TABLA_PACIENTES, TABLA_TURNOS } from '../../constantes';
 import { NgToastService } from 'ng-angular-popup';
 import { Especialista } from '../../models/especialista';
 import { Paciente } from '../../models/paciente';
@@ -16,11 +16,6 @@ import { EstadoTurno } from '../../enums/estado-turno';
   providedIn: 'root'
 })
 export class SupabaseService {
-
-
-
-
-
   private supabase = createClient(environment.apiUrl, environment.publicAnonKey);
   constructor(private toast: NgToastService) { }
   
@@ -75,9 +70,6 @@ export class SupabaseService {
     await this.supabase.auth.signOut();
   }
 
-  
-
-
   async login(email: string, password: string) {
     return await this.supabase.auth.signInWithPassword({email: email, password: password});
   }
@@ -129,12 +121,12 @@ export class SupabaseService {
   }
 
   async actualizarTurno(turno: Turno): Promise<Turno> {
-    const { id, ...camposActualizados } = turno;
+    const turnoActualizado = this.convertirTurnoParaUpdate(turno);
     debugger
     const { data, error } = await this.supabase
       .from(TABLA_TURNOS)
-      .update(camposActualizados)
-      .eq('id', id)
+      .update(turnoActualizado)
+      .eq('id', turno.id)
       .select();
 
     if (error) {
@@ -145,12 +137,29 @@ export class SupabaseService {
     return data![0] as Turno;
   }
 
+  convertirTurnoParaUpdate(turno: Turno) {
+    return {
+      id: turno.id,
+      pacienteId: turno.pacienteId,
+      especialistaId: turno.especialistaId,
+      especialidadId: turno.especialidadId,
+      fecha: turno.fecha,
+      estado: turno.estado,
+      comentarioPaciente: turno.comentarioPaciente,
+      comentarioEspecialista: turno.comentarioEspecialista,
+      reseniaPaciente: turno.reseniaPaciente
+    }
+  }
+
   async obtenerHorariosEspecialistaParaDia(especialista: Especialista, dia: string): Promise<string[]> {
     const { data, error } = await this.supabase
       .from(TABLA_TURNOS)
       .select('hora')
       .eq('especialistaId', especialista.id)
-      .eq('fecha', dia);
+      .eq('fecha', dia)
+      .neq('estado', EstadoTurno.Cancelado)
+      .neq('estado', EstadoTurno.Realizado)
+      .neq('estado', EstadoTurno.Rechazado);
 
     if (error) {
       console.error('Error al obtener horarios reservados:', error.message);
@@ -242,7 +251,7 @@ async obtenerTodosEspecialistas(): Promise<Especialista[]> {
       ...data,
       especialidades: Array.isArray(data.especialidades) ? data.especialidades.map((e: any) => ({
         especialidad: e.especialidad,
-        duracion: e.duracionMinutos  // renombrar para que coincida con la interfaz
+        duracion: e.duracion  // renombrar para que coincida con la interfaz
       })) : []
     };
     return especialista;
@@ -373,5 +382,27 @@ async obtenerTodosEspecialistas(): Promise<Especialista[]> {
       throw new Error(`Error al obtener turnos de especialista: ${error.message}`);
 
     return data as Turno[];
+  }
+
+  async eliminarEspecialidadAEsp(usuarioId: string | undefined, especialidadId: string) {
+    const {data, error} = await this.supabase.from(TABLA_ESPECIALISTAS_ESPECIALIDADES)
+                          .delete()
+                          .eq('especialidadId', especialidadId)
+                          .eq('especialistaId', usuarioId);
+
+    if (error) {
+      console.log(error);
+      throw new Error(`Error al eliminar especialidad de especialista: ${error.message}`);
+    }
+  }
+
+  async agregarEspecialidadAEsp(id: string | undefined, especialidadId: any, duracion: any) {
+    const {data, error} = await this.supabase.from(TABLA_ESPECIALISTAS_ESPECIALIDADES)
+                            .insert({especialidadId: especialidadId, especialistaId: id, duracion: duracion})
+
+    if (error) {
+      console.log(error);
+      throw new Error(`Error al agregar especialidad de especialista: ${error.message}`);
+    }                        
   }
 }

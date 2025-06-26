@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NgToastService } from 'ng-angular-popup';
-import { RecaptchaModule, RecaptchaFormsModule } from "ng-recaptcha";
+import { RecaptchaModule, RecaptchaFormsModule } from "ng-recaptcha-18";
 import { Especialista } from '../../../models/especialista';
 import { AuthService } from '../../../services/auth/auth.service';
 import { SpinnerService } from '../../../services/shared/spinner.service';

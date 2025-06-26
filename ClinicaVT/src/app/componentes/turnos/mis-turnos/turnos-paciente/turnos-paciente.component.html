@@ -28,7 +28,7 @@
           </thead>
           <tbody>
             <tr *ngFor="let turno of turnosFiltrados">
-              <td>{{ turno.fecha | date:'short' }}</td>
+              <td>{{ turno.fecha | date : "dd/MM/yyyy" }} {{ turno.hora }}</td>
               <td>{{ turno.especialidad! | especialidad }}</td>
               <td>{{ turno.especialista! | especialista }}</td>
               <td>

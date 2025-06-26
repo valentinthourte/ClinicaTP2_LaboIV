@@ -61,11 +61,11 @@ export class UsuariosService {
   //#endregion
   
   
-  async eliminarEspecialidadAEsp(id: string | undefined, id1: string) {
-    throw new Error('Method not implemented.');
+  async eliminarEspecialidadAEsp(usuarioId: string | undefined, especialidadId: string) {
+    await this.supabaseService.eliminarEspecialidadAEsp(usuarioId, especialidadId);
   }
   async agregarEspecialidadAEsp(id: string | undefined, especialidadId: any, duracion: any) {
-    throw new Error('Method not implemented.');
+    await this.supabaseService.agregarEspecialidadAEsp(id, especialidadId, duracion);
   }
   
   

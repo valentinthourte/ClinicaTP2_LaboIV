@@ -9,6 +9,9 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { CommonModule } from '@angular/common';
 import { EspecialidadEspecialista } from '../../../models/especialidad-especialista';
 import { SidebarAccesosComponent } from '../../sidebar-accesos/sidebar-accesos.component';
+import { NgToastService } from 'ng-angular-popup';
+import { SpinnerService } from '../../../services/shared/spinner.service';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-perfil-especialista',
@@ -24,7 +27,9 @@ export class PerfilEspecialistaComponent implements OnInit {
     private auth: AuthService,
     private usuariosService: UsuariosService,
     private especialidadesService: EspecialidadesService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private toast: NgToastService,
+    private spinner: SpinnerService
   ) {}
 
   async ngOnInit() {
@@ -49,17 +54,38 @@ export class PerfilEspecialistaComponent implements OnInit {
   }
 
   async agregarEspecialidad() {
-    if (this.formEspecialidad.invalid) return;
-
-    const { especialidadId, duracion } = this.formEspecialidad.value;
-
-    await this.usuariosService.agregarEspecialidadAEsp(this.usuario.id, especialidadId, duracion);
-    this.usuario = await this.usuariosService.obtenerEspecialistaPorId(this.usuario.id!) as Especialista;
-    this.formEspecialidad.reset();
+    try {
+      if (this.formEspecialidad.invalid) 
+        throw new Error("El formulario no es válido. ");
+  
+      const { especialidadId, duracion } = this.formEspecialidad.value;
+      this.spinner.show();
+      await this.usuariosService.agregarEspecialidadAEsp(this.usuario.id, especialidadId, duracion);
+      this.usuario = await this.usuariosService.obtenerEspecialistaPorId(this.usuario.id!) as Especialista;
+      this.formEspecialidad.reset();
+      this.toast.success("Especialidad agregada!");
+    }
+    catch (err: any) {
+      this.toast.danger(`Error al agregar especialidad: ${err.message}`);
+    }    
+    finally {
+      this.spinner.hide();
+    }
   }
 
   async eliminarEspecialidad(id: string) {
-    await this.usuariosService.eliminarEspecialidadAEsp(this.usuario.id, id);
-    this.usuario = await this.usuariosService.obtenerEspecialistaPorId(this.usuario.id!) as Especialista;
+    try {
+      this.spinner.show();
+      await this.usuariosService.eliminarEspecialidadAEsp(this.usuario.id, id);
+      this.usuario = await this.usuariosService.obtenerEspecialistaPorId(this.usuario.id!) as Especialista;
+      this.toast.success("Especialidad eliminada!");
+    }
+    catch (err: any) {
+      this.toast.danger(`Error al eliminar especialidad de especialista: ${err.message}`);
+    }
+    finally {
+      this.spinner.hide();
+    }
+    
   }
 }

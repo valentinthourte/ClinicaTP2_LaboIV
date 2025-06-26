@@ -1,0 +1,34 @@
+<h2 mat-dialog-title class="text-xl font-semibold text-center p-3">Disponibilidad semanal</h2>
+
+<mat-dialog-content class="mt-2">
+  <form (ngSubmit)="guardarCambios()">
+    <div *ngFor="let dia of diasSemana; let i = index" class="flex items-center gap-3 mb-4">
+      <mat-checkbox [(ngModel)]="dia.habilitado" name="habilitado{{ i }}" class="min-w-[130px]">
+        {{ dia.nombre | titlecase }}
+      </mat-checkbox>
+
+      <input
+        type="time"
+        class="form-control w-28"
+        [(ngModel)]="dia.horaDesde"
+        name="desde{{ i }}"
+        [disabled]="!dia.habilitado"
+      />
+
+      <span class="text-gray-500">a</span>
+
+      <input
+        type="time"
+        class="form-control w-28"
+        [(ngModel)]="dia.horaHasta"
+        name="hasta{{ i }}"
+        [disabled]="!dia.habilitado"
+      />
+    </div>
+
+    <mat-dialog-actions align="end" class="mt-6">
+      <button mat-button mat-dialog-close>Cancelar</button>
+      <button mat-raised-button color="primary" type="submit">Guardar cambios</button>
+    </mat-dialog-actions>
+  </form>
+</mat-dialog-content>

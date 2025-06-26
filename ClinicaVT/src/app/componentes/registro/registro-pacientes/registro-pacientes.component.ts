@@ -6,7 +6,7 @@ import { SpinnerService } from '../../../services/shared/spinner.service';
 import { Paciente } from '../../../models/paciente';
 import { NgToastService } from 'ng-angular-popup';
 import { Router } from '@angular/router';
-import { RecaptchaModule, RecaptchaFormsModule } from "ng-recaptcha";
+import { RecaptchaModule, RecaptchaFormsModule } from "ng-recaptcha-18";
 import { AuthService } from '../../../services/auth/auth.service';
 import { TipoUsuario } from '../../../enums/tipo-usuario.enum';
 @Component({

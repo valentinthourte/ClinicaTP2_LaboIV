@@ -1,6 +1,5 @@
 <div class="d-flex vh-100 bg-light">
   <app-sidebar-accesos></app-sidebar-accesos>
-
   
   <main class="flex-grow-1 p-5">
     <div class="card shadow-sm">
@@ -30,8 +29,8 @@
 
       <form [formGroup]="formEspecialidad" (ngSubmit)="agregarEspecialidad()" class="d-flex gap-3 align-items-end px-4 pb-4">
         <div class="form-group flex-grow-1">
-          <label for="especialidad" class="form-label">Nueva especialidad</label>
-          <select id="especialidad" class="form-select" formControlName="especialidadId" required>
+          <label for="especialidadId" class="form-label">Nueva especialidad</label>
+          <select id="especialidadId" class="form-select" formControlName="especialidadId" required>
             <option value="" disabled>Seleccione una</option>
             <option *ngFor="let esp of especialidadesDisponibles" [value]="esp.id">
               {{ esp.especialidad }}
@@ -41,7 +40,7 @@
 
         <div class="form-group" style="min-width: 120px;">
           <label for="duracion" class="form-label">Duración (min)</label>
-          <input id="duracion" type="number" class="form-control" formControlName="duracion" min="5" required />
+          <input id="duracion" type="number" class="form-control" formControlName="duracion" min="5" max="60" required />
         </div>
 
         <button type="submit" class="btn btn-primary" [disabled]="formEspecialidad.invalid">Agregar</button>

@@ -15,7 +15,7 @@ export interface Turno {
     comentarioEspecialista?: string;
     reseniaPaciente?: string;
     historiaClinica?: HistoriaClinica;
-
+    hora: string;
     especialista?: Especialista;
     especialidad?: Especialidad;
     paciente?: Paciente;
