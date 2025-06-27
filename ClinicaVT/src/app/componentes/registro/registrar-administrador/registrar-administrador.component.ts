@@ -5,16 +5,17 @@ import { UsuariosService } from '../../../services/usuarios.service';
 import { SpinnerService } from '../../../services/shared/spinner.service';
 import { NgToastService } from 'ng-angular-popup';
 import { AuthService } from '../../../services/auth/auth.service';
+import { RecaptchaFormsModule, RecaptchaModule } from 'ng-recaptcha-18';
 
 @Component({
   selector: 'app-registrar-administrador',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, RecaptchaModule, RecaptchaFormsModule,],
   templateUrl: './registrar-administrador.component.html',
   styleUrl: './registrar-administrador.component.scss'
 })
 export class RegistrarAdministradorComponent {
   formulario: FormGroup;
-
+  token: boolean = false;
   constructor(
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<RegistrarAdministradorComponent>,
@@ -78,5 +79,9 @@ export class RegistrarAdministradorComponent {
       imagen: "",
       created_at: undefined
     };
+  }
+  executeRecaptchaVisible(token:any) {
+    this.token = !this.token;
+    console.log(this.token);
   }
 }

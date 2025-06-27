@@ -12,11 +12,12 @@ import { ConfirmarAccionComponent } from '../confirmar-accion/confirmar-accion.c
 import { Especialidad } from '../../models/especialidad';
 import { EspecialidadesService } from '../../services/especialidades.service';
 import { EspecialidadEspecialista } from '../../models/especialidad-especialista';
+import { EspecialidadesPipe } from '../../pipes/especialidades.pipe';
 
 @Component({
   selector: 'app-vista-especialistas',
   standalone: true,
-  imports: [CommonModule, AprobadoColorDirective],
+  imports: [CommonModule, AprobadoColorDirective, EspecialidadesPipe],
   templateUrl: './vista-especialistas.component.html',
   styleUrl: './vista-especialistas.component.scss'
 })
@@ -43,11 +44,9 @@ export class VistaEspecialistasComponent implements OnInit {
       const confirmado = await this.confirmarAccion(`${especialista.nombre} ${especialista.apellido}`, 'rechazar');
       if (!confirmado) return;
 
-      const error = await this.usuariosService.rechazarEspecialista(especialista);
-      if (error.error)
-        throw new Error(error.error?.message);
+      const especialistaRechazado = await this.usuariosService.rechazarEspecialista(especialista);
       
-      this.especialistas.filter(e => e.id !== especialista.id);
+      especialista.aprobado = false;
     }
     catch(err: any) {
       console.log(err);

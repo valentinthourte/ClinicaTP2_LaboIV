@@ -171,21 +171,23 @@ export class SupabaseService {
   }
 
   async obtenerTodosEspecialistas(): Promise<Especialista[]> {
+    debugger
     const { data, error } = await this.supabase
     .from(TABLA_ESPECIALISTAS)
     .select(QUERY_ESPECIALISTAS).order('created_at', {ascending: false});
+    if (error)
+      throw new Error(`Error al obtener especialistas: ${error.message}`);
         
-        if (error)
-          throw new Error(`Error al obtener especialistas: ${error.message}`);
-        
-        
-        return data.map(esp => ({
-          ...esp,
-          especialidades: esp.especialidades.map((e: any) => e.especialidad)
-        }));
-      }
+    return data.map(esp => ({
+      ...esp,
+      especialidades: Array.isArray(esp.especialidades) ? esp.especialidades.map((e: any) => ({
+        especialidad: e.especialidad,
+        duracion: e.duracion  // renombrar para que coincida con la interfaz
+      })) : []
+    }));
+  }
       
-  async obtenerEspecialistasPorEspecialidadId(id: string): Promise<Especialista[]> {
+  async obtenerEspecialistasAprobadosPorEspecialidadId(id: string): Promise<Especialista[]> {
     const { data, error } = await this.supabase
       .from('especialistas_especialidades')
       .select(`
@@ -193,7 +195,8 @@ export class SupabaseService {
           ${QUERY_ESPECIALISTAS}
         )
       `)
-      .eq('especialidadId', id);
+      .eq('especialidadId', id)
+      .eq('aprobado', true);
 
     if (error) throw new Error('Error al obtener especialistas: ' + error.message);
 
@@ -220,7 +223,7 @@ export class SupabaseService {
   }
   
   async rechazarEspecialista(especialista: Especialista) {
-    return await this.supabase.from(TABLA_ESPECIALISTAS).delete().eq('id', especialista.id);
+    return await this.aprobarRechazarEspecialista(especialista, false);
   }
   
   async obtenerEspecialistaPorEmail(email: string | undefined): Promise<Especialista | undefined> {
@@ -240,13 +243,18 @@ export class SupabaseService {
   }
   
   async aprobarEspecialista(especialista: Especialista) {
+    await this.aprobarRechazarEspecialista(especialista, true);
+  }
+
+  private async aprobarRechazarEspecialista(especialista: Especialista, aprobado: boolean) {
     const { data, error } = await this.supabase
-    .from('especialistas')
-    .update({ aprobado: true })
-    .eq('id', especialista.id)
-    .select();
+      .from('especialistas')
+      .update({ aprobado: aprobado })
+      .eq('id', especialista.id)
+      .select();
     if (error)
       throw new Error(`Error al aprobar especialista: ${error.message}`)  
+    return data;
   }
 
   

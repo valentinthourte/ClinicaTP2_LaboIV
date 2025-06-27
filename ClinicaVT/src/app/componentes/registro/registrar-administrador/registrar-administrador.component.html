@@ -58,12 +58,18 @@
           <div class="invalid-feedback">Selecciona una imagen</div>
         </div>
 
+        <div class="capcha mt-2">
+            <re-captcha (resolved)="executeRecaptchaVisible($event)" siteKey="6Lf6u20rAAAAAPZuzlfDzX18BiItY_tNXp2k2Oo5"></re-captcha>
+        </div>
+        
         <div class="d-grid mt-3">
           <button type="submit" class="btn btn-primary">Registrar</button>
         </div>
         <div class="d-grid mt-2">
           <button type="button" class="btn btn-secondary" (click)="cancelar()">Cancelar</button>
         </div>
+
+
       </form>
     </div>
   </div>

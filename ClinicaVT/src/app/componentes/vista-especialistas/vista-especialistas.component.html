@@ -32,7 +32,7 @@
               <td>{{ e.email }}</td>
               <td>{{ e.edad }}</td>
               <td>{{ e.dni }}</td>
-              <td>{{ formatearEspecialidades(e.especialidades) }}</td>
+              <td>{{ e.especialidades | especialidades }}</td>
               <td [appAprobadoColor]="e.aprobado">
                 {{ e.aprobado ? 'Sí' : 'No' }}
               </td>
@@ -40,7 +40,7 @@
                 <button class="btn btn-success btn-sm" (click)="onAprobarEspecialista(e)" [disabled]="e.aprobado" style="margin-right: 2px;">
                     <i class="bi bi-check"></i>
                 </button>
-                <button class="btn btn-danger btn-sm" (click)="onRechazarEspecialista(e)" [disabled]="e.aprobado">
+                <button class="btn btn-danger btn-sm" (click)="onRechazarEspecialista(e)" [disabled]="e.aprobado == false">
                     <i class="bi bi-x"></i>
                 </button>
                </td>

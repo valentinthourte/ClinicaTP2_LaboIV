@@ -5,7 +5,7 @@ import { AuthService } from '../../../services/auth/auth.service';
 import { RouterModule } from '@angular/router';
 import { Especialidad } from '../../../models/especialidad';
 import { EspecialidadesService } from '../../../services/especialidades.service';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { EspecialidadEspecialista } from '../../../models/especialidad-especialista';
 import { SidebarAccesosComponent } from '../../sidebar-accesos/sidebar-accesos.component';
@@ -15,14 +15,15 @@ import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-perfil-especialista',
-  imports: [RouterModule, ReactiveFormsModule, CommonModule, SidebarAccesosComponent],
+  imports: [RouterModule, ReactiveFormsModule, CommonModule, SidebarAccesosComponent, CommonModule, FormsModule],
   templateUrl: './perfil-especialista.component.html',
 })
 export class PerfilEspecialistaComponent implements OnInit {
   usuario!: Especialista;
   especialidadesDisponibles: Especialidad[] = [];
   formEspecialidad!: FormGroup;
-
+  especialidadSeleccionada: string | null = null;
+  duracionSeleccionada: number | null = null;
   constructor(
     private auth: AuthService,
     private usuariosService: UsuariosService,
@@ -41,7 +42,7 @@ export class PerfilEspecialistaComponent implements OnInit {
     this.especialidadesDisponibles = await this.especialidadesService.obtenerEspecialidades();
 
     this.formEspecialidad = this.fb.group({
-      especialidadId: ['', Validators.required],
+      especialidadId: [null, Validators.required],
       duracion: ['', [Validators.required, Validators.min(5)]]
     });
   }
@@ -55,20 +56,22 @@ export class PerfilEspecialistaComponent implements OnInit {
 
   async agregarEspecialidad() {
     try {
-      if (this.formEspecialidad.invalid) 
-        throw new Error("El formulario no es válido. ");
-  
-      const { especialidadId, duracion } = this.formEspecialidad.value;
+      if (!this.especialidadSeleccionada || !this.duracionSeleccionada || this.duracionSeleccionada < 5 || this.duracionSeleccionada > 60) {
+        this.toast.warning("Seleccioná una especialidad válida y una duración entre 5 y 60 minutos.");
+        return;
+      }
+
       this.spinner.show();
-      await this.usuariosService.agregarEspecialidadAEsp(this.usuario.id, especialidadId, duracion);
+      await this.usuariosService.agregarEspecialidadAEsp(this.usuario.id, this.especialidadSeleccionada, this.duracionSeleccionada);
       this.usuario = await this.usuariosService.obtenerEspecialistaPorId(this.usuario.id!) as Especialista;
-      this.formEspecialidad.reset();
+
+      this.especialidadSeleccionada = null;
+      this.duracionSeleccionada = null;
+
       this.toast.success("Especialidad agregada!");
-    }
-    catch (err: any) {
+    } catch (err: any) {
       this.toast.danger(`Error al agregar especialidad: ${err.message}`);
-    }    
-    finally {
+    } finally {
       this.spinner.hide();
     }
   }
@@ -88,4 +91,13 @@ export class PerfilEspecialistaComponent implements OnInit {
     }
     
   }
+
+  logControlesInvalidos(form: FormGroup) {
+    Object.keys(form.controls).forEach(key => {
+      const control = form.get(key);
+      if (control && control.invalid) {
+        console.warn(`Control inválido: ${key}`, control.errors);
+      }
+    });
+  } 
 }

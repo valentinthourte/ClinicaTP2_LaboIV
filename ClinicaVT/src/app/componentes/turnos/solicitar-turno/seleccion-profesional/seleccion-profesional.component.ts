@@ -20,7 +20,7 @@ export class SeleccionProfesionalComponent implements OnInit {
 
   async ngOnInit() {
     if (this.especialidad) {
-      this.especialistas = await this.usuariosService.obtenerEspecialistasPorEspecialidad(this.especialidad.id);
+      this.especialistas = await this.usuariosService.obtenerEspecialistasAprobadosPorEspecialidad(this.especialidad.id);
     }
   }
 

@@ -6,6 +6,7 @@ import { Especialista } from '../../models/especialista';
 import { TABLA_ESPECIALISTAS, TABLA_PACIENTES } from '../../constantes';
 import { Especialidad } from '../../models/especialidad';
 import { User } from '@supabase/supabase-js';
+import { Horario } from '../../models/horario';
 
 const CLAVE_USUARIO_SESION = "usuario";
 @Injectable({
@@ -77,13 +78,14 @@ export class AuthService {
   }
   
   
-  async registrarEspecialista(especialista: Especialista, imagen: any, especialidadesIds: string[]) {
+  async registrarEspecialista(especialista: Especialista, imagen: any, especialidadesIds: string[], horarios: Horario[]) {
     const archivo: File = imagen as File;
     especialista.urlImagen = this.getUrlPublica(
       await this.supabaseService.guardarImagen(especialista.dni, archivo)
     );
   
     const especialistaInsertado = await this.supabaseService.insertar(especialista, TABLA_ESPECIALISTAS);
+    await this.supabaseService.setearHorariosEspecialista(especialista, horarios);
   
     
     const relaciones = especialidadesIds.map((especialidadId: string) => ({
@@ -93,6 +95,7 @@ export class AuthService {
   
     await this.supabaseService.insertarMultiples(relaciones, 'especialistas_especialidades');
   }
+
   async crearAdministrador(admin: any, imagen: any, password: any) {
     const archivo: File = imagen as File;
     admin.imagen = this.getUrlPublica(await this.supabaseService.guardarImagen(admin.dni, archivo));

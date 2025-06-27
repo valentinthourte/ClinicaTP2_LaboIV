@@ -136,9 +136,7 @@ export class TurnosEspecialistaComponent implements OnInit {
         try {
 
           turno.comentarioEspecialista = comentario;
-          debugger
           let turnoNuevo = await this.turnosService.finalizarTurno(turno);
-          debugger
           this.reemplazarTurno(turnoNuevo);
           this.toast.success("Turno finalizado con éxito. ");
         }    

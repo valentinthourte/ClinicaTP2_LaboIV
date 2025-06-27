@@ -11,6 +11,7 @@ import { Especialidad } from '../../../models/especialidad';
 import { EspecialidadesService } from '../../../services/especialidades.service';
 import { EspecialidadPipe } from "../../../pipes/especialidad.pipe";
 import { TipoUsuario } from '../../../enums/tipo-usuario.enum';
+import { EspecialistaService } from '../../../services/especialista.service';
 @Component({
   selector: 'app-registro-especialistas',
   imports: [CommonModule, ReactiveFormsModule, FormsModule, RecaptchaModule, RecaptchaFormsModule, EspecialidadPipe],
@@ -30,7 +31,8 @@ export class RegistroEspecialistasComponent implements OnInit {
       private toast: NgToastService,
       private auth: AuthService,
       private router: Router,
-      private especialidadesService: EspecialidadesService) {
+      private especialidadesService: EspecialidadesService,
+      private especialistaService: EspecialistaService) {
     this.formulario = this.fb.group({
       nombre: ['', Validators.required],
       apellido: ['', Validators.required],
@@ -77,6 +79,7 @@ export class RegistroEspecialistasComponent implements OnInit {
       if (this.formulario.invalid || !this.obtenerImagenSeleccionada()) {
         this.formulario.markAllAsTouched();
         this.toast.warning("Por favor completá todos los campos obligatorios, incluida la imagen.");
+        this.logControlesInvalidos(this.formulario);
         return;
       }
       else {
@@ -87,7 +90,7 @@ export class RegistroEspecialistasComponent implements OnInit {
           try {
             let especialista = this.mapEspecialistaFromForm(this.formulario);
             especialista.id = data.user?.id;
-            await this.auth.registrarEspecialista(especialista, this.formulario.get("imagen")?.value, this.especialidadesSeleccionadas);
+            await this.auth.registrarEspecialista(especialista, this.formulario.get("imagen")?.value, this.especialidadesSeleccionadas, this.especialistaService.generarHorariosDefecto());
             this.toast.success("Especialista registrado!");
               if (data.session) {
               this.auth.guardarUsuarioLogueado(especialista);
@@ -135,15 +138,23 @@ export class RegistroEspecialistasComponent implements OnInit {
       aprobado: false
     };
   }
+  logControlesInvalidos(form: FormGroup) {
+    Object.keys(form.controls).forEach(key => {
+      const control = form.get(key);
+      if (control && control.invalid) {
+        console.warn(`Control inválido: ${key}`, control.errors);
+      }
+    });
+  } 
 
   executeRecaptchaVisible(token:any) {
     this.token = !this.token;
     console.log(this.token);
   }
 
-get especialidadesFormArray() {
-  return this.formulario.get('especialidades') as FormArray;
-}
+  get especialidadesFormArray() {
+    return this.formulario.get('especialidades') as FormArray;
+  }
 
   agregarEspecialidadSeleccionada() {
     const id = this.especialidadSeleccionada;

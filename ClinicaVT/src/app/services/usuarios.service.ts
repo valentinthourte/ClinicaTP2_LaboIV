@@ -44,8 +44,8 @@ export class UsuariosService {
   async rechazarEspecialista(especialista: Especialista) {
     return await this.supabaseService.rechazarEspecialista(especialista);
   }
-  async obtenerEspecialistasPorEspecialidad(id: string): Promise<Especialista[]> {
-    return await this.supabaseService.obtenerEspecialistasPorEspecialidadId(id);
+  async obtenerEspecialistasAprobadosPorEspecialidad(id: string): Promise<Especialista[]> {
+    return await this.supabaseService.obtenerEspecialistasAprobadosPorEspecialidadId(id);
   }
   async setearHorariosEspecialista(especialista: Especialista, horarios: Horario[]) {
       return await this.supabaseService.setearHorariosEspecialista(especialista, horarios);
