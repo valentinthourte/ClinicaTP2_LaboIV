@@ -10,6 +10,7 @@ import { Horario } from '../models/horario';
 })
 export class UsuariosService {
 
+
  
   constructor(private supabaseService: SupabaseService) { }
   
@@ -71,6 +72,10 @@ export class UsuariosService {
   }
   async agregarEspecialidadAEsp(id: string | undefined, especialidadId: any, duracion: any) {
     await this.supabaseService.agregarEspecialidadAEsp(id, especialidadId, duracion);
+  }
+
+  async obtenerPacientesPorEspecialistaId(id: string): Promise<Paciente[]> {
+    return await this.supabaseService.obtenerPacientesPorEspecialistaId(id);
   }
   
   

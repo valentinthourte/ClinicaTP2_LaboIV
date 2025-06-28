@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { createClient, SupabaseClient, User } from '@supabase/supabase-js';
 import { environment } from '../../../environments/environment';
 import { Especialidad } from '../../models/especialidad';
-import { QUERY_TURNOS, QUERY_ESPECIALISTAS, TABLA_ADMINISTRADORES, TABLA_ESPECIALIDADES, TABLA_ESPECIALISTAS, TABLA_ESPECIALISTAS_ESPECIALIDADES, TABLA_PACIENTES, TABLA_TURNOS, TABLA_LOGINS } from '../../constantes';
+import { QUERY_TURNOS, QUERY_ESPECIALISTAS, TABLA_ADMINISTRADORES, TABLA_ESPECIALIDADES, TABLA_ESPECIALISTAS, TABLA_ESPECIALISTAS_ESPECIALIDADES, TABLA_PACIENTES, TABLA_TURNOS, TABLA_LOGINS, TABLA_HISTORIA_CLINICA, TABLA_ADICIONALES_HISTORIA_CLINICA } from '../../constantes';
 import { NgToastService } from 'ng-angular-popup';
 import { Especialista } from '../../models/especialista';
 import { Paciente } from '../../models/paciente';
@@ -12,13 +12,12 @@ import { Turno } from '../../models/turno';
 import { DiaHoraTurno } from '../../models/dia-hora-turno';
 import { EstadoTurno } from '../../enums/estado-turno';
 import { Horario } from '../../models/horario';
+import { HistoriaClinica } from '../../models/historia-clinica';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SupabaseService {
-
-
   private supabase = createClient(environment.apiUrl, environment.publicAnonKey);
   constructor(private toast: NgToastService) { }
   
@@ -166,9 +165,9 @@ export class SupabaseService {
       especialidadId: turno.especialidadId,
       fecha: turno.fecha,
       estado: turno.estado,
-      comentarioPaciente: turno.comentarioPaciente,
-      comentarioEspecialista: turno.comentarioEspecialista,
-      reseniaPaciente: turno.reseniaPaciente
+      comentario: turno.comentario,
+      historiaClinicaId: turno.historiaClinica?.id,
+      calificado: turno.calificado
     }
   }
 
@@ -418,4 +417,64 @@ export class SupabaseService {
       throw new Error(`Error al insertar nuevos horarios: ${errorInsert.message}`);
     }
   }
+
+  async cargarHistoriaClinicaDeTurno(turno: Turno) {
+    if (turno.historiaClinica != null) {
+      let historia = this.mapHistoriaClinicaDeTurno(turno);
+      const {data, error} = await this.supabase.from(TABLA_HISTORIA_CLINICA)
+                                .insert(historia).select();
+      if (error) {
+        console.log(error);
+        throw new Error(`Error al cargar historia clinica de turno: ${error.message}`);                
+      }
+      debugger
+      let historiaId = data[0].id;
+      let adicionales = turno.historiaClinica?.adicionales.map(a => ({
+        ...a,
+        historiaClinicaId: historiaId
+      }))
+  
+      const { error: errorInsert } = await this.supabase.from(TABLA_ADICIONALES_HISTORIA_CLINICA)
+                                .insert(adicionales).select();
+      if (error) {
+        console.log(error);
+        throw new Error(`Se produjo un error al guardar los adicionales de la historia clínica. ${error}`);
+      }
+      turno.historiaClinica.id = historiaId;
+      await this.actualizarTurno(turno);
+    }
+  }
+
+  mapHistoriaClinicaDeTurno(turno: Turno) {
+    const historia = turno.historiaClinica;
+    return {
+      altura: historia?.altura,
+      peso: historia?.peso,
+      temperatura: historia?.temperatura,
+      presion: historia?.presion,
+      turnoId: turno.id
+    };
+  }
+
+  async setearTurnoCalificado(turno: Turno, calificacion: number) {
+    turno.calificado = true;
+    this.actualizarTurno(turno);
+  }
+
+  async obtenerPacientesPorEspecialistaId(id: string):Promise<Paciente[]> {
+    const {data, error} = await this.supabase.from(TABLA_TURNOS).select(QUERY_TURNOS)
+                                          .eq('especialistaId', id)
+                                          .eq('estado', EstadoTurno.Realizado);
+    if (error) {
+      console.log(error);
+      throw new Error(`Se produjo un error al obtener pacientes por especialista: ${error.message}`);
+    }
+    let pacientesSinRepetir: Paciente[] = [];
+    for (let turno of data as Turno[]) {
+      if (turno.paciente != null && pacientesSinRepetir.includes(turno.paciente!) == false)
+        pacientesSinRepetir.push(turno.paciente!);
+    }
+    return pacientesSinRepetir;
+  }
+
 }

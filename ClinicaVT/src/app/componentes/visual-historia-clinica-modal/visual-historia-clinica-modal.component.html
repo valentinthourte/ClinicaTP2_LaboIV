@@ -1,0 +1,54 @@
+<div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+  <div class="bg-white rounded-lg shadow-lg p-6 w-[32rem] max-w-full text-center">
+    <h3 class="text-lg font-semibold text-primary mb-4">Historia Clínica</h3>
+
+    <div class="flex justify-center mb-2">
+      <img
+        [src]="data.paciente.urlImagenUno"
+        alt="Foto del paciente"
+        class="rounded-full border border-primary"
+        width="90"
+        height="90"
+      />
+    </div>
+
+    <p class="font-medium mb-4">
+      {{ data.paciente.nombre }} {{ data.paciente.apellido }}
+    </p>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+      <div class="text-center">
+        <label class="block font-semibold">Altura</label>
+        <div class="text-gray-700">{{ data.historia.altura }} cm</div>
+      </div>
+
+      <div class="text-center">
+        <label class="block font-semibold">Peso</label>
+        <div class="text-gray-700">{{ data.historia.peso }} kg</div>
+      </div>
+
+      <div class="text-center">
+        <label class="block font-semibold">Temperatura</label>
+        <div class="text-gray-700">{{ data.historia.temperatura }} °C</div>
+      </div>
+
+      <div class="text-center">
+        <label class="block font-semibold">Presión</label>
+        <div class="text-gray-700">{{ data.historia.presion }}</div>
+      </div>
+    </div> 
+
+    <div *ngIf="data.historia.adicionales?.length" class="mb-3">
+      <label class="block font-semibold mb-2">Datos adicionales</label>
+      <ul class="list-group list-group-flush text-center">
+        <li *ngFor="let adicional of data.historia.adicionales" class="list-group-item px-0">
+          <strong>{{ adicional.clave }}:</strong> {{ adicional.valor }}
+        </li>
+      </ul>
+    </div>
+
+    <div class="flex justify-center mt-4">
+      <button class="btn btn-secondary" (click)="cerrar()">Cerrar</button>
+    </div>
+  </div>
+</div>

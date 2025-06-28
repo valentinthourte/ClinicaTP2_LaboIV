@@ -17,6 +17,8 @@ export class SeleccionEspecialidadComponent implements OnInit {
 
   async ngOnInit() {
     this.especialidades = await this.especialidadesService.obtenerEspecialidades();
+    console.log(this.especialidades);
+    
   }
 
   seleccionarEspecialidad(esp: Especialidad) {

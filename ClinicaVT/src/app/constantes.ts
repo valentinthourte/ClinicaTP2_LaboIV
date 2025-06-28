@@ -5,35 +5,47 @@ export const TABLA_ESPECIALIDADES = "especialidades";
 export const TABLA_ADMINISTRADORES = "administradores";
 export const TABLA_TURNOS = "turnos";
 export const TABLA_LOGINS = "registro_logins";
-
+export const TABLA_HISTORIA_CLINICA = "historia_clinica";
+export const TABLA_ADICIONALES_HISTORIA_CLINICA = "adicionales_historia_clinica";
 
 export const QUERY_TURNOS = `
-      *,
-      especialista:especialistas (
-        id,
-        nombre,
-        apellido,
-        email,
-        urlImagen,
-        aprobado
-      ),
-      especialidad:especialidades (
-        id,
-        especialidad
-      ),
-      paciente:pacientes (
-        id,
-        nombre,
-        apellido,
-        email,
-        edad,
-        dni,
-        obraSocial,
-        urlImagenUno,
-        urlImagenDos,
-        created_at
-      )
-    `;
+  *,
+  especialista:especialistas (
+    id,
+    nombre,
+    apellido,
+    email,
+    urlImagen,
+    aprobado
+  ),
+  especialidad:especialidades (
+    id,
+    especialidad
+  ),
+  paciente:pacientes (
+    id,
+    nombre,
+    apellido,
+    email,
+    edad,
+    dni,
+    obraSocial,
+    urlImagenUno,
+    urlImagenDos,
+    created_at
+  ),
+  historiaClinica:historia_clinica (
+    altura,
+    peso,
+    temperatura,
+    presion,
+    adicionales:adicionales_historia_clinica (
+      clave,
+      valor
+    )
+  )
+`;
+
 
 export const QUERY_ESPECIALISTAS = `
       id,

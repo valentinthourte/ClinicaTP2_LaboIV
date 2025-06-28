@@ -7,6 +7,7 @@ import { SpinnerService } from '../../services/shared/spinner.service';
 import { NgToastService } from 'ng-angular-popup';
 import { RegistroPacientesComponent } from '../registro/registro-pacientes/registro-pacientes.component';
 import { MatDialog } from '@angular/material/dialog';
+import { ExportarExcelService } from '../../services/exportar-excel.service';
 
 @Component({
   selector: 'app-vista-pacientes',
@@ -15,10 +16,11 @@ import { MatDialog } from '@angular/material/dialog';
   styleUrl: './vista-pacientes.component.scss'
 })
 export class VistaPacientesComponent implements OnInit{
+
   
   pacientes: Paciente[] = [];
   
-  constructor(private usuariosService: UsuariosService, private spinner: SpinnerService, private toast: NgToastService, private dialog: MatDialog) {}
+  constructor(private usuariosService: UsuariosService, private spinner: SpinnerService, private toast: NgToastService, private dialog: MatDialog, private excelService: ExportarExcelService) {}
   
   async ngOnInit() {
     try {
@@ -42,5 +44,12 @@ export class VistaPacientesComponent implements OnInit{
         this.pacientes.push(nuevoPaciente);
       }
     });
+  }
+
+  onExportarExcel() {
+    let pacientesExportar = this.pacientes.map(p => this.pacienteAFilaExcel(p));
+  }
+  pacienteAFilaExcel(p: Paciente): any {
+    throw new Error('Method not implemented.');
   }
 }

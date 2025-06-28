@@ -11,15 +11,21 @@ import { SpinnerService } from '../../../../services/shared/spinner.service';
 import { NgToastService } from 'ng-angular-popup';
 import { MatDialog } from '@angular/material/dialog';
 import { ModalCancelarTurnosComponent } from '../../modal-cancelar-turnos/modal-cancelar-turnos.component';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { ModalReseniaComponent } from '../../../modal-resenia/modal-resenia.component';
+import { HistoriaClinicaModalComponent } from '../../../historia-clinica-modal/historia-clinica-modal.component';
+import { HistoriaClinica } from '../../../../models/historia-clinica';
+import { VisualHistoriaClinicaModalComponent } from '../../../visual-historia-clinica-modal/visual-historia-clinica-modal.component';
 
 @Component({
   selector: 'app-turnos-especialista',
   standalone: true,
-  imports: [CommonModule, FormsModule, EspecialidadPipe, EstadoTurnoColorDirective],
+  imports: [CommonModule, FormsModule, EspecialidadPipe, EstadoTurnoColorDirective, MatTooltipModule],
   templateUrl: './turnos-especialista.component.html',
   styleUrl: './turnos-especialista.component.scss'
 })
 export class TurnosEspecialistaComponent implements OnInit {
+
 
   turnos: Turno[] = [];
   turnosFiltrados: Turno[] = [];
@@ -32,14 +38,13 @@ export class TurnosEspecialistaComponent implements OnInit {
     let especialista = await this.auth.getUsuarioLogueadoSupabase();
     this.turnos = await this.turnosService.obtenerTurnosPorEspecialistaId(especialista.id);
     this.turnosFiltrados = this.turnos;
+    console.log(this.turnos);
+    
   }
 
   filtrarTurnos() {
     const filtroLower = this.filtro.toLowerCase();
-    this.turnosFiltrados = this.turnos.filter(t =>
-      t.especialidad?.especialidad.toLowerCase().includes(filtroLower) ||
-      this.obtenerNombrePaciente(t.pacienteId).toLowerCase().includes(filtroLower)
-    );
+    this.turnosFiltrados = this.turnosService.filtrarTurnos(this.turnos, filtroLower);
   }
 
   obtenerPacientes() {
@@ -75,7 +80,7 @@ export class TurnosEspecialistaComponent implements OnInit {
 
           dialogRef.afterClosed().subscribe(async (comentario: string | undefined) => {
           if (comentario) {
-            turno.comentarioPaciente = comentario;
+            turno.comentario = comentario;
             let turnoNuevo = await this.turnosService.cancelarTurno(turno);
             this.reemplazarTurno(turnoNuevo);
             this.toast.success("Turno cancelado con éxito. ");
@@ -106,7 +111,7 @@ export class TurnosEspecialistaComponent implements OnInit {
       dialogRef.afterClosed().subscribe(async (comentario: string | undefined) => {
         if (comentario) {
           try {
-            turno.comentarioEspecialista = comentario;
+            turno.comentario = comentario;
             let turnoNuevo = await this.turnosService.rechazarTurno(turno);
             this.reemplazarTurno(turnoNuevo);
             this.toast.success("Turno rechazado con éxito. ");
@@ -135,7 +140,7 @@ export class TurnosEspecialistaComponent implements OnInit {
       if (comentario) {
         try {
 
-          turno.comentarioEspecialista = comentario;
+          turno.comentario = comentario;
           let turnoNuevo = await this.turnosService.finalizarTurno(turno);
           this.reemplazarTurno(turnoNuevo);
           this.toast.success("Turno finalizado con éxito. ");
@@ -156,7 +161,38 @@ export class TurnosEspecialistaComponent implements OnInit {
   }
 
   verResenia(turno: Turno) {
-    console.log('Ver reseña:', turno);
-    // TODO: implementar lógica
+    this.dialog.open(ModalReseniaComponent, {data: {resenia:  turno.comentario}});
   }
+
+  cargarHistoriaClinica(turno: Turno) {
+    try {
+      this.spinner.show()
+      
+      const dialogRef = this.dialog.open(HistoriaClinicaModalComponent);
+
+      dialogRef.afterClosed().subscribe(async (historia: HistoriaClinica | undefined) => {
+        if (historia) {
+          try {
+            console.log(historia);
+            turno.historiaClinica = historia;
+            await this.turnosService.cargarHistoriaClinicaDeTurno(turno);
+            this.reemplazarTurno(turno);
+            this.toast.success("Historia clínica cargada con éxito. ");
+          }    
+          catch(err: any) {
+            this.toast.danger(`Error al cargar historia clínica de turno: ${err.message}`);
+          }
+        }
+    });
+      
+    }
+    catch(err: any) {
+      this.toast.danger(`Error al cargar historia clínica de turno: ${err.message}`);
+    }
+    finally {
+      this.spinner.hide();
+    }
+  }
+
+
 }

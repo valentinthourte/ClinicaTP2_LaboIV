@@ -8,10 +8,12 @@ import { SpinnerService } from '../../../../services/shared/spinner.service';
 import { NgToastService } from 'ng-angular-popup';
 import { TurnosService } from '../../../../services/turnos.service';
 import { FormsModule } from '@angular/forms';
+import { VisualHistoriaClinicaModalComponent } from '../../../visual-historia-clinica-modal/visual-historia-clinica-modal.component';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-turnos-administrador',
-  imports: [TitleCasePipe, EstadoTurnoColorDirective, CommonModule, FormsModule],
+  imports: [TitleCasePipe, EstadoTurnoColorDirective, CommonModule, FormsModule, MatTooltipModule],
   templateUrl: './turnos-administrador.component.html',
   styleUrl: './turnos-administrador.component.scss'
 })
@@ -26,6 +28,7 @@ export class TurnosAdministradorComponent implements OnInit {
     try {
       this.turnos = await this.turnosService.obtenerTodosTurnos();
       this.turnosFiltrados = this.turnos;
+      
     } 
     catch(err: any) {
       this.toast.danger(`Se produjo un error al obtener todos los turnos: ${err.message}`);
@@ -40,7 +43,7 @@ export class TurnosAdministradorComponent implements OnInit {
 
           dialogRef.afterClosed().subscribe(async (comentario: string | undefined) => {
           if (comentario) {
-            turno.comentarioPaciente = comentario;
+            turno.comentario = comentario;
             let turnoNuevo = await this.turnosService.cancelarTurno(turno);
             this.reemplazarTurno(turnoNuevo);
             this.toast.success("Turno cancelado con éxito. ");
@@ -65,12 +68,9 @@ export class TurnosAdministradorComponent implements OnInit {
 
   filtrarTurnos() {
     const filtroLower = this.filtro.toLowerCase();
-    this.turnosFiltrados = this.turnos.filter(t =>
-      t.especialidad?.especialidad.toLowerCase().includes(filtroLower) ||
-      t.especialista?.nombre.toLowerCase().includes(filtroLower) || t.especialista?.apellido.toLowerCase().includes(filtroLower) ||
-      t.paciente?.nombre.toLowerCase().includes(filtroLower) || t.paciente?.apellido.toLowerCase().includes(filtroLower) 
-    );
+    this.turnosFiltrados = this.turnosService.filtrarTurnos(this.turnos, filtroLower);
   }
+
 
   obtenerEspecialistas() {
     let esp = this.turnos.filter(t => t.especialista !== null).map(t => t.especialista!);
@@ -94,6 +94,8 @@ export class TurnosAdministradorComponent implements OnInit {
     return p ? `${p.nombre} ${p.apellido}` : 'Desconocido';
   }
 
-
+  verHistoriaClinica(turno: Turno) {
+    this.dialog.open(VisualHistoriaClinicaModalComponent, {data: {historia: turno.historiaClinica, paciente: turno.paciente}});
+  }
   
 }

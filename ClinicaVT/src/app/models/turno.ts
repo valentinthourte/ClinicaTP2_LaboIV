@@ -11,12 +11,11 @@ export interface Turno {
     especialidadId: string;
     fecha: Date; 
     estado: EstadoTurno;
-    comentarioPaciente?: string;
-    comentarioEspecialista?: string;
-    reseniaPaciente?: string;
+    comentario?: string;
     historiaClinica?: HistoriaClinica;
     hora: string;
     especialista?: Especialista;
     especialidad?: Especialidad;
     paciente?: Paciente;
+    calificado: boolean;
 }

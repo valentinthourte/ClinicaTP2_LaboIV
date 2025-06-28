@@ -11,11 +11,14 @@ import { EstadoTurnoColorDirective } from '../../../../directivas/estado-turno-c
 import { SpinnerService } from '../../../../services/shared/spinner.service';
 import { NgToastService } from 'ng-angular-popup';
 import { MatDialog } from '@angular/material/dialog';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { ModalCancelarTurnosComponent } from '../../modal-cancelar-turnos/modal-cancelar-turnos.component';
+import { ModalReseniaComponent } from '../../../modal-resenia/modal-resenia.component';
+import { ModalCalificarAtencionComponent } from '../../../modal-calificar-atencion/modal-calificar-atencion.component';
 
 @Component({
   selector: 'app-turnos-paciente',
-  imports: [CommonModule, FormsModule, EspecialidadPipe, EspecialistaPipe, EstadoTurnoColorDirective],
+  imports: [CommonModule, FormsModule, EspecialidadPipe, EspecialistaPipe, EstadoTurnoColorDirective, MatTooltipModule],
   templateUrl: './turnos-paciente.component.html',
   styleUrl: './turnos-paciente.component.scss'
 })
@@ -29,16 +32,15 @@ export class TurnosPacienteComponent implements OnInit {
 
   filtrarTurnos() {
     const filtroLower = this.filtro.toLowerCase();
-    this.turnosFiltrados = this.turnos.filter(t =>
-      t.especialidad?.especialidad.toLowerCase().includes(filtroLower) ||
-      this.obtenerNombreEspecialista(t.especialistaId).toLowerCase().includes(filtroLower)
-    );
+    this.turnosFiltrados = this.turnosService.filtrarTurnos(this.turnos, filtroLower);
   }
 
   async ngOnInit() {
     const usuario = await this.auth.getUsuarioLogueadoSupabase();
     this.turnos = await this.turnosService.obtenerTurnosPacientePorId(usuario.id);
     this.turnosFiltrados = this.turnos;
+    console.log(this.turnos);
+    
   }
 
   obtenerEspecialistas() {
@@ -46,18 +48,20 @@ export class TurnosPacienteComponent implements OnInit {
     return esp;
   }
 
-
   obtenerNombreEspecialista(id: string): string {
     const esp = this.obtenerEspecialistas().find(e => e.id === id);
     return esp ? `${esp.nombre} ${esp.apellido}` : 'Desconocido';
   }
 
-  calificarAtencion(_t18: any) {
-    throw new Error('Method not implemented.');
-  }
+  calificarAtencion(turno: Turno) {
+    const dialogRef = this.dialog.open(ModalCalificarAtencionComponent);
 
-  completarEncuesta(_t18: any) {
-    throw new Error('Method not implemented.');
+    dialogRef.afterClosed().subscribe(async (calificacion: number | undefined) => {
+      if (calificacion) {
+        await this.turnosService.setearTurnoCalificado(turno, calificacion);
+        this.toast.success("Atencion calificada con éxito!");
+      }
+    });
   }
 
   async cancelarTurno(turno: Turno) {
@@ -69,7 +73,7 @@ export class TurnosPacienteComponent implements OnInit {
 
           dialogRef.afterClosed().subscribe(async (comentario: string | undefined) => {
           if (comentario) {
-            turno.comentarioPaciente = comentario;
+            turno.comentario = comentario;
             let turnoNuevo = await this.turnosService.cancelarTurno(turno);
             const idx = this.turnos.findIndex(t => t.id === turnoNuevo.id);
             if (idx !== -1) {
@@ -78,7 +82,6 @@ export class TurnosPacienteComponent implements OnInit {
             this.toast.success("Turno cancelado con éxito. ");
           }
         });
-      
     }
     catch(err: any) {
       this.toast.danger(`Error al cancelar turno: ${err.message}`);
@@ -88,7 +91,7 @@ export class TurnosPacienteComponent implements OnInit {
     }
   }
 
-  verResenia(_t22: Turno) {
-    throw new Error('Method not implemented.');
+  verResenia(turno: Turno) {
+    this.dialog.open(ModalReseniaComponent, {data: {resenia:  turno.comentario}});
   }
 }

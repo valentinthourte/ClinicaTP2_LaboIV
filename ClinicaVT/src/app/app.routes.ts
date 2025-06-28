@@ -9,6 +9,7 @@ import { MisTurnosComponent } from './componentes/turnos/mis-turnos/mis-turnos.c
 import { SolicitarTurnoComponent } from './componentes/turnos/solicitar-turno/solicitar-turno.component';
 import { MisHorariosComponent } from './componentes/mis-horarios/mis-horarios.component';
 import { TurnosAdministradorComponent } from './componentes/turnos/mis-turnos/turnos-administrador/turnos-administrador.component';
+import { PacientesAtendidosComponent } from './componentes/pacientes-atendidos/pacientes-atendidos.component';
 
 export const routes: Routes = [
     {path: '', pathMatch: "full", component: LandingPageComponent},
@@ -20,5 +21,6 @@ export const routes: Routes = [
     {path: 'turnos', component: TurnosAdministradorComponent},
     {path: 'solicitarTurno', component: SolicitarTurnoComponent},
     {path: 'misHorarios', component: MisHorariosComponent},
+    {path: 'pacientesAtendidos', component: PacientesAtendidosComponent},
     {path: '**', component: NotFoundComponent}
 ];

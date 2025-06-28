@@ -54,10 +54,20 @@
                     <i class="bi bi-check2-square"></i> Finalizar
                   </button>
 
-                  <button *ngIf="turno.reseniaPaciente" class="btn btn-sm btn-outline-info"
-                          (click)="verResenia(turno)">
-                    <i class="bi bi-chat-text"></i> Reseña
+                  <button *ngIf="turno.comentario" class="btn btn-sm btn-secondary"
+                          (click)="verResenia(turno)"
+                          matTooltip="Ver reseña"
+                          matTooltipPosition="above">
+                    <i class="bi bi-eye"></i>
                   </button>
+
+                  <button *ngIf="turno.estado == 'realizado' && (turno.historiaClinica == null || turno.historiaClinica == undefined)" class="btn btn-sm btn-success" 
+                      (click)="cargarHistoriaClinica(turno)"
+                      matTooltip="Cargar historia clínica"
+                      matTooltipPosition="above">
+                    <i class="bi bi-clipboard2-data-fill"></i>
+                  </button>
+                  
                 </div>
               </td>
             </tr>

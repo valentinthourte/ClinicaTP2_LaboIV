@@ -1,0 +1,24 @@
+<div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+  <div class="bg-white rounded-lg shadow-lg p-6 w-96 max-w-full text-center">
+    <h3 class="text-lg font-semibold text-primary mb-4">Calificar atención</h3>
+
+    <div class="flex justify-center items-center gap-2 mb-4">
+      <ng-container *ngFor="let estrella of [1,2,3,4,5]">
+        <i
+          class="bi"
+          [ngClass]="{
+            'bi-star-fill text-yellow-400': estrella <= calificacion,
+            'bi-star text-gray-400': estrella > calificacion
+          }"
+          class="text-2xl cursor-pointer"
+          (click)="calificar(estrella)"
+        ></i>
+      </ng-container>
+    </div>
+
+    <div class="flex justify-end mt-4 gap-2">
+      <button class="btn btn-outline-secondary" (click)="cerrar()">Cancelar</button>
+      <button class="btn btn-primary" [disabled]="calificacion === 0" (click)="confirmar()">Confirmar</button>
+    </div>
+  </div>
+</div>

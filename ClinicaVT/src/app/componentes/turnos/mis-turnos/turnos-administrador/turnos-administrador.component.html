@@ -37,6 +37,12 @@
                 </span>
               </td>
               <td>
+                  <button *ngIf="turno.estado == 'realizado' && turno.historiaClinica" class="btn btn-sm btn-primary" 
+                    (click)="verHistoriaClinica(turno)"
+                    matTooltip="Ver historia clínica"
+                    matTooltipPosition="above">
+                    <i class="bi bi-clipboard2-data-fill"></i>
+                  </button>
                 <button
                   *ngIf="turno.estado !== 'aceptado' && turno.estado !== 'cancelado' && turno.estado !== 'realizado' && turno.estado !== 'rechazado'" 
                   class="btn btn-sm btn-outline-danger"

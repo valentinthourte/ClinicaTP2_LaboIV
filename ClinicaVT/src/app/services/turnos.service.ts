@@ -11,7 +11,6 @@ import { Paciente } from '../models/paciente';
 })
 export class TurnosService {
 
- 
   constructor(private supabaseService: SupabaseService) { }
   
   async obtenerTurnosPacientePorId(id: string | undefined): Promise<Turno[]> {
@@ -80,4 +79,18 @@ export class TurnosService {
     return await this.supabaseService.obtenerTodosTurnos();
   }
 
+  async cargarHistoriaClinicaDeTurno(turno: Turno) {
+    await this.supabaseService.cargarHistoriaClinicaDeTurno(turno);
+  }
+
+  filtrarTurnos(turnos: Turno[], filtroLower: string): Turno[] {
+    return turnos.filter(t => {
+      const dataStr = JSON.stringify(t).toLowerCase();
+      return dataStr.includes(filtroLower);
+    });
+  } 
+
+  async setearTurnoCalificado(turno: Turno, calificacion: number) {
+    await this.supabaseService.setearTurnoCalificado(turno, calificacion);
+  }
 }
