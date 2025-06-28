@@ -5,7 +5,6 @@
     </div>
 
     <div class="card-body">
-      <!-- Filtro -->
       <div class="input-group mb-4">
         <input type="text" class="form-control" placeholder="Filtrar por paciente o especialidad"
                [(ngModel)]="filtro" (ngModelChange)="filtrarTurnos()" />
@@ -14,7 +13,6 @@
         </span>
       </div>
 
-      <!-- Tabla -->
       <div class="table-responsive">
         <table class="table table-hover table-bordered">
           <thead class="table-light">
@@ -36,31 +34,26 @@
               </td>
               <td>
                 <div class="d-flex flex-wrap gap-2">
-                  <!-- Cancelar -->
                   <button *ngIf="turno.estado === 'pendiente'" class="btn btn-sm btn-outline-danger"
                           (click)="cancelarTurno(turno)">
                     <i class="bi bi-x-circle"></i> Cancelar
                   </button>
 
-                  <!-- Rechazar -->
                   <button *ngIf="turno.estado === 'pendiente'" class="btn btn-sm btn-outline-secondary"
                           (click)="rechazarTurno(turno)">
                     <i class="bi bi-x-lg"></i> Rechazar
                   </button>
 
-                  <!-- Aceptar -->
                   <button *ngIf="turno.estado === 'pendiente'" class="btn btn-sm btn-outline-success"
                           (click)="aceptarTurno(turno)">
                     <i class="bi bi-check-circle"></i> Aceptar
                   </button>
 
-                  <!-- Finalizar -->
                   <button *ngIf="turno.estado === 'aceptado'" class="btn btn-sm btn-outline-primary"
                           (click)="finalizarTurno(turno)">
                     <i class="bi bi-check2-square"></i> Finalizar
                   </button>
 
-                  <!-- Ver Reseña -->
                   <button *ngIf="turno.reseniaPaciente" class="btn btn-sm btn-outline-info"
                           (click)="verResenia(turno)">
                     <i class="bi bi-chat-text"></i> Reseña

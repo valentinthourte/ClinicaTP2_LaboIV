@@ -1,1 +1,57 @@
-<p>turnos-administrador works!</p>
+<div class="container py-4">
+  <div class="card shadow-sm">
+    <div class="card-header bg-primary text-white">
+      <h5 class="mb-0 text-center">Turnos de la Clínica</h5>
+    </div>
+
+    <div class="card-body">
+      <div class="input-group mb-4">
+        <input type="text" class="form-control" placeholder="Filtrar por paciente o especialidad"
+               [(ngModel)]="filtro" (ngModelChange)="filtrarTurnos()" />
+        <span class="input-group-text bg-light">
+          <i class="bi bi-search"></i>
+        </span>
+      </div>
+
+      <div class="table-responsive">
+        <table class="table table-hover table-bordered">
+          <thead class="table-light">
+            <tr>
+              <th>Fecha</th>
+              <th>Paciente</th>
+              <th>Especialista</th>
+              <th>Especialidad</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let turno of turnosFiltrados">
+              <td>{{ turno.fecha | date: "dd/MM/yyyy" }} {{ turno.hora }}</td>
+              <td>{{ turno.paciente?.nombre }} {{ turno.paciente?.apellido }}</td>
+              <td>{{ turno.especialista?.nombre }} {{ turno.especialista?.apellido }}</td>
+              <td>{{ turno.especialidad?.especialidad }}</td>
+              <td>
+                <span class="badge" [appEstadoTurnoColor]="turno.estado">
+                  {{ turno.estado | titlecase }}
+                </span>
+              </td>
+              <td>
+                <button
+                  *ngIf="turno.estado !== 'aceptado' && turno.estado !== 'cancelado' && turno.estado !== 'realizado' && turno.estado !== 'rechazado'" 
+                  class="btn btn-sm btn-outline-danger"
+                  (click)="cancelarTurno(turno)">
+                  <i class="bi bi-x-circle"></i> Cancelar
+                </button>
+              </td>
+            </tr>
+
+            <tr *ngIf="turnosFiltrados.length === 0">
+              <td colspan="6" class="text-center text-muted py-3">No hay turnos registrados.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

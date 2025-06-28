@@ -4,9 +4,10 @@ export const TABLA_PACIENTES = "pacientes";
 export const TABLA_ESPECIALIDADES = "especialidades";
 export const TABLA_ADMINISTRADORES = "administradores";
 export const TABLA_TURNOS = "turnos";
+export const TABLA_LOGINS = "registro_logins";
 
 
-export const CONSULTA_TURNOS = `
+export const QUERY_TURNOS = `
       *,
       especialista:especialistas (
         id,

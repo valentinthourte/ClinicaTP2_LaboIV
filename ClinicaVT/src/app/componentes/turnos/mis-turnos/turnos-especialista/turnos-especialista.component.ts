@@ -101,7 +101,7 @@ export class TurnosEspecialistaComponent implements OnInit {
   rechazarTurno(turno: Turno) {
     try {
       this.spinner.show()
-      const dialogRef = this.dialog.open(ModalCancelarTurnosComponent);
+      const dialogRef = this.dialog.open(ModalCancelarTurnosComponent, {data: {accion: "Rechazar"}});
 
       dialogRef.afterClosed().subscribe(async (comentario: string | undefined) => {
         if (comentario) {
@@ -129,7 +129,7 @@ export class TurnosEspecialistaComponent implements OnInit {
     try {
       this.spinner.show()
       
-      const dialogRef = this.dialog.open(ModalCancelarTurnosComponent);
+      const dialogRef = this.dialog.open(ModalCancelarTurnosComponent, {data: {accion: "Finalizar"}});
 
       dialogRef.afterClosed().subscribe(async (comentario: string | undefined) => {
       if (comentario) {

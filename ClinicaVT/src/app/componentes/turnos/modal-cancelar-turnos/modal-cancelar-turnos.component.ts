@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { FormBuilder, Validators, ReactiveFormsModule, FormGroup } from '@angular/forms';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -11,15 +11,18 @@ import { CommonModule } from '@angular/common';
 })
 export class ModalCancelarTurnosComponent {
   form: FormGroup;
+  accion: string;
   constructor(
     private fb: FormBuilder,
-    private dialogRef: MatDialogRef<ModalCancelarTurnosComponent>
-  ) {
-    this.form = this.fb.group({
-    comentario: ['', Validators.required]
-  });
-  }
-  
+    private dialogRef: MatDialogRef<ModalCancelarTurnosComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: { accion: string }
+    ) {
+      this.form = this.fb.group({
+        comentario: ['', Validators.required]
+      });
+      this.accion = data != null ? data.accion : "Cancelar";
+    }
+    
 
   enviar() {
     if (this.form.valid) {

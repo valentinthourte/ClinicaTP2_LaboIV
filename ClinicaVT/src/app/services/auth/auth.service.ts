@@ -24,6 +24,7 @@ export class AuthService {
     if (error)
       throw new Error(`Error al registrarse: ${error.message}`);
     this.usuarioLogueado = data.user;
+    await this.supabaseService.registrarLogin(data.user!);
     return data;
   }
   
@@ -64,7 +65,8 @@ export class AuthService {
     if (error)
       throw new Error(`Error en login: ${error.message}`)
     this.usuarioLogueado = data.user;
-    
+    debugger
+    await this.supabaseService.registrarLogin(data.user);
     return data;
   }
   

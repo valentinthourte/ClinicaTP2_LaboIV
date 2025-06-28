@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { createClient, SupabaseClient } from '@supabase/supabase-js';
+import { createClient, SupabaseClient, User } from '@supabase/supabase-js';
 import { environment } from '../../../environments/environment';
 import { Especialidad } from '../../models/especialidad';
-import { CONSULTA_TURNOS, QUERY_ESPECIALISTAS, TABLA_ADMINISTRADORES, TABLA_ESPECIALIDADES, TABLA_ESPECIALISTAS, TABLA_ESPECIALISTAS_ESPECIALIDADES, TABLA_PACIENTES, TABLA_TURNOS } from '../../constantes';
+import { QUERY_TURNOS, QUERY_ESPECIALISTAS, TABLA_ADMINISTRADORES, TABLA_ESPECIALIDADES, TABLA_ESPECIALISTAS, TABLA_ESPECIALISTAS_ESPECIALIDADES, TABLA_PACIENTES, TABLA_TURNOS, TABLA_LOGINS } from '../../constantes';
 import { NgToastService } from 'ng-angular-popup';
 import { Especialista } from '../../models/especialista';
 import { Paciente } from '../../models/paciente';
@@ -17,6 +17,7 @@ import { Horario } from '../../models/horario';
   providedIn: 'root'
 })
 export class SupabaseService {
+
 
   private supabase = createClient(environment.apiUrl, environment.publicAnonKey);
   constructor(private toast: NgToastService) { }
@@ -115,6 +116,25 @@ export class SupabaseService {
     return await this.cambiarEstadoTurnoYActualizar(turno, EstadoTurno.Realizado);
   }
 
+  async obtenerTodosTurnos(): Promise<Turno[]> {
+    const {data, error} = await this.supabase.from(TABLA_TURNOS)
+                          .select(QUERY_TURNOS).order('created_at', {ascending: false})
+    if (error) {
+      console.log(error);
+      throw new Error(`Se produjo un error al obtener todos los turnos: ${error.message}`)                        
+    }
+    return data as Turno[];
+  }
+
+  async registrarLogin(user: User) {
+    const {data, error} = await this.supabase.from(TABLA_LOGINS)
+                          .insert({usuarioId: user.id});
+    
+    if (error) {
+      console.log(error);
+      this.toast.danger(`Se produjo un error al registrar login: ${error.message}`);         
+    }
+  }
 
 
   async cambiarEstadoTurnoYActualizar(turno: Turno, estadoTurno: EstadoTurno): Promise<Turno> {
@@ -171,7 +191,6 @@ export class SupabaseService {
   }
 
   async obtenerTodosEspecialistas(): Promise<Especialista[]> {
-    debugger
     const { data, error } = await this.supabase
     .from(TABLA_ESPECIALISTAS)
     .select(QUERY_ESPECIALISTAS).order('created_at', {ascending: false});
@@ -196,7 +215,7 @@ export class SupabaseService {
         )
       `)
       .eq('especialidadId', id)
-      .eq('aprobado', true);
+      .eq('especialista.aprobado', true);
 
     if (error) throw new Error('Error al obtener especialistas: ' + error.message);
 
@@ -333,7 +352,7 @@ export class SupabaseService {
   async obtenerTurnosDePaciente(id: string | undefined): Promise<Turno[]> {
     const { data, error } = await this.supabase
       .from(TABLA_TURNOS)
-      .select(CONSULTA_TURNOS)
+      .select(QUERY_TURNOS)
       .eq('pacienteId', id).order('created_at', {ascending: false});
 
     if (error)
@@ -345,7 +364,7 @@ export class SupabaseService {
   async obtenerTurnosPorEspecialistaId(id: string): Promise<Turno[]> {
     const { data, error } = await this.supabase
       .from(TABLA_TURNOS)
-      .select(CONSULTA_TURNOS)
+      .select(QUERY_TURNOS)
       .eq('especialistaId', id).order('created_at', {ascending: false});
 
     if (error)

@@ -29,7 +29,6 @@ export class TurnosService {
   ): Promise<string[]> {
     const fechaStr = dia.toISOString().split('T')[0];
     const horariosReservados = await this.supabaseService.obtenerHorariosEspecialistaParaDia(especialista, fechaStr);
-    debugger
     const horariosDia = especialista.horarios.find(h => h.dia === dia.getDay());
     const duracionTurnos = especialista.especialidades.find(e => e.especialidad.id === especialidad.id)?.duracion;
 
@@ -75,6 +74,10 @@ export class TurnosService {
 
   async obtenerTurnosPorEspecialistaId(id: string):Promise<Turno[]> {
     return await this.supabaseService.obtenerTurnosPorEspecialistaId(id);
+  }
+
+  async obtenerTodosTurnos(): Promise<Turno[]> {
+    return await this.supabaseService.obtenerTodosTurnos();
   }
 
 }

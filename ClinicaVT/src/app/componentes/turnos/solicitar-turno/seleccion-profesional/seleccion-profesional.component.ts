@@ -3,6 +3,7 @@ import { Especialista } from '../../../../models/especialista';
 import { Especialidad } from '../../../../models/especialidad';
 import { UsuariosService } from '../../../../services/usuarios.service';
 import { CommonModule } from '@angular/common';
+import { NgToastService } from 'ng-angular-popup';
 
 @Component({
   selector: 'app-seleccion-profesional',
@@ -16,11 +17,18 @@ export class SeleccionProfesionalComponent implements OnInit {
 
   especialistas: Especialista[] = [];
 
-  constructor(private usuariosService: UsuariosService) {}
+  constructor(private usuariosService: UsuariosService, private toast: NgToastService) {}
 
   async ngOnInit() {
     if (this.especialidad) {
-      this.especialistas = await this.usuariosService.obtenerEspecialistasAprobadosPorEspecialidad(this.especialidad.id);
+      try {
+        this.especialistas = await this.usuariosService.obtenerEspecialistasAprobadosPorEspecialidad(this.especialidad.id);
+      }
+      catch(err: any)
+      {
+        console.log(err);
+        this.toast.danger(`Error al obtener especialistas aprobados por especialidad: ${err.message}`);
+      }
     }
   }
 

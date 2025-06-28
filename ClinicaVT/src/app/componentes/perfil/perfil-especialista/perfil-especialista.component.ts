@@ -69,7 +69,8 @@ export class PerfilEspecialistaComponent implements OnInit {
       this.duracionSeleccionada = null;
 
       this.toast.success("Especialidad agregada!");
-    } catch (err: any) {
+    } 
+    catch (err: any) {
       this.toast.danger(`Error al agregar especialidad: ${err.message}`);
     } finally {
       this.spinner.hide();
