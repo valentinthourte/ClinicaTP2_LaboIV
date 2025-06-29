@@ -13,6 +13,7 @@ import { Especialidad } from '../../models/especialidad';
 import { EspecialidadesService } from '../../services/especialidades.service';
 import { EspecialidadEspecialista } from '../../models/especialidad-especialista';
 import { EspecialidadesPipe } from '../../pipes/especialidades.pipe';
+import { ExportarExcelService } from '../../services/exportar-excel.service';
 
 @Component({
   selector: 'app-vista-especialistas',
@@ -23,7 +24,12 @@ import { EspecialidadesPipe } from '../../pipes/especialidades.pipe';
 })
 export class VistaEspecialistasComponent implements OnInit {
   especialistas: Especialista[] = [];
-  constructor(private usuariosService: UsuariosService, private spinner: SpinnerService, private toast: NgToastService, private dialog: MatDialog, private especialidadesService: EspecialidadesService) {}
+  constructor(private usuariosService: UsuariosService, 
+              private spinner: SpinnerService, 
+              private toast: NgToastService, 
+              private dialog: MatDialog, 
+              private especialidadesService: EspecialidadesService,
+              private excelService: ExportarExcelService) {}
   
   async ngOnInit() {
     try {
@@ -100,4 +106,19 @@ export class VistaEspecialistasComponent implements OnInit {
   formatearEspecialidades(especialidades: EspecialidadEspecialista[]): string {
     return this.especialidadesService.formatearEspecialidades(especialidades.map(e => e.especialidad));
   }
+
+    onExportarExcel() {
+      let pacientesExportar = this.especialistas.map(p => this.especialistaAFilaExcel(p));
+      this.excelService.exportarAExcel(pacientesExportar, "Listado de especialistas", "listado_especialistas");
+    }
+    especialistaAFilaExcel(e: Especialista): any {
+      return {
+        "Nombre": `${e.nombre} ${e.apellido}`,
+        "Email": e.email,
+        "Edad": e.edad,
+        "DNI": e.dni,
+        "Especialidades": e.especialidades.map(e => e.especialidad.especialidad).join(', '),
+        "URL Imagen": e.urlImagen
+      }
+    }
 }

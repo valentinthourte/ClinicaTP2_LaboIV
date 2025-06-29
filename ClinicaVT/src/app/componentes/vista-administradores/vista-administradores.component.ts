@@ -6,6 +6,7 @@ import { SpinnerService } from '../../services/shared/spinner.service';
 import { NgToastService } from 'ng-angular-popup';
 import { MatDialog } from '@angular/material/dialog';
 import { RegistrarAdministradorComponent } from '../registro/registrar-administrador/registrar-administrador.component';
+import { ExportarExcelService } from '../../services/exportar-excel.service';
 
 @Component({
   selector: 'app-vista-administradores',
@@ -16,7 +17,11 @@ import { RegistrarAdministradorComponent } from '../registro/registrar-administr
 export class VistaAdministradoresComponent implements OnInit {
   protected administradores: Administrador[] = [];
   
-  constructor(private usuariosService: UsuariosService, private spinner: SpinnerService, private toast: NgToastService, private dialog: MatDialog) {}
+  constructor(private usuariosService: UsuariosService, 
+              private spinner: SpinnerService, 
+              private toast: NgToastService, 
+              private dialog: MatDialog,
+              private excelService: ExportarExcelService) {}
 
   async ngOnInit() {
     try {
@@ -36,9 +41,23 @@ export class VistaAdministradoresComponent implements OnInit {
     const dialogRef = this.dialog.open(RegistrarAdministradorComponent);
 
     dialogRef.afterClosed().subscribe((nuevoAdmin: Administrador | undefined) => {
-    if (nuevoAdmin) {
-      this.administradores.push(nuevoAdmin);
-    }
-  });
+      if (nuevoAdmin) {
+        this.administradores.push(nuevoAdmin);
+      }
+    });
   }
+
+    onExportarExcel() {
+      let pacientesExportar = this.administradores.map(a => this.administradorAFilaExcel(a));
+      this.excelService.exportarAExcel(pacientesExportar, "Listado de administradores", "listado_administradores");
+    }
+    administradorAFilaExcel(a: Administrador): any {
+      return {
+        "Nombre": `${a.nombre} ${a.apellido}`,
+        "Email": a.email,
+        "Edad": a.edad,
+        "DNI": a.dni,
+        "URL Imagen": a.imagen
+      }
+    }
 }

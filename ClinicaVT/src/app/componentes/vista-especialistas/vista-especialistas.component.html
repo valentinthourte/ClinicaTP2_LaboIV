@@ -1,7 +1,14 @@
 <div class="container py-4">
-  <button class="btn btn-primary" (click)="onAgregarEspecialista()">
-      Agregar especialista
-  </button>
+    <div class="flex justify-between items-center mb-3">
+    <button class="btn btn-primary" (click)="onAgregarEspecialista()">
+        Agregar especialista
+    </button>
+    <button class="btn btn-outline-success" (click)="onExportarExcel()">
+      <i class="bi bi-file-earmark-excel"></i>
+      Exportar
+    </button>
+  </div>
+
   <div class="card shadow-sm">
     <div class="card-header bg-primary text-white text-center">
       <h5 class="m-0">Listado de Especialistas</h5>

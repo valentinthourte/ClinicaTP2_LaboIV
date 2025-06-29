@@ -26,7 +26,6 @@ export class ExportarExcelService {
 
     const worksheet: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(hojaComoArray);
 
-    // Autosize columnas
     const colWidths = hojaComoArray[1].map((_: any, colIndex: number) => {
       const maxLength = hojaComoArray.reduce((max, row) => {
         const cell = row[colIndex];
@@ -37,7 +36,6 @@ export class ExportarExcelService {
     });
     worksheet['!cols'] = colWidths;
 
-    // Combinar celdas del título
     worksheet['!merges'] = [
       { s: { r: 0, c: 0 }, e: { r: 0, c: hojaComoArray[1].length - 1 } }
     ];

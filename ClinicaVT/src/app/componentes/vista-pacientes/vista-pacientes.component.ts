@@ -48,8 +48,16 @@ export class VistaPacientesComponent implements OnInit{
 
   onExportarExcel() {
     let pacientesExportar = this.pacientes.map(p => this.pacienteAFilaExcel(p));
+    this.excelService.exportarAExcel(pacientesExportar, "Listado de pacientes", "listado_pacientes");
   }
   pacienteAFilaExcel(p: Paciente): any {
-    throw new Error('Method not implemented.');
+    return {
+      "Nombre": `${p.nombre} ${p.apellido}`,
+      "Email": p.email,
+      "Edad": p.edad,
+      "DNI": p.dni,
+      "Obra Social": p.obraSocial,
+      "URL Imagen": p.urlImagenUno
+    }
   }
 }
