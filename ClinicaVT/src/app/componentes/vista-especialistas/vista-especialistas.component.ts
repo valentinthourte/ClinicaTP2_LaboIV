@@ -107,18 +107,18 @@ export class VistaEspecialistasComponent implements OnInit {
     return this.especialidadesService.formatearEspecialidades(especialidades.map(e => e.especialidad));
   }
 
-    onExportarExcel() {
-      let pacientesExportar = this.especialistas.map(p => this.especialistaAFilaExcel(p));
-      this.excelService.exportarAExcel(pacientesExportar, "Listado de especialistas", "listado_especialistas");
+  onExportarExcel() {
+    let pacientesExportar = this.especialistas.map(p => this.especialistaAFilaExcel(p));
+    this.excelService.exportarAExcel(pacientesExportar, "Listado de especialistas", "listado_especialistas");
+  }
+  especialistaAFilaExcel(e: Especialista): any {
+    return {
+      "Nombre": `${e.nombre} ${e.apellido}`,
+      "Email": e.email,
+      "Edad": e.edad,
+      "DNI": e.dni,
+      "Especialidades": e.especialidades.map(e => e.especialidad.especialidad).join(', '),
+      "URL Imagen": e.urlImagen
     }
-    especialistaAFilaExcel(e: Especialista): any {
-      return {
-        "Nombre": `${e.nombre} ${e.apellido}`,
-        "Email": e.email,
-        "Edad": e.edad,
-        "DNI": e.dni,
-        "Especialidades": e.especialidades.map(e => e.especialidad.especialidad).join(', '),
-        "URL Imagen": e.urlImagen
-      }
-    }
+  }
 }
