@@ -12,6 +12,13 @@
               [ngClass]="solapaActiva === 'administradores' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-600'"
               (click)="solapaActiva = 'administradores'">Administradores</button>              
     </div>
+
+    <div>
+      <button class="btn btn-success" (click)="descargarTodosUsuarios()">
+        <i class="bi bi-person-plus-fill me-1"></i>
+        Descargar todos los usuarios
+      </button>
+    </div>
   </div>
 
   @if(solapaActiva === 'pacientes') {

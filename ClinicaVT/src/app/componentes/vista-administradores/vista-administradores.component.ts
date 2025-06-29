@@ -48,16 +48,8 @@ export class VistaAdministradoresComponent implements OnInit {
   }
 
     onExportarExcel() {
-      let pacientesExportar = this.administradores.map(a => this.administradorAFilaExcel(a));
+      let pacientesExportar = this.administradores.map(a => this.usuariosService.administradorAFilaExcel(a));
       this.excelService.exportarAExcel(pacientesExportar, "Listado de administradores", "listado_administradores");
     }
-    administradorAFilaExcel(a: Administrador): any {
-      return {
-        "Nombre": `${a.nombre} ${a.apellido}`,
-        "Email": a.email,
-        "Edad": a.edad,
-        "DNI": a.dni,
-        "URL Imagen": a.imagen
-      }
-    }
+
 }

@@ -9,6 +9,7 @@
       Exportar
     </button>
   </div>
+
   <div class="card shadow-sm">
     <div class="card-header bg-primary text-white text-center">
       <h5 class="m-0">Listado de Usuarios</h5>
@@ -25,12 +26,13 @@
               <th>Edad</th>
               <th>DNI</th>
               <th>Obra Social</th>
+              <th>Acciones</th>
             </tr>
           </thead>
           <tbody>
             <tr *ngFor="let usuario of pacientes">
               <td>
-                <img [src]="usuario.urlImagenUno" alt="Imagen perfil" width="48" height="48" class="rounded-circle object-fit-cover">
+                <img [src]="usuario.urlImagenUno" alt="Imagen perfil" width="48" height="48" class="rounded-circle object-fit-cover" (click)="descargarTurnosPaciente(usuario)">
               </td>
               <td>{{ usuario.nombre }}</td>
               <td>{{ usuario.apellido }}</td>
@@ -38,9 +40,15 @@
               <td>{{ usuario.edad }}</td>
               <td>{{ usuario.dni }}</td>
               <td>{{ usuario.obraSocial || '-' }}</td>
+              <td class="text-center">
+                <button class="btn btn-sm btn-outline-info" (click)="mostrarHistorialClinico(usuario)">
+                  <i class="bi bi-journal-medical me-1"></i> Historial
+                </button>
+              </td>
             </tr>
+
             <tr *ngIf="pacientes.length === 0">
-              <td colspan="6" class="text-center py-3 text-muted">No hay pacientes registrados.</td>
+              <td colspan="8" class="text-center py-3 text-muted">No hay pacientes registrados.</td>
             </tr>
           </tbody>
         </table>

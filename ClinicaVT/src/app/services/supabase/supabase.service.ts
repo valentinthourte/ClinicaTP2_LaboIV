@@ -427,7 +427,6 @@ export class SupabaseService {
         console.log(error);
         throw new Error(`Error al cargar historia clinica de turno: ${error.message}`);                
       }
-      debugger
       let historiaId = data[0].id;
       let adicionales = turno.historiaClinica?.adicionales.map(a => ({
         ...a,

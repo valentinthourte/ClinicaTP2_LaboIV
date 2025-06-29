@@ -1,40 +1,78 @@
 <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
   <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-3xl">
+
     <div class="text-center mb-4">
-      <h4 class="text-primary fw-semibold mb-2">Turnos de {{ data.paciente.nombre }} {{ data.paciente.apellido }}</h4>
-      <img [src]="data.paciente.urlImagenUno || 'assets/default-user.png'" alt="Paciente"
-           class="rounded-full w-20 h-20 mx-auto border border-primary object-cover" />
+      <h4 class="text-primary fw-semibold mb-2">
+        Turnos de {{ data.paciente.nombre }} {{ data.paciente.apellido }}
+      </h4>
+      <img
+        [src]="data.paciente.urlImagenUno || 'assets/default-user.png'"
+        alt="Paciente"
+        class="rounded-full w-20 h-20 mx-auto border border-primary object-cover"
+      />
     </div>
 
-    <div class="table-responsive">
-      <table class="table table-sm table-bordered">
-        <thead class="table-light">
-          <tr>
-            <th>Fecha</th>
-            <th>Hora</th>
-            <th>Especialidad</th>
-            <th>Estado</th>
-            <th>Reseña</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let turno of turnos">
-            <td>{{ turno.fecha | date: 'dd/MM/yyyy' }}</td>
-            <td>{{ turno.hora }}</td>
-            <td>{{ turno.especialidad?.especialidad }}</td>
-            <td>
-              <span class="badge" [appEstadoTurnoColor]="turno.estado">{{ turno.estado | titlecase }}</span>
-            </td>
-            <td>
-              <span class="text-muted small">{{ (turno.comentario | titlecase) ?? "Sin reseña" }}</span>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+    <!-- Fila de controles -->
+    <div class="d-flex justify-content-center align-items-center mb-3 gap-3 flex-wrap">
+      <button class="btn btn-outline-danger" (click)="descargarHistoriaClinica()">
+        <i class="bi bi-file-earmark-arrow-down"></i> Descargar Historia Clínica
+      </button>
+
+      <div class="form-group mb-0">
+        <select class="form-select" [(ngModel)]="especialistaSeleccionado">
+          <option [ngValue]="undefined">Todos los especialistas</option>
+          <option *ngFor="let e of especialistasUnicos" [ngValue]="e.id">
+            {{ e.nombre }} {{ e.apellido }}
+          </option>
+        </select>
+      </div>
     </div>
 
-    <div class="text-end mt-3">
+    <!-- Tabla con scroll -->
+    <div class="max-h-[50vh] overflow-y-auto mb-3">
+      <div class="table-responsive">
+        <table class="table table-sm table-bordered">
+          <thead class="table-light sticky-top bg-light">
+            <tr>
+              <th>Fecha</th>
+              <th>Hora</th>
+              <th>Especialidad</th>
+              <th>Estado</th>
+              <th>Reseña</th>
+              <th>Historia Clínica</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let turno of turnos">
+              <td>{{ turno.fecha | date: 'dd/MM/yyyy' }}</td>
+              <td>{{ turno.hora }}</td>
+              <td>{{ turno.especialidad?.especialidad }}</td>
+              <td>
+                <span class="badge" [appEstadoTurnoColor]="turno.estado">{{ turno.estado | titlecase }}</span>
+              </td>
+              <td>
+                <span class="text-muted small">
+                  {{ (turno.comentario | titlecase) ?? 'Sin reseña' }}
+                </span>
+              </td>
+              <td>
+                <button
+                  *ngIf="turno.historiaClinica"
+                  class="btn btn-sm btn-outline-info"
+                  (click)="mostrarHistoriaClinica(turno)"
+                >
+                  <i class="bi bi-journal-medical"></i> Ver
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="text-end">
       <button class="btn btn-secondary" (click)="cerrar()">Cerrar</button>
     </div>
+
   </div>
 </div>

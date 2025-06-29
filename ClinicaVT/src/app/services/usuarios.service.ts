@@ -30,6 +30,17 @@ export class UsuariosService {
     return await this.supabaseService.obtenerPacientePorId(data.user.id);
   }
 
+  pacienteAFilaExcel(p: Paciente): any {
+    return {
+      "Nombre": `${p.nombre} ${p.apellido}`,
+      "Email": p.email,
+      "Edad": p.edad,
+      "DNI": p.dni,
+      "Obra Social": p.obraSocial,
+      "URL Imagen": p.urlImagenUno
+    }
+  }
+
   //#endregion
   //#region Especialistas
   async obtenerEspecialistas(): Promise<Especialista[]> {
@@ -51,6 +62,17 @@ export class UsuariosService {
   async setearHorariosEspecialista(especialista: Especialista, horarios: Horario[]) {
       return await this.supabaseService.setearHorariosEspecialista(especialista, horarios);
   }
+
+  especialistaAFilaExcel(e: Especialista): any {
+    return {
+      "Nombre": `${e.nombre} ${e.apellido}`,
+      "Email": e.email,
+      "Edad": e.edad,
+      "DNI": e.dni,
+      "Especialidades": e.especialidades.map(e => e.especialidad.especialidad).join(', '),
+      "URL Imagen": e.urlImagen
+    }
+  }
   //#endregion
   //#region Administradores
   async obtenerAdministradores(): Promise<Administrador[]> {
@@ -64,8 +86,17 @@ export class UsuariosService {
   async obtenerAdministradorPorId(id: string) {
     return await this.supabaseService.obtenerAdministradorPorId(id);
   }
+
+  administradorAFilaExcel(a: Administrador): any {
+    return {
+      "Nombre": `${a.nombre} ${a.apellido}`,
+      "Email": a.email,
+      "Edad": a.edad,
+      "DNI": a.dni,
+      "URL Imagen": a.imagen
+    }
+  }
   //#endregion
-  
   
   async eliminarEspecialidadAEsp(usuarioId: string | undefined, especialidadId: string) {
     await this.supabaseService.eliminarEspecialidadAEsp(usuarioId, especialidadId);

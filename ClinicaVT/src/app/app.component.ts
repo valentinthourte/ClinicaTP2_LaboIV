@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router, RouterModule, RouterOutlet } from '@angular/router';
 import { MatToolbar } from '@angular/material/toolbar';
 import { NgToastModule } from 'ng-angular-popup';
@@ -14,12 +14,24 @@ import { TipoUsuario } from './enums/tipo-usuario.enum';
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
 
   title = 'ClinicaVT';
   TipoUsuario = TipoUsuario;
   constructor(protected auth: AuthService, private router: Router) { }
   
+  async ngOnInit() {
+    window.addEventListener('beforeunload', () => {
+      localStorage.setItem('logout_pendiente', 'true');
+    });
+
+    const logoutPendiente = localStorage.getItem('logout_pendiente');
+
+    if (logoutPendiente === 'true') {
+      await this.auth.logout();
+      localStorage.removeItem('logout_pendiente');
+    }
+  }
   async logout() {
     await this.auth.logout();
     this.router.navigate([''])

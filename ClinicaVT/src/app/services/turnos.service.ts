@@ -1,15 +1,17 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Turno } from '../models/turno';
 import { SupabaseService } from './supabase/supabase.service';
 import { DiaHoraTurno } from '../models/dia-hora-turno';
 import { Especialidad } from '../models/especialidad';
 import { Especialista } from '../models/especialista';
 import { Paciente } from '../models/paciente';
+import { HistoriaClinica } from '../models/historia-clinica';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TurnosService {
+
 
   constructor(private supabaseService: SupabaseService) { }
   
@@ -93,4 +95,59 @@ export class TurnosService {
   async setearTurnoCalificado(turno: Turno, calificacion: number) {
     await this.supabaseService.setearTurnoCalificado(turno, calificacion);
   }
+
+  turnoAFilaExcel(t: Turno): any {
+    const historia = t.historiaClinica;
+    const adicionales = historia?.adicionales?.map(a => `${a.clave}: ${a.valor}`).join(', ') || 'Sin adicionales';
+
+    return {
+      'Fecha': t.fecha ? new Date(t.fecha).toLocaleDateString() : 'Sin fecha',
+      'Hora': t.hora || 'Sin hora',
+      'Estado': t.estado || 'Sin estado',
+      'Especialista': t.especialista ? `${t.especialista.nombre} ${t.especialista.apellido}` : 'Sin especialista',
+      'Paciente': t.paciente ? `${t.paciente.nombre} ${t.paciente.apellido}` : 'Sin paciente',
+      'Especialidad': t.especialidad?.especialidad || 'Sin especialidad',
+      'Comentario': t.comentario || 'Sin comentario',
+      'Altura (cm)': historia?.altura ?? 'N/A',
+      'Peso (kg)': historia?.peso ?? 'N/A',
+      'Temperatura (°C)': historia?.temperatura ?? 'N/A',
+      'Presión': historia?.presion ?? 'N/A',
+      'Adicionales': adicionales
+    };
+  }
+
+  turnoToArray(turno: Turno) {
+    let datos = [`${this.formatearFecha(turno.fecha)}:${turno.hora}`, `${turno.especialista!.nombre} ${turno.especialista!.apellido}`, turno.especialidad?.especialidad];
+    for (let dato of this.historiaClinicaToArray(turno.historiaClinica!))
+      datos.push(dato);
+    return datos;
+  }
+
+  historiaClinicaToArray(historiaClinica?: HistoriaClinica): any {
+    let historia = historiaClinica ?? {altura: null, peso: null, presion: null, temperatura: null, adicionales: null};
+    const datosExtras = historia.adicionales && historia.adicionales.length > 0
+    ? historia.adicionales.map(a => `${a.clave}: ${a.valor}`).join(', ')
+    : 'No tiene';
+
+    return [
+      historia.altura ?? 'No tiene',
+      historia.peso ?? 'No tiene',
+      historia.presion ?? 'No tiene',
+      historia.temperatura ?? 'No tiene',
+      datosExtras
+    ];
+  }
+
+  obtenerEncabezadosHistorialClinico() {
+    return ['Fecha', 'Especialista', 'Especialidad', 'Altura', 'Peso', 'Presión', 'Temperatura', 'Extras'];
+  }
+
+  formatearFecha(fecha: Date | string): string {
+    const d = new Date(fecha);
+    const dia = String(d.getDate()).padStart(2, '0');
+    const mes = String(d.getMonth() + 1).padStart(2, '0');
+    const anio = d.getFullYear();
+    return `${dia}/${mes}/${anio}`;
+  }
+
 }

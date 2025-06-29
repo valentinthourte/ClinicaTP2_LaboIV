@@ -9,7 +9,7 @@ import { RecaptchaFormsModule, RecaptchaModule } from 'ng-recaptcha-18';
 
 @Component({
   selector: 'app-registrar-administrador',
-  imports: [ReactiveFormsModule, RecaptchaModule, RecaptchaFormsModule,],
+  imports: [ReactiveFormsModule, RecaptchaModule, RecaptchaFormsModule],
   templateUrl: './registrar-administrador.component.html',
   styleUrl: './registrar-administrador.component.scss'
 })

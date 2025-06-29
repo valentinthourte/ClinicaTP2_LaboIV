@@ -10,17 +10,18 @@ import { SolicitarTurnoComponent } from './componentes/turnos/solicitar-turno/so
 import { MisHorariosComponent } from './componentes/mis-horarios/mis-horarios.component';
 import { TurnosAdministradorComponent } from './componentes/turnos/mis-turnos/turnos-administrador/turnos-administrador.component';
 import { PacientesAtendidosComponent } from './componentes/pacientes-atendidos/pacientes-atendidos.component';
+import { authGuard } from './guards/auth-guard.guard';
 
 export const routes: Routes = [
     {path: '', pathMatch: "full", component: LandingPageComponent},
     {path: 'register', component: RegistroComponent},
     {path: 'login', component: LoginComponent},
     {path: 'home', component: HomeComponent},
-    {path: 'usuarios', component: VistaUsuariosComponent},
-    {path: 'misTurnos', component: MisTurnosComponent},
-    {path: 'turnos', component: TurnosAdministradorComponent},
-    {path: 'solicitarTurno', component: SolicitarTurnoComponent},
-    {path: 'misHorarios', component: MisHorariosComponent},
-    {path: 'pacientesAtendidos', component: PacientesAtendidosComponent},
-    {path: '**', component: NotFoundComponent}
+    {path: 'usuarios', component: VistaUsuariosComponent, canActivate: [authGuard]},
+    {path: 'misTurnos', component: MisTurnosComponent, canActivate: [authGuard]},
+    {path: 'turnos', component: TurnosAdministradorComponent, canActivate: [authGuard]},
+    {path: 'solicitarTurno', component: SolicitarTurnoComponent, canActivate: [authGuard]},
+    {path: 'misHorarios', component: MisHorariosComponent, canActivate: [authGuard]},
+    {path: 'pacientesAtendidos', component: PacientesAtendidosComponent, canActivate: [authGuard]},
+    {path: '**', component: NotFoundComponent, canActivate: [authGuard]},
 ];

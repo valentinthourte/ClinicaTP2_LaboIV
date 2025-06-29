@@ -108,17 +108,7 @@ export class VistaEspecialistasComponent implements OnInit {
   }
 
   onExportarExcel() {
-    let pacientesExportar = this.especialistas.map(p => this.especialistaAFilaExcel(p));
+    let pacientesExportar = this.especialistas.map(p => this.usuariosService.especialistaAFilaExcel(p));
     this.excelService.exportarAExcel(pacientesExportar, "Listado de especialistas", "listado_especialistas");
-  }
-  especialistaAFilaExcel(e: Especialista): any {
-    return {
-      "Nombre": `${e.nombre} ${e.apellido}`,
-      "Email": e.email,
-      "Edad": e.edad,
-      "DNI": e.dni,
-      "Especialidades": e.especialidades.map(e => e.especialidad.especialidad).join(', '),
-      "URL Imagen": e.urlImagen
-    }
   }
 }

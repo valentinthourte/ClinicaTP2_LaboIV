@@ -64,9 +64,13 @@ export class AuthService {
     const {data, error} = await this.supabaseService.login(email, password);
     if (error)
       throw new Error(`Error en login: ${error.message}`)
-    this.usuarioLogueado = data.user;
+    this.setUsuarioLogueado(data.user);
     await this.supabaseService.registrarLogin(data.user);
     return data;
+  }
+
+  setUsuarioLogueado(user: User) {
+    this.usuarioLogueado = user;
   }
   
   async guardarPaciente(paciente: Paciente, imagenes: FormArray<any>) {
