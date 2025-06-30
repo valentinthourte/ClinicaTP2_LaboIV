@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { createClient, SupabaseClient, User } from '@supabase/supabase-js';
 import { environment } from '../../../environments/environment';
 import { Especialidad } from '../../models/especialidad';
-import { QUERY_TURNOS, QUERY_ESPECIALISTAS, TABLA_ADMINISTRADORES, TABLA_ESPECIALIDADES, TABLA_ESPECIALISTAS, TABLA_ESPECIALISTAS_ESPECIALIDADES, TABLA_PACIENTES, TABLA_TURNOS, TABLA_LOGINS, TABLA_HISTORIA_CLINICA, TABLA_ADICIONALES_HISTORIA_CLINICA } from '../../constantes';
+import { QUERY_TURNOS, QUERY_ESPECIALISTAS, TABLA_ADMINISTRADORES, TABLA_ESPECIALIDADES, TABLA_ESPECIALISTAS, TABLA_ESPECIALISTAS_ESPECIALIDADES, TABLA_PACIENTES, TABLA_TURNOS, TABLA_LOGINS, TABLA_HISTORIA_CLINICA, TABLA_ADICIONALES_HISTORIA_CLINICA, QUERY_LOGINS } from '../../constantes';
 import { NgToastService } from 'ng-angular-popup';
 import { Especialista } from '../../models/especialista';
 import { Paciente } from '../../models/paciente';
@@ -13,11 +13,16 @@ import { DiaHoraTurno } from '../../models/dia-hora-turno';
 import { EstadoTurno } from '../../enums/estado-turno';
 import { Horario } from '../../models/horario';
 import { HistoriaClinica } from '../../models/historia-clinica';
+import { Ingreso } from '../../models/ingreso';
+import { JsonPipe } from '@angular/common';
+import { Usuario } from '../../models/usuario';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SupabaseService {
+
+
   private supabase = createClient(environment.apiUrl, environment.publicAnonKey);
   constructor(private toast: NgToastService) { }
   
@@ -470,10 +475,71 @@ export class SupabaseService {
     }
     let pacientesSinRepetir: Paciente[] = [];
     for (let turno of data as Turno[]) {
-      if (turno.paciente != null && pacientesSinRepetir.includes(turno.paciente!) == false)
+      if (turno.paciente != null && pacientesSinRepetir.map(p => p.id).includes(turno.paciente!.id) == false)
         pacientesSinRepetir.push(turno.paciente!);
     }
     return pacientesSinRepetir;
   }
 
+  async obtenerIngresosAlSistema(): Promise<Ingreso[]> {
+    const { data: ingresosData, error: ingresosError } = await this.supabase
+      .from(TABLA_LOGINS)
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (ingresosError) {
+      console.log(`Error al obtener ingresos: ${ingresosError.message}`);
+      throw new Error(`Error al obtener ingresos: ${ingresosError.message}`);
+    }
+
+    if (!ingresosData || ingresosData.length === 0) {
+      return [];
+    }
+
+    const { data: usuariosData, error: usuariosError } = await this.supabase
+      .from('usuarios_unificados')
+      .select('id, email, apellido, nombre, tipo');
+
+    if (usuariosError) {
+      console.log(`Error al obtener usuarios: ${usuariosError.message}`);
+      throw new Error(`Error al obtener usuarios: ${usuariosError.message}`);
+    }
+
+    const usuariosMap = new Map<string, Usuario>();
+    usuariosData?.forEach(u => usuariosMap.set(u.id, u));
+
+    const ingresos: Ingreso[] = ingresosData.map((ingreso: any) => ({
+      id: ingreso.id,
+      created_at: ingreso.created_at,
+      usuarioId: ingreso.usuarioId,
+      usuario: usuariosMap.get(ingreso.usuarioId) || { id: '', email: '', apellido: '', nombre: '', tipo: '' },
+    }));
+
+    return ingresos;
+  }
+
+  async obtenerTurnosPorEspecialistaFranjaHoraria(fechaDesde: string, fechaHasta: string, especialista: Especialista): Promise<Turno[]> {
+    const {data, error} = await this.supabase.from(TABLA_TURNOS).select(QUERY_TURNOS)
+                                                                .gte('fecha', fechaDesde).lte('fecha', fechaHasta)
+                                                                .eq('especialistaId', especialista.id)
+                                                                .order('fecha', {ascending: false});
+    if (error) {
+      console.log(error.message);
+      throw new Error(`Se produjo un error al obtener turnos por franja horaria: ${error.message}`);
+    }
+    return data;
+  }
+
+    async obtenerTurnosRealizadosPorEspecialistaFranjaHoraria(fechaDesde: string, fechaHasta: string, especialista: Especialista): Promise<Turno[]> {
+    const {data, error} = await this.supabase.from(TABLA_TURNOS).select(QUERY_TURNOS)
+                                                                .gte('fecha', fechaDesde).lte('fecha', fechaHasta)
+                                                                .eq('estado', EstadoTurno.Realizado)
+                                                                .eq('especialistaId', especialista.id)
+                                                                .order('fecha', {ascending: false});
+    if (error) {
+      console.log(error.message);
+      throw new Error(`Se produjo un error al obtener turnos realizados por franja horaria: ${error.message}`);
+    }
+    return data;
+  }
 }

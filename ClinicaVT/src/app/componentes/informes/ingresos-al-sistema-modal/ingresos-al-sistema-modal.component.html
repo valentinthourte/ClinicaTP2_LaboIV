@@ -1,0 +1,39 @@
+<div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+  <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-3xl">
+
+    <div class="text-center mb-4">
+      <h4 class="text-primary fw-semibold">Log de ingresos al sistema</h4>
+    </div>
+
+    <div class="max-h-[50vh] overflow-y-auto mb-3">
+        <div class="d-flex align-items-center justify-content-center m-2">
+            <button class="btn btn-outline-success " (click)="descargarIngresos()">
+                <i class="bi bi-file-earmark-excel"></i> Descargar ingresos
+            </button>
+        </div>
+      <div class="table-responsive">
+        <table class="table table-sm table-bordered">
+          <thead class="table-light sticky-top bg-light">
+            <tr>
+              <th>Usuario</th>
+              <th>Día</th>
+              <th>Horario</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let ingreso of ingresos">
+              <td>{{ ingreso.usuario | usuarioPipe }}</td>
+              <td>{{ ingreso.created_at | date: 'dd/MM/yyyy' }}</td>
+              <td>{{ ingreso.created_at | date: 'HH:mm:ss' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="text-end">
+      <button class="btn btn-secondary" (click)="cerrar()">Cerrar</button>
+    </div>
+
+  </div>
+</div>

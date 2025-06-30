@@ -3,10 +3,11 @@ import { UsuariosService } from '../../../services/usuarios.service';
 import { Administrador } from '../../../models/administrador';
 import { AuthService } from '../../../services/auth/auth.service';
 import { SidebarAccesosComponent } from '../../sidebar-accesos/sidebar-accesos.component';
+import { InformesComponent } from '../../informes/informes.component';
 
 @Component({
   selector: 'app-perfil-administrador',
-  imports: [SidebarAccesosComponent],
+  imports: [SidebarAccesosComponent, InformesComponent],
   templateUrl: './perfil-administrador.component.html',
 })
 export class PerfilAdministradorComponent implements OnInit {

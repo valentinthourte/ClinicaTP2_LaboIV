@@ -73,3 +73,13 @@ export const QUERY_ESPECIALISTAS = `
         habilitado
       )
     `;
+
+
+export const QUERY_LOGINS = `
+    *,
+    usuario:auth.users (
+      id,
+      email,
+      user_metadata
+    )
+  `;

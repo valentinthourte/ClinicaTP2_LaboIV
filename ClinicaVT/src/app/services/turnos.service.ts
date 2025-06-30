@@ -12,7 +12,6 @@ import { HistoriaClinica } from '../models/historia-clinica';
 })
 export class TurnosService {
 
-
   constructor(private supabaseService: SupabaseService) { }
   
   async obtenerTurnosPacientePorId(id: string | undefined): Promise<Turno[]> {
@@ -117,7 +116,7 @@ export class TurnosService {
   }
 
   turnoToArray(turno: Turno) {
-    let datos = [`${this.formatearFecha(turno.fecha)}:${turno.hora}`, `${turno.especialista!.nombre} ${turno.especialista!.apellido}`, turno.especialidad?.especialidad];
+    let datos = [`${this.formatearFecha(turno.fecha)}:${turno.hora}`, `${turno.especialista!.nombre} ${turno.especialista!.apellido}`, turno.especialidad?.especialidad, turno.estado];
     for (let dato of this.historiaClinicaToArray(turno.historiaClinica!))
       datos.push(dato);
     return datos;
@@ -139,7 +138,7 @@ export class TurnosService {
   }
 
   obtenerEncabezadosHistorialClinico() {
-    return ['Fecha', 'Especialista', 'Especialidad', 'Altura', 'Peso', 'Presión', 'Temperatura', 'Extras'];
+    return ['Fecha', 'Especialista', 'Especialidad', 'Estado', 'Altura', 'Peso', 'Presión', 'Temperatura', 'Extras'];
   }
 
   formatearFecha(fecha: Date | string): string {
@@ -148,6 +147,20 @@ export class TurnosService {
     const mes = String(d.getMonth() + 1).padStart(2, '0');
     const anio = d.getFullYear();
     return `${dia}/${mes}/${anio}`;
+  }
+
+  async obtenerTurnosPorEspecialistaFranjaHoraria(fechaDesde: string | undefined, fechaHasta: string | undefined, especialista: Especialista): Promise<Turno[]> {
+    debugger
+    if (!fechaDesde || !fechaHasta)
+      throw new Error("Las fechas ingresadas no son válidas. ");
+    return await this.supabaseService.obtenerTurnosPorEspecialistaFranjaHoraria(fechaDesde!, fechaHasta!, especialista);
+  }
+
+  async obtenerTurnosRealizadosPorEspecialistaFranjaHoraria(fechaDesde: string | undefined, fechaHasta: string | undefined, especialista: Especialista): Promise<Turno[]> {
+    debugger
+    if (!fechaDesde || !fechaHasta)
+      throw new Error("Las fechas ingresadas no son válidas. ");
+    return await this.supabaseService.obtenerTurnosRealizadosPorEspecialistaFranjaHoraria(fechaDesde!, fechaHasta!, especialista);
   }
 
 }

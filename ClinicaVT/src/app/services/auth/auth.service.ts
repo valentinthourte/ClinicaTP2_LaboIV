@@ -7,14 +7,14 @@ import { TABLA_ESPECIALISTAS, TABLA_PACIENTES } from '../../constantes';
 import { Especialidad } from '../../models/especialidad';
 import { User } from '@supabase/supabase-js';
 import { Horario } from '../../models/horario';
+import { Ingreso } from '../../models/ingreso';
 
 const CLAVE_USUARIO_SESION = "usuario";
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-
-  
+ 
   usuarioLogueado?: User | null = undefined;
   
   constructor(private supabaseService: SupabaseService) { }
@@ -115,5 +115,9 @@ export class AuthService {
 
   getUrlPublica(nombreImagen: string): string {
     return `https://ciolyhwwleeuwtoussjm.supabase.co/storage/v1/object/public/${nombreImagen}`;
+  }
+
+  async obtenerIngresosAlSistema(): Promise<Ingreso[]> {
+    return await this.supabaseService.obtenerIngresosAlSistema();
   }
 }
