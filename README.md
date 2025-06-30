@@ -4,7 +4,10 @@
 
 La ClinicaVT es una aplicación que puede ser utilizada para registrar pacientes y especialistas, y registrar turnos médicos entre ambos.
 # Registro de usuarios
-![image](https://github.com/user-attachments/assets/3dde3e72-df02-459b-91dc-a5767c807a2d)
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/3dde3e72-df02-459b-91dc-a5767c807a2d" alt="Imagen 1" width="45%" style="margin-right:10px;" />
+</p>
+
 Tocando el botón de "Registrarme", podemos elegir el registro como especialista, o como paciente
 <p align="center">
   <img src="https://github.com/user-attachments/assets/2f6a0ff1-1a9a-4766-9853-77ecc54d2055" alt="Imagen 1" width="45%" style="margin-right:10px;" />
@@ -46,7 +49,10 @@ En la sección "Pacientes atendidos" veremos todos los pacientes atendidos por e
 ![Pacientes atendidos](https://github.com/user-attachments/assets/6874f0b5-9e2f-4a34-9d09-30f89234a5ca)
 
 ## Administradores
-El administrador es capaz de ver todos los usuarios registrados, exportar sus datos a formato Excel, y tambien ejercer operaciones sobre ellos.
+El perfil del administrador muestra gráficos e informes sobre los datos almacenados en el sistema
+![image](https://github.com/user-attachments/assets/fc917d5a-d5fa-449f-826d-b5e5b66434b0)
+
+A su vez, el administrador es capaz de ver todos los usuarios registrados, exportar sus datos a formato Excel, y tambien ejercer operaciones sobre ellos.
 ![Usuarios](https://github.com/user-attachments/assets/c6b29107-f0d8-4456-aeee-5dc6c3a1a0c4)
 
 También es capaz de solicitar un turno, agregando el paso intermedio de selección de paciente.
