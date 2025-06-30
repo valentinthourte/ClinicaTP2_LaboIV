@@ -80,6 +80,7 @@ export class RegistroPacientesComponent {
           this.toast.danger((err as Error).message, "Error al registrar paciente.", 5000);
         }
       } else {
+        this.logControlesInvalidos(this.formulario);
         this.formulario.markAllAsTouched();
         this.toast.warning("Por favor completá todos los campos obligatorios, incluida la imagen.");
       }
@@ -89,6 +90,15 @@ export class RegistroPacientesComponent {
     }
     
   }
+
+  logControlesInvalidos(form: FormGroup) {
+    Object.keys(form.controls).forEach(key => {
+      const control = form.get(key);
+      if (control && control.invalid) {
+        console.warn(`Control inválido: ${key}`, control.errors);
+      }
+    });
+  } 
 
   onFileChange(event: Event, index: number): void {
     const input = event.target as HTMLInputElement;

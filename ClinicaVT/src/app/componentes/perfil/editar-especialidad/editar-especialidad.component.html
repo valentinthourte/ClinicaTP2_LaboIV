@@ -1,0 +1,36 @@
+<div class="p-4">
+
+    <h2 class="text-xl font-semibold mb-4">Editar Especialidad</h2>
+    
+    <form [formGroup]="form" (ngSubmit)="guardar()" novalidate>
+      <div class="mb-4">
+        <label for="duracion" class="block text-sm font-medium mb-1">Duración (minutos)</label>
+        <input
+          id="duracion"
+          type="number"
+          formControlName="duracion"
+          class="form-control w-full px-3 py-2 rounded-md transition duration-150 ease-in-out
+            focus:outline-none focus:ring-2 focus:ring-blue-500
+            border
+            "
+          [ngClass]="{
+            'border-gray-300': duracion.valid || (!duracion.touched && !submitted),
+            'border-red-500': duracion.invalid && (duracion.touched || submitted)
+          }"
+          min="5"
+          max="60"
+        />
+    
+        <div *ngIf="duracion.invalid && (duracion.touched || submitted)" class="text-red-500 text-sm mt-1">
+          <div *ngIf="duracion.errors?.['required']">Este campo es obligatorio.</div>
+          <div *ngIf="duracion.errors?.['min']">El mínimo permitido es 5 minutos.</div>
+          <div *ngIf="duracion.errors?.['max']">El máximo permitido es 60 minutos.</div>
+        </div>
+      </div>
+    
+      <div class="flex justify-end gap-2">
+        <button type="button" class="btn btn-secondary" (click)="cerrar()">Cancelar</button>
+        <button type="submit" class="btn btn-primary">Guardar</button>
+      </div>
+    </form>
+</div>

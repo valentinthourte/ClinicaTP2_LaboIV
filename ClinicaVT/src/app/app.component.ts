@@ -7,15 +7,17 @@ import { SpinnerComponent } from './componentes/spinner/spinner.component';
 import { AuthService } from './services/auth/auth.service';
 import { MostrarSiRolDirective } from './directivas/mostrar-si-rol.directive';
 import { TipoUsuario } from './enums/tipo-usuario.enum';
+import { FooterComponent } from './componentes/footer/footer.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, SpinnerComponent, MatToolbar, RouterModule, MostrarSiRolDirective, NgToastModule],
+  imports: [RouterOutlet, SpinnerComponent, MatToolbar, RouterModule, MostrarSiRolDirective, NgToastModule, FooterComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
 export class AppComponent implements OnInit {
 
+  currentYear = new Date().getFullYear();
   title = 'ClinicaVT';
   TipoUsuario = TipoUsuario;
   constructor(protected auth: AuthService, private router: Router) { }

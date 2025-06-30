@@ -16,11 +16,13 @@ import { HistoriaClinica } from '../../models/historia-clinica';
 import { Ingreso } from '../../models/ingreso';
 import { JsonPipe } from '@angular/common';
 import { Usuario } from '../../models/usuario';
+import { EspecialidadEspecialista } from '../../models/especialidad-especialista';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SupabaseService {
+
 
 
   private supabase = createClient(environment.apiUrl, environment.publicAnonKey);
@@ -531,15 +533,26 @@ export class SupabaseService {
   }
 
     async obtenerTurnosRealizadosPorEspecialistaFranjaHoraria(fechaDesde: string, fechaHasta: string, especialista: Especialista): Promise<Turno[]> {
-    const {data, error} = await this.supabase.from(TABLA_TURNOS).select(QUERY_TURNOS)
-                                                                .gte('fecha', fechaDesde).lte('fecha', fechaHasta)
-                                                                .eq('estado', EstadoTurno.Realizado)
-                                                                .eq('especialistaId', especialista.id)
-                                                                .order('fecha', {ascending: false});
-    if (error) {
-      console.log(error.message);
-      throw new Error(`Se produjo un error al obtener turnos realizados por franja horaria: ${error.message}`);
+      const {data, error} = await this.supabase.from(TABLA_TURNOS).select(QUERY_TURNOS)
+                                                                  .gte('fecha', fechaDesde).lte('fecha', fechaHasta)
+                                                                  .eq('estado', EstadoTurno.Realizado)
+                                                                  .eq('especialistaId', especialista.id)
+                                                                  .order('fecha', {ascending: false});
+      if (error) {
+        console.log(error.message);
+        throw new Error(`Se produjo un error al obtener turnos realizados por franja horaria: ${error.message}`);
+      }
+      return data;
     }
-    return data;
+  async actualizarDuracionEspecialidadEspecialista(usuario: Especialista, especialidad: EspecialidadEspecialista) {
+    const {data, error} = await this.supabase.from(TABLA_ESPECIALISTAS_ESPECIALIDADES)
+                                             .update({duracion: especialidad.duracion})
+                                             .eq('especialidadId', especialidad.especialidad.id)
+                                             .eq('especialistaId', usuario.id);
+
+    if (error) {
+      console.log(error);
+      throw new Error(error.message);
+    }                                             
   }
 }

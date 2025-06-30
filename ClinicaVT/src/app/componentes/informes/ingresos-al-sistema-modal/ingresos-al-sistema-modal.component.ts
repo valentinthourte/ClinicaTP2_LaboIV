@@ -27,6 +27,7 @@ export class IngresosAlSistemaModalComponent implements OnInit {
       this.toast.danger(`Error al obtener ingresos al sistema: ${err.message}`);
     }
   }
+  
   cerrar() {
     this.dialogRef.close();
   }

@@ -10,10 +10,11 @@ import { MatDialog } from '@angular/material/dialog';
 import { ExportarExcelService } from '../../services/exportar-excel.service';
 import { DetallePacienteAtendidoComponent } from '../detalle-paciente-atendido/detalle-paciente-atendido.component';
 import { TurnosService } from '../../services/turnos.service';
+import { MatTooltip } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-vista-pacientes',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, MatTooltip],
   templateUrl: './vista-pacientes.component.html',
   styleUrl: './vista-pacientes.component.scss'
 })

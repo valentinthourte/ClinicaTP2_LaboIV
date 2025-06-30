@@ -19,13 +19,39 @@
 
       <h5 class="px-4 pt-3 pb-2 border-bottom">Especialidades asignadas</h5>
       <ul class="list-group list-group-flush mb-4 px-4">
-        <li *ngFor="let esp of usuario.especialidades" class="list-group-item d-flex justify-content-between align-items-center">
-          <span>{{ esp.especialidad.especialidad }} <small class="text-muted">({{ esp.duracion }} min)</small></span>
-          <button class="btn btn-sm btn-outline-danger" (click)="eliminarEspecialidad(esp.especialidad.id)" aria-label="Eliminar especialidad">
-            <i class="bi bi-x-circle"></i>
-          </button>
+        <li
+          *ngFor="let esp of usuario.especialidades"
+          class="list-group-item d-flex justify-content-between align-items-center"
+        >
+          <span>
+            {{ esp.especialidad.especialidad }}
+            <small class="text-muted">({{ esp.duracion }} min)</small>
+          </span>
+
+          <div class="d-flex gap-2">
+            <button
+              class="btn btn-sm btn-outline-secondary"
+              (click)="editarEspecialidad(esp)"
+              aria-label="Editar especialidad"
+              matTooltip="Editar"
+              matTooltipPosition="above"
+            >
+              <i class="bi bi-pencil-square"></i>
+            </button>
+
+            <button
+              class="btn btn-sm btn-outline-danger"
+              (click)="eliminarEspecialidad(esp.especialidad.id)"
+              aria-label="Eliminar especialidad"
+              matTooltip="Eliminar"
+              matTooltipPosition="above"
+            >
+              <i class="bi bi-x-circle"></i>
+            </button>
+          </div>
         </li>
       </ul>
+
 
       <form (ngSubmit)="agregarEspecialidad()" class="d-flex gap-3 align-items-end px-4 pb-4">
       <div class="form-group flex-grow-1">

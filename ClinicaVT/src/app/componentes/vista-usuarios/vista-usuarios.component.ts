@@ -8,16 +8,29 @@ import { VistaEspecialistasComponent } from '../vista-especialistas/vista-especi
 import { VistaAdministradoresComponent } from '../vista-administradores/vista-administradores.component';
 import { UsuariosService } from '../../services/usuarios.service';
 import { ExportarExcelService } from '../../services/exportar-excel.service';
+import { animate, style, transition, trigger } from '@angular/animations';
 
 @Component({
   selector: 'app-vista-usuarios',
   imports: [CommonModule, VistaPacientesComponent, VistaEspecialistasComponent, VistaAdministradoresComponent],
   templateUrl: './vista-usuarios.component.html',
-  styleUrl: './vista-usuarios.component.scss'
+  styleUrl: './vista-usuarios.component.scss',
+  animations: [
+    trigger('slideContainer', [
+      transition(':enter', [
+        style({ transform: '{{enterTransform}}', opacity: 0 }),
+        animate('300ms ease-out', style({ transform: 'translateX(0)', opacity: 1 }))
+      ], { params: { enterTransform: 'translateX(100%)' } }),
+
+      transition(':leave', [
+        animate('300ms ease-in', style({ transform: '{{leaveTransform}}', opacity: 0 }))
+      ], { params: { leaveTransform: 'translateX(-100%)' } }),
+    ])
+  ]
 })
 export class VistaUsuariosComponent {
   solapaActiva: 'pacientes' | 'especialistas' | 'administradores' = 'pacientes';
-
+  ultimaSolapaActiva: typeof this.solapaActiva = 'pacientes';
 
   constructor(private usuariosService: UsuariosService, private excelService: ExportarExcelService) {}
 
@@ -58,6 +71,19 @@ export class VistaUsuariosComponent {
       }
 
       this.excelService.exportarAExcel(usuarios, "Listado de usuarios", "listado_todos_usuarios");
+  }
+
+
+  getDireccion(): 'izquierda' | 'derecha' {
+    const orden = ['pacientes', 'especialistas', 'administradores'];
+    const anterior = orden.indexOf(this.ultimaSolapaActiva);
+    const actual = orden.indexOf(this.solapaActiva);
+    return actual > anterior ? 'izquierda' : 'derecha';
+  }
+
+  cambiarSolapa(nueva: typeof this.solapaActiva) {
+    this.ultimaSolapaActiva = this.solapaActiva;
+    this.solapaActiva = nueva;
   }
   
 }

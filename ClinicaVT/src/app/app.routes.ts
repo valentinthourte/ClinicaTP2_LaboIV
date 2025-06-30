@@ -11,17 +11,21 @@ import { MisHorariosComponent } from './componentes/mis-horarios/mis-horarios.co
 import { TurnosAdministradorComponent } from './componentes/turnos/mis-turnos/turnos-administrador/turnos-administrador.component';
 import { PacientesAtendidosComponent } from './componentes/pacientes-atendidos/pacientes-atendidos.component';
 import { authGuard } from './guards/auth-guard.guard';
+import { UnauthorizedComponent } from './componentes/unauthorized/unauthorized.component';
+import { roleGuard } from './guards/role.guard';
+import { TipoUsuario } from './enums/tipo-usuario.enum';
 
 export const routes: Routes = [
     {path: '', pathMatch: "full", component: LandingPageComponent},
     {path: 'register', component: RegistroComponent},
     {path: 'login', component: LoginComponent},
-    {path: 'home', component: HomeComponent},
-    {path: 'usuarios', component: VistaUsuariosComponent, canActivate: [authGuard]},
-    {path: 'misTurnos', component: MisTurnosComponent, canActivate: [authGuard]},
-    {path: 'turnos', component: TurnosAdministradorComponent, canActivate: [authGuard]},
-    {path: 'solicitarTurno', component: SolicitarTurnoComponent, canActivate: [authGuard]},
-    {path: 'misHorarios', component: MisHorariosComponent, canActivate: [authGuard]},
-    {path: 'pacientesAtendidos', component: PacientesAtendidosComponent, canActivate: [authGuard]},
+    {path: 'home', component: HomeComponent, canActivate: [authGuard, roleGuard], data: { roles: [TipoUsuario.Administrador, TipoUsuario.Paciente, TipoUsuario.Especialista]}},
+    {path: 'usuarios', component: VistaUsuariosComponent, canActivate: [authGuard, roleGuard], data: { roles: [TipoUsuario.Administrador]}},
+    {path: 'misTurnos', component: MisTurnosComponent, canActivate: [authGuard, roleGuard], data: { roles: [TipoUsuario.Paciente, TipoUsuario.Especialista]}},
+    {path: 'turnos', component: TurnosAdministradorComponent, canActivate: [authGuard, roleGuard], data: { roles: [TipoUsuario.Administrador]}},
+    {path: 'solicitarTurno', component: SolicitarTurnoComponent, canActivate: [authGuard, roleGuard], data: { roles: [TipoUsuario.Administrador, TipoUsuario.Paciente]}},
+    {path: 'misHorarios', component: MisHorariosComponent, canActivate: [authGuard, roleGuard], data: { roles: [TipoUsuario.Especialista]}},
+    {path: 'pacientesAtendidos', component: PacientesAtendidosComponent, canActivate: [authGuard, roleGuard], data: { roles: [TipoUsuario.Especialista]}},
+    {path: 'unauthorized', component: UnauthorizedComponent, canActivate: [authGuard]},
     {path: '**', component: NotFoundComponent, canActivate: [authGuard]},
 ];

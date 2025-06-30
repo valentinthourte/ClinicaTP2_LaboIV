@@ -12,18 +12,15 @@ import { ExportarPdfService } from '../../../services/exportar-pdf.service';
 })
 export class InformeTurnosPorDiaComponent {
 
- constructor(private turnosService: TurnosService, private pdfService: ExportarPdfService) {}
+  constructor(private turnosService: TurnosService, private pdfService: ExportarPdfService) {}
   async ngOnInit() {
-
     let turnos = await this.turnosService.obtenerTodosTurnos();
     let cantidades = cantidadTurnosPorDia(turnos);
-
-
 
     const ctx = document.getElementById('turnosPorDiaChart') as HTMLCanvasElement;
     Chart.register(...registerables);
     new Chart(ctx, {
-      type: 'pie',
+      type: 'doughnut',
       data: {
         labels: Object.keys(cantidades),
         datasets: [{

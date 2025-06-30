@@ -138,6 +138,7 @@ export class RegistroEspecialistasComponent implements OnInit {
       aprobado: false
     };
   }
+  
   logControlesInvalidos(form: FormGroup) {
     Object.keys(form.controls).forEach(key => {
       const control = form.get(key);

@@ -12,10 +12,12 @@ import { SidebarAccesosComponent } from '../../sidebar-accesos/sidebar-accesos.c
 import { NgToastService } from 'ng-angular-popup';
 import { SpinnerService } from '../../../services/shared/spinner.service';
 import { MatDialog } from '@angular/material/dialog';
+import { EditarEspecialidadComponent } from '../editar-especialidad/editar-especialidad.component';
+import { MatTooltip } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-perfil-especialista',
-  imports: [RouterModule, ReactiveFormsModule, CommonModule, SidebarAccesosComponent, CommonModule, FormsModule],
+  imports: [RouterModule, ReactiveFormsModule, CommonModule, SidebarAccesosComponent, CommonModule, FormsModule, MatTooltip],
   templateUrl: './perfil-especialista.component.html',
 })
 export class PerfilEspecialistaComponent implements OnInit {
@@ -30,7 +32,8 @@ export class PerfilEspecialistaComponent implements OnInit {
     private especialidadesService: EspecialidadesService,
     private fb: FormBuilder,
     private toast: NgToastService,
-    private spinner: SpinnerService
+    private spinner: SpinnerService,
+    private dialog: MatDialog
   ) {}
 
   async ngOnInit() {
@@ -101,4 +104,25 @@ export class PerfilEspecialistaComponent implements OnInit {
       }
     });
   } 
+
+  editarEspecialidad(especialidad: EspecialidadEspecialista) {
+    const dialogRef = this.dialog.open(EditarEspecialidadComponent, {data: especialidad.duracion});
+
+    dialogRef.afterClosed().subscribe(async (duracion: number | undefined) => {
+      if (duracion) {
+        try {
+          this.spinner.show();
+          especialidad.duracion = duracion;
+          await this.especialidadesService.actualizarDuracionEspecialidadEspecialista(this.usuario, especialidad);
+          this.toast.success("Especialidad actualizada correctamente!");
+        }
+        catch(err: any) {
+          this.toast.danger(`Se produjo un error al actualizar duración de especialista: ${err.message}`);
+        }
+        finally {
+          this.spinner.hide();
+        }
+      }
+    });
+  }
 }

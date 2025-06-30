@@ -1,7 +1,7 @@
 <div class="container mt-4">
   <div class="flex justify-between items-center border-b border-gray-300 mb-4">
     
-    <div>
+    <!-- <div>
       <button class="px-4 py-2 font-semibold"
               [ngClass]="solapaActiva === 'pacientes' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-600'"
               (click)="solapaActiva = 'pacientes'">Pacientes</button>
@@ -11,7 +11,12 @@
       <button class="px-4 py-2 font-semibold ml-4"
               [ngClass]="solapaActiva === 'administradores' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-600'"
               (click)="solapaActiva = 'administradores'">Administradores</button>              
-    </div>
+    </div> -->
+
+    
+    <button (click)="cambiarSolapa('pacientes')">Pacientes</button>
+    <button (click)="cambiarSolapa('especialistas')">Especialistas</button>
+    <button (click)="cambiarSolapa('administradores')">Administradores</button>
 
     <div>
       <button class="btn btn-success" (click)="descargarTodosUsuarios()">
@@ -21,13 +26,22 @@
     </div>
   </div>
 
-  @if(solapaActiva === 'pacientes') {
-    <app-vista-pacientes></app-vista-pacientes>
-  }
-  @else if (solapaActiva === 'especialistas'){
-    <app-vista-especialistas></app-vista-especialistas>
-  }
-  @else if (solapaActiva === 'administradores') {
-    <app-vista-administradores></app-vista-administradores>
-  }
+
+  <ng-container *ngIf="solapaActiva === 'pacientes'">
+    <div [@slideContainer]="{ value: '', params: getDireccion() === 'izquierda' ? { enterTransform: 'translateX(100%)', leaveTransform: 'translateX(-100%)' } : { enterTransform: 'translateX(-100%)', leaveTransform: 'translateX(100%)' } }">
+      <app-vista-pacientes></app-vista-pacientes>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="solapaActiva === 'especialistas'">
+    <div [@slideContainer]="{ value: '', params: getDireccion() === 'izquierda' ? { enterTransform: 'translateX(100%)', leaveTransform: 'translateX(-100%)' } : { enterTransform: 'translateX(-100%)', leaveTransform: 'translateX(100%)' } }">
+      <app-vista-especialistas></app-vista-especialistas>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="solapaActiva === 'administradores'">
+    <div [@slideContainer]="{ value: '', params: getDireccion() === 'izquierda' ? { enterTransform: 'translateX(100%)', leaveTransform: 'translateX(-100%)' } : { enterTransform: 'translateX(-100%)', leaveTransform: 'translateX(100%)' } }">
+      <app-vista-administradores></app-vista-administradores>
+    </div>
+  </ng-container>
 </div>

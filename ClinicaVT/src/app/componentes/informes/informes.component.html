@@ -1,12 +1,20 @@
 <div class="container">
-  <div class="d-flex justify-content-center mb-4">
-    <button class="btn btn-success" (click)="descargarLogins()">
+  <div class="d-flex justify-content-center m-2">
+    <button class="btn btn-outline-success m-1" (click)="descargarLogins()">
       <i class="bi bi-person-plus-fill me-1"></i>
       Descargar ingresos al sistema
     </button>
+    <button class="btn btn-outline-primary  m-1" (click)="abrirInformeTurnosPorMedico()">
+      <i class="bi bi-bar-chart-fill me-1"></i>
+      Informe por médico
+    </button>
+    <button class="btn btn-outline-primary  m-1" (click)="abrirInformeTurnosRealizadosPorMedico()">
+      <i class="bi bi-bar-chart-fill me-1"></i>
+      Informe de realizados por médico
+    </button>
   </div>
 
-  <div class="d-flex justify-content-between">
+  <div class="d-flex justify-content-center">
     <div class="text-center align-items-center w-25 me-2">
       <h3>Turnos por especialidad</h3>
       <app-informe-turnos-especialidad class="align-items-center justify-center"></app-informe-turnos-especialidad>
@@ -15,16 +23,5 @@
       <h3>Turnos por día</h3>
       <app-informe-turnos-por-dia class="align-items-center justify-center"></app-informe-turnos-por-dia>
     </div>
-  </div>
-
-  <div class="d-flex justify-content-center mt-4">
-    <button class="btn btn-outline-primary m-2" (click)="abrirInformeTurnosPorMedico()">
-      <i class="bi bi-bar-chart-fill me-1"></i>
-      Informe por médico
-    </button>
-     <button class="btn btn-outline-primary m-2" (click)="abrirInformeTurnosRealizadosPorMedico()">
-      <i class="bi bi-bar-chart-fill me-1"></i>
-      Informe de realizados por médico
-    </button>
   </div>
 </div>

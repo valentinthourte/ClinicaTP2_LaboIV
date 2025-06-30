@@ -36,6 +36,18 @@
    </mat-toolbar>
 </nav>
 
-<app-spinner></app-spinner>
-<router-outlet></router-outlet>
-<ng-toast />
+<main>
+   <app-spinner></app-spinner>
+   <router-outlet></router-outlet>
+   <ng-toast />
+</main>
+
+<footer class="bg-gray-900 text-white py-6 text-center mt-2 footer" >
+    <p class="text-sm">
+        &copy; {{ currentYear }} Clínica VT. Todos los derechos reservados.
+    </p>
+    <p class="text-xs text-gray-400 mt-1">
+        Hecho con ❤️ en Argentina
+    </p>
+</footer>
+
