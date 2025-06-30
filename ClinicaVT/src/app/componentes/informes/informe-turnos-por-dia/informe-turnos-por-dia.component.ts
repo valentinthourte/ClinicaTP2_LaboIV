@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Chart, registerables } from 'chart.js';
 import { TurnosService } from '../../../services/turnos.service';
 import { cantidadTurnosPorDia } from '../../../helpers/array-helper';
+import { ExportarPdfService } from '../../../services/exportar-pdf.service';
 
 @Component({
   selector: 'app-informe-turnos-por-dia',
@@ -10,7 +11,8 @@ import { cantidadTurnosPorDia } from '../../../helpers/array-helper';
   styleUrl: './informe-turnos-por-dia.component.scss'
 })
 export class InformeTurnosPorDiaComponent {
- constructor(private turnosService: TurnosService) {}
+
+ constructor(private turnosService: TurnosService, private pdfService: ExportarPdfService) {}
   async ngOnInit() {
 
     let turnos = await this.turnosService.obtenerTodosTurnos();
@@ -31,5 +33,13 @@ export class InformeTurnosPorDiaComponent {
         }]
       }
     });
+  }
+
+  descargarPdf() {
+    let canvas = document.getElementById('turnosPorDiaChart') as HTMLCanvasElement;
+    const titulo = "Turnos por día de semana";
+    const subtitulo = "Informe de turnos por día de semana";
+    const nombreArchivo = "informe_turnos_por_dia";
+    this.pdfService.exportarGraficoPdf(canvas, subtitulo, titulo, nombreArchivo);
   }
 }
