@@ -20,7 +20,7 @@
         (click)="seleccionar(pac)"
         class="cursor-pointer bg-white border rounded shadow hover:shadow-lg p-3 text-center transition duration-200"
       >
-        <img [src]="pac.urlImagenUno" alt="Foto de {{ pac.nombre }}" class="rounded-full mx-auto mb-2" width="100" height="100" />
+        <img [src]="pac.urlImagenUno" alt="Foto de {{ pac.nombre }}" class="rounded-full w-32 h-32 object-cover cursor-pointer"/>
         <div class="fw-bold">{{ pac.nombre }} {{ pac.apellido }}</div>
         <div class="text-muted text-sm">{{ pac.dni }}</div>
       </div>

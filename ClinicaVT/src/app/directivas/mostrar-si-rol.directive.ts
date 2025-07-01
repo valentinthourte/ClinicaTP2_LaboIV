@@ -11,18 +11,18 @@ export class MostrarSiRolDirective {
   constructor(
     private templateRef: TemplateRef<any>,
     private viewContainer: ViewContainerRef,
-    private authService: AuthService // Debe tener un método para obtener el rol actual
+    private authService: AuthService 
   ) {}
 
   @Input()
   set appMostrarSiRol(roles: string[] | string) {
     this.viewContainer.clear();
     this.rolesPermitidos = Array.isArray(roles) ? roles : [roles];
-    this.verificarRolAsync(); // llamás a la función async
+    this.verificarRolAsync(); 
   }
 
   private async verificarRolAsync() {
-    const rolUsuario = await this.authService.obtenerRolUsuario(); // asumimos que esto devuelve un string
+    const rolUsuario = await this.authService.obtenerRolUsuario(); 
     if (this.rolesPermitidos.includes(rolUsuario)) {
       this.viewContainer.createEmbeddedView(this.templateRef);
     }
