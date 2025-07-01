@@ -12,5 +12,10 @@
         {{ formatearFecha(dia) }}
       </button>
     </div>
+    @if (diasDisponibles == null || diasDisponibles.length == 0) {
+      <div class="text-center text-secondary">
+        <p class="fw-medium">No hay turnos disponibles para este profesional en los próximos 15 días.</p>
+      </div>
+    }
 </div>
 

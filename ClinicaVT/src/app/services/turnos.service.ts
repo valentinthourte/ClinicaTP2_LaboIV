@@ -59,6 +59,12 @@ export class TurnosService {
     return disponibles;
   }
 
+  async obtenerHorariosEspecialistaParaDiaSupabase(especialista: Especialista, dia: Date) {
+    const fechaStr = dia.toISOString().split('T')[0];
+    const horariosReservados = await this.supabaseService.obtenerHorariosEspecialistaParaDia(especialista, fechaStr);
+    const horariosDia = especialista.horarios.find(h => h.dia === dia.getDay());
+  }
+
   async cancelarTurno(turno: Turno): Promise<Turno> {
     return await this.supabaseService.cancelarTurno(turno);
   }

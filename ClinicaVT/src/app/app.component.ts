@@ -11,7 +11,7 @@ import { FooterComponent } from './componentes/footer/footer.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, SpinnerComponent, MatToolbar, RouterModule, MostrarSiRolDirective, NgToastModule, FooterComponent],
+  imports: [RouterOutlet, SpinnerComponent, MatToolbar, RouterModule, MostrarSiRolDirective, NgToastModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })

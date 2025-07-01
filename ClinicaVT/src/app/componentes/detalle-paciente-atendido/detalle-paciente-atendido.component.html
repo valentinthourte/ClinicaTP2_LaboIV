@@ -18,16 +18,15 @@
       </button>
 
       <div class="form-group mb-0">
-        <select class="form-select" [(ngModel)]="especialistaSeleccionado">
+        <select class="form-select" [(ngModel)]="especialistaSeleccionado" (ngModelChange)="filtrarTurnos()">
           <option [ngValue]="undefined">Todos los especialistas</option>
-          <option *ngFor="let e of especialistasUnicos" [ngValue]="e.id">
+          <option *ngFor="let e of especialistasUnicos" [ngValue]="e">
             {{ e.nombre }} {{ e.apellido }}
           </option>
         </select>
       </div>
     </div>
 
-    <!-- Tabla con scroll -->
     <div class="max-h-[50vh] overflow-y-auto mb-3">
       <div class="table-responsive">
         <table class="table table-sm table-bordered">
@@ -42,7 +41,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let turno of turnos">
+            <tr *ngFor="let turno of turnosFiltrados">
               <td>{{ turno.fecha | date: 'dd/MM/yyyy' }}</td>
               <td>{{ turno.hora }}</td>
               <td>{{ turno.especialidad?.especialidad }}</td>

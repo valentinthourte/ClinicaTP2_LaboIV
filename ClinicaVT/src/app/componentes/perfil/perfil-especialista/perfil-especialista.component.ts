@@ -63,15 +63,18 @@ export class PerfilEspecialistaComponent implements OnInit {
         this.toast.warning("Seleccioná una especialidad válida y una duración entre 5 y 60 minutos.");
         return;
       }
-
-      this.spinner.show();
-      await this.usuariosService.agregarEspecialidadAEsp(this.usuario.id, this.especialidadSeleccionada, this.duracionSeleccionada);
-      this.usuario = await this.usuariosService.obtenerEspecialistaPorId(this.usuario.id!) as Especialista;
-
-      this.especialidadSeleccionada = null;
-      this.duracionSeleccionada = null;
-
-      this.toast.success("Especialidad agregada!");
+      if (this.usuario.especialidades.map(e => e.especialidad.id).includes(this.especialidadSeleccionada))
+        this.toast.warning(`El especialista ya cuenta con la especialidad ${this.usuario.especialidades.find(e => e.especialidad.id)?.especialidad.especialidad}. Podes editar la duracion!`);
+      else {
+        this.spinner.show();
+        await this.usuariosService.agregarEspecialidadAEsp(this.usuario.id, this.especialidadSeleccionada, this.duracionSeleccionada);
+        this.usuario = await this.usuariosService.obtenerEspecialistaPorId(this.usuario.id!) as Especialista;
+  
+        this.especialidadSeleccionada = null;
+        this.duracionSeleccionada = null;
+  
+        this.toast.success("Especialidad agregada!");
+      }
     } 
     catch (err: any) {
       this.toast.danger(`Error al agregar especialidad: ${err.message}`);

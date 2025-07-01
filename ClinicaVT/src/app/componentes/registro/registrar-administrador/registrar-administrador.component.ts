@@ -26,8 +26,8 @@ export class RegistrarAdministradorComponent {
     this.formulario = this.fb.group({
       nombre: ['', Validators.required],
       apellido: ['', Validators.required],
-      edad: [null, [Validators.required, Validators.min(0)]],
-      dni: ['', Validators.required],
+      edad: [null, [Validators.required, Validators.min(18), Validators.max(99)]],
+      dni: ['', Validators.required, Validators.minLength(7)],
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required],
       imagen: [null, Validators.required]

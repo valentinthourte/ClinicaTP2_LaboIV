@@ -225,14 +225,14 @@ export class SupabaseService {
 
     if (error) throw new Error('Error al obtener especialistas: ' + error.message);
 
-    return data.map((e: any) => e.especialista);
+    return data.filter(d => d.especialista != null).map((e: any) => e.especialista);
   }
       
     async obtenerEspecialistaPorId(id: string) {
       const { data, error } = await this.supabase
     .from(TABLA_ESPECIALISTAS)
     .select(QUERY_ESPECIALISTAS).eq('id', id)
-  .single();
+    .single();
 
     if (error)
       throw new Error(`Error al obtener especialista por id: ${error.message}`);
@@ -544,6 +544,7 @@ export class SupabaseService {
       }
       return data;
     }
+
   async actualizarDuracionEspecialidadEspecialista(usuario: Especialista, especialidad: EspecialidadEspecialista) {
     const {data, error} = await this.supabase.from(TABLA_ESPECIALISTAS_ESPECIALIDADES)
                                              .update({duracion: especialidad.duracion})

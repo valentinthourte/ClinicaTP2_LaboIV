@@ -36,8 +36,8 @@ export class RegistroEspecialistasComponent implements OnInit {
     this.formulario = this.fb.group({
       nombre: ['', Validators.required],
       apellido: ['', Validators.required],
-      edad: ['', [Validators.required, Validators.min(18)]],
-      dni: ['', Validators.required],
+      edad: ['', [Validators.required, Validators.min(18), Validators.max(99)]],
+      dni: ['', Validators.required, Validators.minLength(7), Validators.pattern(/^\d+$/)],
       especialidades: this.fb.array([], Validators.required),
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required],
@@ -138,7 +138,6 @@ export class RegistroEspecialistasComponent implements OnInit {
       aprobado: false
     };
   }
-  
   logControlesInvalidos(form: FormGroup) {
     Object.keys(form.controls).forEach(key => {
       const control = form.get(key);

@@ -21,6 +21,7 @@ import { Especialista } from '../../models/especialista';
 export class DetallePacienteAtendidoComponent implements OnInit {
   especialistaSeleccionado: Especialista | undefined;
   turnos: Turno[] = [];
+  turnosFiltrados: Turno[] = [];
   
   constructor(public dialogRef: MatDialogRef<ConfirmarAccionComponent>, @Inject(MAT_DIALOG_DATA) public data: { paciente: Paciente },
               private turnosService: TurnosService, private dialog: MatDialog,
@@ -30,7 +31,7 @@ export class DetallePacienteAtendidoComponent implements OnInit {
 
   async ngOnInit(){
     this.turnos = await this.turnosService.obtenerTurnosPacientePorId(this.data.paciente.id);
-    console.log(this.turnos);
+    this.turnosFiltrados = this.turnos;
     
   }
 
@@ -59,7 +60,7 @@ export class DetallePacienteAtendidoComponent implements OnInit {
     try {
       let paciente = this.data.paciente;
       let encabezados = this.turnosService.obtenerEncabezadosHistorialClinico();
-      let turnosUsar = this.especialistaSeleccionado == null ? this.turnos : this.turnos.filter(t => t.especialista!.id == this.especialistaSeleccionado);
+      let turnosUsar = this.especialistaSeleccionado == null ? this.turnos : this.turnos.filter(t => t.especialista!.id == this.especialistaSeleccionado!.id);
       let filasTurnos = turnosUsar.map(t => this.turnosService.turnoToArray(t));
       if (filasTurnos.length > 0) {
         let titulo = `Historial clínico de ${paciente.nombre} ${paciente.apellido}`;
@@ -74,6 +75,14 @@ export class DetallePacienteAtendidoComponent implements OnInit {
     catch(err: any) {
       console.log(err);
       this.toast.danger(`Error al exportar historial clínico a PDF: ${err.message}`);
+    }
+  }
+
+  filtrarTurnos() {
+    if (this.especialistaSeleccionado == undefined)
+      this.turnosFiltrados = this.turnos;
+    else {
+      this.turnosFiltrados = this.turnos.filter(t => t.especialista!.id == this.especialistaSeleccionado!.id);
     }
   }
 }

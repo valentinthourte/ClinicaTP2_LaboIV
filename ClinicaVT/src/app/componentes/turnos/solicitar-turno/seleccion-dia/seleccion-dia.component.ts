@@ -8,6 +8,9 @@ import { UsuariosService } from '../../../../services/usuarios.service';
 import { Horario } from '../../../../models/horario';
 import { AuthService } from '../../../../services/auth/auth.service';
 import { Especialidad } from '../../../../models/especialidad';
+import { TurnosService } from '../../../../services/turnos.service';
+import { SpinnerService } from '../../../../services/shared/spinner.service';
+import { NgToastService } from 'ng-angular-popup';
 
 @Component({
   selector: 'app-seleccion-dia',
@@ -27,11 +30,23 @@ export class SeleccionDiaComponent implements OnInit {
   constructor(
     private dialog: MatDialog,
     private auth: AuthService,
-    private usuariosService: UsuariosService
+    private usuariosService: UsuariosService,
+    private turnosService: TurnosService,
+    private spinner: SpinnerService,
+    private toast: NgToastService
   ) {}
 
   async ngOnInit() {
-    await this.cargarHorariosYGenerarDiasDisponibles();
+    try {
+      this.spinner.show();
+      await this.cargarHorariosYGenerarDiasDisponibles();
+    }
+    catch(err: any) {
+      this.toast.danger(`Error al obtener días: ${err.message}`);
+    }
+    finally {
+      this.spinner.hide();
+    }
   }
 
   async cargarHorariosYGenerarDiasDisponibles() {
@@ -41,15 +56,19 @@ export class SeleccionDiaComponent implements OnInit {
     const hoy = new Date();
     this.diasDisponibles = [];
     for (let i = 0; i < 15; i++) {
-      const dia = new Date(hoy);
-      dia.setDate(hoy.getDate() + i);
-      const diaSemana = dia.getDay(); 
-
-      if (diaSemana === 0) continue;
-
-      const horarioDia = this.horarios.find(h => h.dia === diaSemana && h.habilitado);
-      if (horarioDia) {
-        this.diasDisponibles.push(dia);
+      if (this.horarios.length > 0) {
+        const dia = new Date(hoy);
+        dia.setDate(hoy.getDate() + i);
+        const diaSemana = dia.getDay(); 
+  
+        if (diaSemana === 0) continue;
+  
+        const horarioDia = this.horarios.find(h => h.dia === diaSemana && h.habilitado);
+        const turnosDia = await this.turnosService.obtenerHorariosEspecialistaParaDia(this.profesional, dia, this.especialidad);
+          
+        if (horarioDia && turnosDia.length > 0) {
+          this.diasDisponibles.push(dia);
+        }
       }
     }
     
