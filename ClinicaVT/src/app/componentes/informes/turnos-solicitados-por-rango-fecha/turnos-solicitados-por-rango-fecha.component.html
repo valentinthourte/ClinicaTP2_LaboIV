@@ -1,4 +1,4 @@
-<mat-horizontal-stepper linear #stepper>
+<mat-horizontal-stepper linear #stepper (selectionChange)="onStepChange($event, stepper)" class="py-3">
   <mat-step [completed]="especialistaSeleccionado">
     <ng-template matStepLabel>Seleccionar profesional</ng-template>
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-h-80 overflow-y-auto mb-4">
@@ -38,12 +38,6 @@
 
   <mat-step>
     <ng-template matStepLabel>Ver resultados</ng-template>
-    <div class="d-flex justify-content-between mb-3">
-      <button class="btn btn-outline-primary" (click)="buscarTurnos()">Buscar</button>
-      <button class="btn btn-outline-success" (click)="exportarTurnos()" [disabled]="turnosFranja.length == 0">
-        <i class="bi bi-file-earmark-excel"></i> Exportar
-      </button>
-    </div>
 
     <div *ngIf="turnosFranja?.length" class="table-responsive max-h-72 overflow-y-auto">
       <table class="table table-bordered table-hover table-sm mb-0">
@@ -74,8 +68,11 @@
       No se encontraron turnos en el período seleccionado.
     </div>
 
-    <div class="text-end mt-4">
+    <div class="flex text-end mt-4 justify-content-between">
       <button class="btn btn-outline-primary" mat-button (click)="stepper.previous()">Anterior</button>
+      <button class="btn btn-outline-success" (click)="exportarTurnos()" [disabled]="turnosFranja.length == 0">
+        <i class="bi bi-file-earmark-excel"></i> Exportar
+      </button>
       <button class="btn btn-secondary" (click)="cerrar()">Cerrar</button>
     </div>
   </mat-step>

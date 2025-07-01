@@ -16,6 +16,7 @@ import { SpinnerService } from '../../../services/shared/spinner.service';
 import { MatStepper, MatStepperModule } from '@angular/material/stepper';
 import { MatInputModule } from '@angular/material/input';
 import { ReactiveFormsModule } from '@angular/forms';
+import { StepperSelectionEvent } from '@angular/cdk/stepper';
 
 export const MY_FORMATS = {
   parse: {
@@ -114,4 +115,13 @@ export class TurnosSolicitadosPorRangoFechaComponent implements OnInit {
     const nombreArchivo = `turnos_${this.especialistaSeleccionado?.nombre}_${this.especialistaSeleccionado?.apellido}_${desdeStr}_${hastaStr}`;
     this.excelService.exportarAExcel(filas, titulo, nombreArchivo);
   }
+
+  onStepChange($event: StepperSelectionEvent, stepper: MatStepper) {
+    const isLastStep = $event.selectedStep === stepper.steps.last;
+
+    if (isLastStep) {
+      this.buscarTurnos();
+    }
+  }
+
 }

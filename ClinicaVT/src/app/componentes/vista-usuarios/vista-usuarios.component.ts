@@ -14,7 +14,18 @@ import { animate, style, transition, trigger } from '@angular/animations';
   selector: 'app-vista-usuarios',
   imports: [CommonModule, VistaPacientesComponent, VistaEspecialistasComponent, VistaAdministradoresComponent],
   templateUrl: './vista-usuarios.component.html',
-  styleUrl: './vista-usuarios.component.scss'
+  styleUrl: './vista-usuarios.component.scss',
+  animations: [
+     trigger('slideTransition', [
+      transition(':enter', [
+        style({ transform: 'translateX(-100%)', opacity: 0 }),
+        animate('350ms ease-out', style({ transform: 'translateX(0)', opacity: 0.3 }))
+      ]),
+      transition(':leave', [
+        animate('350ms ease-in', style({ transform: 'translateX(100%)', opacity: 0 }))
+      ])
+    ]),
+  ]
 })
 export class VistaUsuariosComponent {
   solapaActiva: 'pacientes' | 'especialistas' | 'administradores' = 'pacientes';
