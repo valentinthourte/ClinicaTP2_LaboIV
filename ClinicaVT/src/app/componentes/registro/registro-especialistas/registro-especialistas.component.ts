@@ -37,7 +37,7 @@ export class RegistroEspecialistasComponent implements OnInit {
       nombre: ['', Validators.required],
       apellido: ['', Validators.required],
       edad: ['', [Validators.required, Validators.min(18), Validators.max(99)]],
-      dni: ['', Validators.required, Validators.minLength(7), Validators.pattern(/^\d+$/)],
+      dni: ['', [Validators.required, Validators.minLength(7), Validators.pattern(/^\d+$/)]],
       especialidades: this.fb.array([], Validators.required),
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required],
