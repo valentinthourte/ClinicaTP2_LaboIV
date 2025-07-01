@@ -4,13 +4,13 @@
   <div class="flex-grow-1 p-4">
     <div class="card shadow-sm overflow-hidden position-relative">
 
-      <div class="bg-secondary" style="height: 180px; background-position: center; background-size: cover;"
+      <div class="bg-secondary" style="height: 240px; background-position: center; background-size: cover;"
            [ngStyle]="{ 'background-image': 'url(' + usuario.urlImagenDos + ')' }">
       </div>
 
       <div class="text-center d-flex justify-content-center" style="margin-top: -60px;">
         <img [src]="usuario.urlImagenUno" alt="Foto de perfil"
-             class="rounded-circle border border-white shadow" width="120" height="120" />
+             class="rounded-full w-48 h-48 object-cover cursor-pointer" width="120" height="120" />
       </div>
 
       <div class="card-body text-center">

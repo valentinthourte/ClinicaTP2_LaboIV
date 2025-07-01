@@ -1,19 +1,24 @@
 <div class="d-flex">
   <app-sidebar-accesos></app-sidebar-accesos>
-
+ 
   <div class="flex-grow-1 p-4">
     <div class="card shadow-sm">
-      <div class="card-body text-center">
-        <div class="d-flex align-items-center justify-content-center">
-          <img [src]="usuario.imagen" alt="Imagen de perfil" class="rounded-circle mb-3" width="100" height="100" />
+      <div class="card-body">
+        <div class="flex flex-wrap gap-4">
+          <div class="w-full md:w-1/3 text-center bg-gray-50 rounded p-4">
+            <img [src]="usuario.imagen"
+                 alt="Imagen de perfil"
+                 class="rounded-full w-40 h-40 object-cover mx-auto mb-3 shadow" />
+            <h5 class="text-xl font-semibold">{{ usuario.nombre }} {{ usuario.apellido }}</h5>
+            <p class="text-muted">{{ usuario.email }}</p>
+            <p>Edad: {{ usuario.edad }}</p>
+            <p>DNI: {{ usuario.dni }}</p>
+          </div>
+
+          <div class="flex-grow min-w-0 bg-white rounded p-4 shadow">
+            <app-informes></app-informes>
+          </div>
         </div>
-        <h5 class="card-title">{{ usuario.nombre }} {{ usuario.apellido }}</h5>
-        <p class="card-text text-muted">{{ usuario.email }}</p>
-        <p>Edad: {{ usuario.edad }}</p>
-        <p>DNI: {{ usuario.dni }}</p>
-      </div>
-      <div class="m-3">
-        <app-informes></app-informes>
       </div>
     </div>
   </div>

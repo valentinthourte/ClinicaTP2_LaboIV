@@ -32,7 +32,9 @@
           <tbody>
             <tr *ngFor="let e of especialistas">              
               <td>
-                <img [src]="e.urlImagen" alt="Imagen perfil" width="48" height="48" class="rounded-circle object-fit-cover">
+                <div class="flex justify-center items-center">
+                  <img [src]="e.urlImagen" alt="Imagen perfil" width="48" height="48" class="rounded-full w-12 h-12 object-cover cursor-pointer" />
+                </div>
               </td>
               <td>{{ e.nombre }}</td>
               <td>{{ e.apellido }}</td>

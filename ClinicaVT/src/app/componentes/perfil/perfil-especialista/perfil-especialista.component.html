@@ -5,7 +5,7 @@
     <div class="card shadow-sm">
       <div class="card-body text-center">
         <div class="d-flex justify-content-center">
-          <img [src]="usuario.urlImagen" alt="Imagen de perfil" class="rounded-circle mb-3 border border-3 border-primary" width="120" height="120" />
+          <img [src]="usuario.urlImagen" alt="Imagen de perfil" class="rounded-full w-48 h-48 object-cover cursor-pointer" width="120" height="120" />
         </div>
         <h4 class="card-title fw-semibold">{{ usuario.nombre }} {{ usuario.apellido }}</h4>
         <p class="card-text text-secondary fs-6">{{ usuario.email }}</p>

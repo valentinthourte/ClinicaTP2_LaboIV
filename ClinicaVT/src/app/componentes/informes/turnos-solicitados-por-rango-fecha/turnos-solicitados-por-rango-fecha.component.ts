@@ -13,6 +13,10 @@ import { TurnosService } from '../../../services/turnos.service';
 import { NgToastService } from 'ng-angular-popup';
 import { ExportarExcelService } from '../../../services/exportar-excel.service';
 import { SpinnerService } from '../../../services/shared/spinner.service';
+import { MatStepper, MatStepperModule } from '@angular/material/stepper';
+import { MatInputModule } from '@angular/material/input';
+import { ReactiveFormsModule } from '@angular/forms';
+
 export const MY_FORMATS = {
   parse: {
     dateInput: 'dd/MM/yyyy',
@@ -27,7 +31,20 @@ export const MY_FORMATS = {
 
 @Component({
   selector: 'app-turnos-solicitados-por-rango-fecha',
-  imports: [EstadoTurnoColorDirective, CommonModule, FormsModule, MatNativeDateModule, MatDateRangeInput, MatDateRangePicker, MatStartDate, MatEndDate, MatLabel, MatHint, MatDatepickerToggle, MatFormField],
+  imports: [EstadoTurnoColorDirective, 
+            CommonModule, 
+            FormsModule, 
+            MatNativeDateModule, 
+            MatDateRangeInput, 
+            MatDateRangePicker, 
+            MatStartDate, 
+            MatEndDate,
+            MatLabel, 
+            MatDatepickerToggle, 
+            MatFormField,
+            MatStepperModule,
+            MatInputModule,
+            ReactiveFormsModule],
   templateUrl: './turnos-solicitados-por-rango-fecha.component.html',
   styleUrl: './turnos-solicitados-por-rango-fecha.component.scss',
   providers: [provideNativeDateAdapter(),

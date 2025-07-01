@@ -10,6 +10,7 @@ import { MatDialogRef } from '@angular/material/dialog';
   styleUrls: ['./historia-clinica-modal.component.scss'],
 })
 export class HistoriaClinicaModalComponent implements OnInit {
+
   historiaForm!: FormGroup;
 
   constructor(private fb: FormBuilder,  public dialogRef: MatDialogRef<HistoriaClinicaModalComponent>) {}
@@ -17,9 +18,9 @@ export class HistoriaClinicaModalComponent implements OnInit {
   ngOnInit(): void {
     this.historiaForm = this.fb.group({
       altura: ['', Validators.required],
-      peso: ['', Validators.required],
-      temperatura: ['', Validators.required],
-      presion: ['', Validators.required],
+      peso: ['', Validators.required, Validators.min(0)],
+      temperatura: ['', Validators.required, Validators.min(30), Validators.min(50)],
+      presion: ['', [Validators.required, Validators.pattern(/^\d{1,3}\/\d{1,3}$/)]],
       datosDinamicos: this.fb.array([]),
     });
 
@@ -72,5 +73,9 @@ export class HistoriaClinicaModalComponent implements OnInit {
     } else {
       this.historiaForm.markAllAsTouched();
     }
+  }
+
+  cancelar() {
+    this.dialogRef.close();
   }
 }
