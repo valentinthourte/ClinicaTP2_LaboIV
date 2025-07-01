@@ -22,18 +22,18 @@
   </div>
 
   @if(solapaActiva === 'pacientes') {
-    <div class="grid-container" [@slideTransition]>
+    <div class="grid-container">
 
       <app-vista-pacientes></app-vista-pacientes>
     </div>
   }
   @else if (solapaActiva === 'especialistas'){
-    <div class="grid-container" [@slideTransition]>
+    <div class="grid-container">
       <app-vista-especialistas></app-vista-especialistas>
     </div>
   }
   @else if (solapaActiva === 'administradores') {
-    <div class="grid-container" [@slideTransition]>
+    <div class="grid-container">
       <app-vista-administradores></app-vista-administradores>
     </div>
   }

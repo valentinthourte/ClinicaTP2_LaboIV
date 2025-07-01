@@ -1,4 +1,4 @@
-<div class="container py-4">
+<div class="container py-4" @scaleInOut *ngIf="tablaCargada">
     <div class="flex justify-between items-center mb-3">
       <button class="btn btn-outline-success" (click)="onExportarExcel()">
         <i class="bi bi-file-earmark-excel"></i>

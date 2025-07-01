@@ -1,4 +1,4 @@
-<div class="container py-4">
+<div class="container py-4" @scaleInOut *ngIf="tablaCargada">
   <div class="flex justify-between items-center mb-3">
     <button class="btn btn-outline-success" (click)="onExportarExcel()">
       <i class="bi bi-file-earmark-excel"></i>
@@ -29,7 +29,10 @@
             <tr *ngFor="let usuario of pacientes">
               <td>
                 <div class="flex justify-center items-center">
-                  <img [src]="usuario.urlImagenUno" alt="Imagen perfil" width="48" height="48" class="rounded-full w-12 h-12 object-cover cursor-pointer" (click)="descargarTurnosPaciente(usuario)" matTooltip="Descargar turnos" matTooltipPosition="above">
+                  <img [src]="usuario.urlImagenUno" alt="Imagen perfil" width="48" height="48" class="rounded-full w-12 h-12 object-cover cursor-pointer" 
+                    (click)="descargarTurnosPaciente(usuario)" 
+                    matTooltip="Descargar turnos" 
+                    matTooltipPosition="above">
                 </div>
               </td>
               <td>{{ usuario.nombre }}</td>

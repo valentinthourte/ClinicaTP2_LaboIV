@@ -1,5 +1,9 @@
- <main class="flex-grow-1 p-4">
+<div class="d-flex vh-100 bg-light">
+  <app-sidebar-accesos  @sidebarSlideIn></app-sidebar-accesos>
+
+  <main class="flex-grow-1 p-5 overflow-auto">
     <app-perfil-paciente *appMostrarSiRol="TipoUsuario.Paciente"></app-perfil-paciente>
     <app-perfil-especialista *appMostrarSiRol="TipoUsuario.Especialista"></app-perfil-especialista>
     <app-perfil-administrador *appMostrarSiRol="TipoUsuario.Administrador"></app-perfil-administrador>
   </main>
+</div>

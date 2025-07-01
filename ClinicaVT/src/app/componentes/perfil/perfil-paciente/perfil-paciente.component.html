@@ -1,5 +1,4 @@
-<div class="d-flex">
-  <app-sidebar-accesos></app-sidebar-accesos>
+<div class="d-flex" *ngIf="usuarioCargado" @contentSlideIn>
 
   <div class="flex-grow-1 p-4">
     <div class="card shadow-sm overflow-hidden position-relative">

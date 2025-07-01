@@ -11,17 +11,20 @@ import { ExportarExcelService } from '../../services/exportar-excel.service';
 import { DetallePacienteAtendidoComponent } from '../detalle-paciente-atendido/detalle-paciente-atendido.component';
 import { TurnosService } from '../../services/turnos.service';
 import { MatTooltip } from '@angular/material/tooltip';
+import { scaleInOut } from '../../animations/scale-in-out';
 
 @Component({
   selector: 'app-vista-pacientes',
   imports: [CommonModule, FormsModule, MatTooltip],
   templateUrl: './vista-pacientes.component.html',
-  styleUrl: './vista-pacientes.component.scss'
+  styleUrl: './vista-pacientes.component.scss',
+  animations: [scaleInOut]
 })
 export class VistaPacientesComponent implements OnInit{
  
   pacientes: Paciente[] = [];
-  
+  tablaCargada: boolean = false;
+
   constructor(private usuariosService: UsuariosService, 
               private spinner: SpinnerService, 
               private toast: NgToastService, 
@@ -33,6 +36,7 @@ export class VistaPacientesComponent implements OnInit{
     try {
       this.spinner.show();
       this.pacientes = await this.usuariosService.obtenerPacientes();
+      this.tablaCargada = true;
     }
     catch(err: any) {
       console.log(err);

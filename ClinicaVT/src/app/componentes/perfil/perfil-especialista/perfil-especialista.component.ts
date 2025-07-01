@@ -14,11 +14,13 @@ import { SpinnerService } from '../../../services/shared/spinner.service';
 import { MatDialog } from '@angular/material/dialog';
 import { EditarEspecialidadComponent } from '../editar-especialidad/editar-especialidad.component';
 import { MatTooltip } from '@angular/material/tooltip';
+import { contentSlideIn } from '../../../animations/slidein-leftright';
 
 @Component({
   selector: 'app-perfil-especialista',
-  imports: [RouterModule, ReactiveFormsModule, CommonModule, SidebarAccesosComponent, CommonModule, FormsModule, MatTooltip],
+  imports: [RouterModule, ReactiveFormsModule, CommonModule, CommonModule, FormsModule, MatTooltip],
   templateUrl: './perfil-especialista.component.html',
+  animations: [contentSlideIn]
 })
 export class PerfilEspecialistaComponent implements OnInit {
   usuario!: Especialista;
@@ -26,6 +28,7 @@ export class PerfilEspecialistaComponent implements OnInit {
   formEspecialidad!: FormGroup;
   especialidadSeleccionada: string | null = null;
   duracionSeleccionada: number | null = null;
+  usuarioCargado: boolean = false;
   constructor(
     private auth: AuthService,
     private usuariosService: UsuariosService,
@@ -37,17 +40,27 @@ export class PerfilEspecialistaComponent implements OnInit {
   ) {}
 
   async ngOnInit() {
-    const usuario = (await this.auth.getUsuarioLogueadoSupabase());
-    if (usuario != null) {
-      this.usuario = await this.usuariosService.obtenerEspecialistaPorId(usuario.id) as Especialista;
+    try {
+      this.spinner.show();
+      const usuario = (await this.auth.getUsuarioLogueadoSupabase());
+      if (usuario != null) {
+        this.usuario = await this.usuariosService.obtenerEspecialistaPorId(usuario.id) as Especialista;
+      }
+  
+      this.especialidadesDisponibles = await this.especialidadesService.obtenerEspecialidades();
+  
+      this.formEspecialidad = this.fb.group({
+        especialidadId: [null, Validators.required],
+        duracion: ['', [Validators.required, Validators.min(5)]]
+      });
+      this.usuarioCargado = true;
     }
-
-    this.especialidadesDisponibles = await this.especialidadesService.obtenerEspecialidades();
-
-    this.formEspecialidad = this.fb.group({
-      especialidadId: [null, Validators.required],
-      duracion: ['', [Validators.required, Validators.min(5)]]
-    });
+    catch(err: any) {
+      this.toast.danger(`Error al inicializar perfil de especialista: ${err.message}`);
+    }
+    finally {
+      this.spinner.hide();
+    }
   }
 
   formatearEspecialidades(especialidades: EspecialidadEspecialista[]): string {

@@ -7,16 +7,18 @@ import { NgToastService } from 'ng-angular-popup';
 import { MatDialog } from '@angular/material/dialog';
 import { RegistrarAdministradorComponent } from '../registro/registrar-administrador/registrar-administrador.component';
 import { ExportarExcelService } from '../../services/exportar-excel.service';
+import { scaleInOut } from '../../animations/scale-in-out';
 
 @Component({
   selector: 'app-vista-administradores',
   imports: [CommonModule],
   templateUrl: './vista-administradores.component.html',
-  styleUrl: './vista-administradores.component.scss'
+  styleUrl: './vista-administradores.component.scss',
+  animations: [scaleInOut]
 })
 export class VistaAdministradoresComponent implements OnInit {
   protected administradores: Administrador[] = [];
-  
+  tablaCargada: boolean = false;
   constructor(private usuariosService: UsuariosService, 
               private spinner: SpinnerService, 
               private toast: NgToastService, 
@@ -27,6 +29,7 @@ export class VistaAdministradoresComponent implements OnInit {
     try {
       this.spinner.show();
       this.administradores = await this.usuariosService.obtenerAdministradores();
+      this.tablaCargada = true;
     }
     catch(err: any) {
       console.log(err);

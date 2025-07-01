@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, RouterModule, RouterOutlet } from '@angular/router';
+import { ChildrenOutletContexts, Router, RouterModule, RouterOutlet } from '@angular/router';
 import { MatToolbar } from '@angular/material/toolbar';
 import { NgToastModule } from 'ng-angular-popup';
 
@@ -20,7 +20,7 @@ export class AppComponent implements OnInit {
   currentYear = new Date().getFullYear();
   title = 'ClinicaVT';
   TipoUsuario = TipoUsuario;
-  constructor(protected auth: AuthService, private router: Router) { }
+  constructor(protected auth: AuthService, private router: Router, private contexts: ChildrenOutletContexts) { }
   
   async ngOnInit() {
     window.addEventListener('beforeunload', () => {
@@ -51,8 +51,11 @@ export class AppComponent implements OnInit {
   async onClickLogo() {
     let ruta = '';
     if (await this.usuarioEstaLogueadoAsync())
-      ruta = 'home'
+      ruta = '/home'
     this.router.navigate([ruta]);
+  }
 
+  getAnimationState() {
+    return this.contexts.getContext('primary')?.route?.snapshot?.data?.['animation'];
   }
 }

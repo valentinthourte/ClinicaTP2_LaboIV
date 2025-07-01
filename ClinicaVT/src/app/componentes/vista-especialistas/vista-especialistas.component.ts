@@ -14,16 +14,19 @@ import { EspecialidadesService } from '../../services/especialidades.service';
 import { EspecialidadEspecialista } from '../../models/especialidad-especialista';
 import { EspecialidadesPipe } from '../../pipes/especialidades.pipe';
 import { ExportarExcelService } from '../../services/exportar-excel.service';
+import { scaleInOut } from '../../animations/scale-in-out';
 
 @Component({
   selector: 'app-vista-especialistas',
   standalone: true,
   imports: [CommonModule, AprobadoColorDirective, EspecialidadesPipe],
   templateUrl: './vista-especialistas.component.html',
-  styleUrl: './vista-especialistas.component.scss'
+  styleUrl: './vista-especialistas.component.scss',
+  animations: [scaleInOut]
 })
 export class VistaEspecialistasComponent implements OnInit {
   especialistas: Especialista[] = [];
+  tablaCargada: boolean = false;
   constructor(private usuariosService: UsuariosService, 
               private spinner: SpinnerService, 
               private toast: NgToastService, 
@@ -35,6 +38,7 @@ export class VistaEspecialistasComponent implements OnInit {
     try {
       this.spinner.show();
       this.especialistas = await this.usuariosService.obtenerEspecialistas();
+      this.tablaCargada = true;
     }
     catch(err: any) {
       console.log(err);

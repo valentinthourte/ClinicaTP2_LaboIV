@@ -9,27 +9,20 @@ import { VistaAdministradoresComponent } from '../vista-administradores/vista-ad
 import { UsuariosService } from '../../services/usuarios.service';
 import { ExportarExcelService } from '../../services/exportar-excel.service';
 import { animate, style, transition, trigger } from '@angular/animations';
+import { scaleInOut } from '../../animations/scale-in-out';
 
 @Component({
   selector: 'app-vista-usuarios',
   imports: [CommonModule, VistaPacientesComponent, VistaEspecialistasComponent, VistaAdministradoresComponent],
   templateUrl: './vista-usuarios.component.html',
   styleUrl: './vista-usuarios.component.scss',
-  animations: [
-     trigger('slideTransition', [
-      transition(':enter', [
-        style({ transform: 'translateX(-100%)', opacity: 0 }),
-        animate('350ms ease-out', style({ transform: 'translateX(0)', opacity: 0.3 }))
-      ]),
-      transition(':leave', [
-        animate('350ms ease-in', style({ transform: 'translateX(100%)', opacity: 0 }))
-      ])
-    ]),
-  ]
+  animations: [scaleInOut]
 })
+
 export class VistaUsuariosComponent {
-  solapaActiva: 'pacientes' | 'especialistas' | 'administradores' = 'pacientes';
-  ultimaSolapaActiva: typeof this.solapaActiva = 'pacientes';
+  solapaActiva = 'pacientes';
+  componenteVisible: string | null = 'pacientes';
+  animando = false;
 
   constructor(private usuariosService: UsuariosService, private excelService: ExportarExcelService) {}
 
@@ -72,17 +65,18 @@ export class VistaUsuariosComponent {
       this.excelService.exportarAExcel(usuarios, "Listado de usuarios", "listado_todos_usuarios");
   }
 
+  cambiarSolapa(nueva: string) {
+    if (this.animando || nueva === this.solapaActiva) return;
 
-  getDireccion(): 'izquierda' | 'derecha' {
-    const orden = ['pacientes', 'especialistas', 'administradores'];
-    const anterior = orden.indexOf(this.ultimaSolapaActiva);
-    const actual = orden.indexOf(this.solapaActiva);
-    return actual > anterior ? 'izquierda' : 'derecha';
-  }
-
-  cambiarSolapa(nueva: typeof this.solapaActiva) {
-    this.ultimaSolapaActiva = this.solapaActiva;
+    this.animando = true;
+    const anterior = this.solapaActiva;
     this.solapaActiva = nueva;
+
+    setTimeout(() => {
+      this.componenteVisible = nueva;
+      this.animando = false;
+    }, 400); 
   }
+
   
 }

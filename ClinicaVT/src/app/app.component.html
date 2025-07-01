@@ -38,7 +38,9 @@
 
 <main>
    <app-spinner></app-spinner>
-   <router-outlet></router-outlet>
+   <div [@routeAnimations]="getAnimationState()">
+      <router-outlet #outlet="outlet"></router-outlet>
+   </div>
    <ng-toast />
 </main>
 

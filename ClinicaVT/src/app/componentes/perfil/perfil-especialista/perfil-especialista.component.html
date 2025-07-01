@@ -1,5 +1,4 @@
-<div class="d-flex vh-100 bg-light">
-  <app-sidebar-accesos></app-sidebar-accesos>
+<div class="d-flex vh-100 bg-light" *ngIf="usuarioCargado" @contentSlideIn>
   
   <main class="flex-grow-1 p-5">
     <div class="card shadow-sm">
