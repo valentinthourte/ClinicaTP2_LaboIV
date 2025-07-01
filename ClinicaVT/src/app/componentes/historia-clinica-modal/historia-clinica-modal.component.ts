@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
+import { NgToastService } from 'ng-angular-popup';
 
 @Component({
   selector: 'app-historia-clinica-modal',
@@ -13,13 +14,13 @@ export class HistoriaClinicaModalComponent implements OnInit {
 
   historiaForm!: FormGroup;
 
-  constructor(private fb: FormBuilder,  public dialogRef: MatDialogRef<HistoriaClinicaModalComponent>) {}
+  constructor(private fb: FormBuilder,  public dialogRef: MatDialogRef<HistoriaClinicaModalComponent>, private toast: NgToastService) {}
 
   ngOnInit(): void {
     this.historiaForm = this.fb.group({
       altura: ['', Validators.required],
-      peso: ['', Validators.required, Validators.min(0)],
-      temperatura: ['', Validators.required, Validators.min(30), Validators.min(50)],
+      peso: [null, [Validators.required, Validators.min(0)]],
+      temperatura: [null, [Validators.required, Validators.min(30), Validators.max(50)]],
       presion: ['', [Validators.required, Validators.pattern(/^\d{1,3}\/\d{1,3}$/)]],
       datosDinamicos: this.fb.array([]),
     });
@@ -72,7 +73,20 @@ export class HistoriaClinicaModalComponent implements OnInit {
       this.dialogRef.close(historia);
     } else {
       this.historiaForm.markAllAsTouched();
+      let controlesInvalidos = this.obtenerControlesInvalidos(this.historiaForm);
+      this.toast.warning(`Por favor, revisá los siguientes controles: ${controlesInvalidos.join(', ')}`);
     }
+  }
+
+  obtenerControlesInvalidos(form: FormGroup) {
+    let controlesInvalidos: string[] = [];
+     Object.keys(form.controls).forEach(key => {
+      const control = form.get(key);
+      if (control && control.valid == false) {
+        controlesInvalidos.push(`${key}: ${control.value}`);
+      }
+    });
+    return controlesInvalidos;
   }
 
   cancelar() {

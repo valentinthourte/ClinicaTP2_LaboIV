@@ -31,7 +31,7 @@
 
           <div class="col-6 mb-3">
             <label for="dni" class="form-label">DNI</label>
-            <input type="text" id="dni" class="form-control" formControlName="dni"
+            <input type="number" id="dni" class="form-control" formControlName="dni"
               [class.is-invalid]="formulario.get('dni')?.invalid && formulario.get('dni')?.touched" />
             <div class="invalid-feedback">Campo obligatorio</div>
           </div>

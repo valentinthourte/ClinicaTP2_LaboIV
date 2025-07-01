@@ -11,7 +11,7 @@
       <div class="col-6">
         <label class="form-label">Peso (kg)</label>
         <input type="number" class="form-control" formControlName="peso"
-          [class.is-invalid]="historiaForm.get('peso')?.invalid && historiaForm.get('peso')?.touched" />
+          [class.is-invalid]="historiaForm.get('peso')?.valid == false && historiaForm.get('peso')?.touched" />
       </div>
     </div>
 
@@ -19,7 +19,7 @@
       <div class="col-6">
         <label class="form-label">Temperatura (°C)</label>
         <input type="number" class="form-control" formControlName="temperatura"
-          [class.is-invalid]="historiaForm.get('temperatura')?.invalid && historiaForm.get('temperatura')?.touched" />
+          [class.is-invalid]="historiaForm.get('temperatura')?.valid == false && historiaForm.get('temperatura')?.touched" />
       </div>
       <div class="col-6">
         <label class="form-label">Presión</label>
