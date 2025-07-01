@@ -15,6 +15,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { EditarEspecialidadComponent } from '../editar-especialidad/editar-especialidad.component';
 import { MatTooltip } from '@angular/material/tooltip';
 import { contentSlideIn } from '../../../animations/slidein-leftright';
+import { CrearEspecialidadComponent } from '../crear-especialidad/crear-especialidad.component';
 
 @Component({
   selector: 'app-perfil-especialista',
@@ -23,6 +24,7 @@ import { contentSlideIn } from '../../../animations/slidein-leftright';
   animations: [contentSlideIn]
 })
 export class PerfilEspecialistaComponent implements OnInit {
+
   usuario!: Especialista;
   especialidadesDisponibles: Especialidad[] = [];
   formEspecialidad!: FormGroup;
@@ -140,5 +142,14 @@ export class PerfilEspecialistaComponent implements OnInit {
         }
       }
     });
+  }
+
+  async nuevaEspecialidad() {
+    const dialogRef = this.dialog.open(CrearEspecialidadComponent, {data: {especialidades: this.especialidadesDisponibles}});
+
+    dialogRef.afterClosed().subscribe((especialidad: Especialidad | undefined) => {
+      if (especialidad)
+        this.especialidadesDisponibles.push(especialidad);
+    })
   }
 }

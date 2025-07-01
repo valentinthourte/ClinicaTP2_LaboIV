@@ -16,7 +16,19 @@
 
       <hr class="my-4">
 
-      <h5 class="px-4 pt-3 pb-2 border-bottom">Especialidades asignadas</h5>
+      <div class="d-flex justify-content-between align-items-center px-4 pt-3 pb-2 border-bottom">
+        <h5 class="mb-0">Especialidades asignadas</h5>
+        <button 
+          class="btn btn-sm btn-primary"
+          (click)="nuevaEspecialidad()"
+          aria-label="Agregar especialidad"
+          matTooltip="Agregar especialidad"
+          matTooltipPosition="above"
+        >
+          <i class="bi bi-plus-lg me-1"></i> Nueva especialidad
+        </button>
+      </div>
+
       <ul class="list-group list-group-flush mb-4 px-4">
         <li
           *ngFor="let esp of usuario.especialidades"
@@ -51,25 +63,24 @@
         </li>
       </ul>
 
-
       <form (ngSubmit)="agregarEspecialidad()" class="d-flex gap-3 align-items-end px-4 pb-4">
-      <div class="form-group flex-grow-1">
-        <label for="especialidadId" class="form-label">Nueva especialidad</label>
-        <select id="especialidadId" class="form-select" [(ngModel)]="especialidadSeleccionada" name="especialidadId" required>
-          <option [ngValue]="null" disabled>Seleccione una</option>
-          <option *ngFor="let esp of especialidadesDisponibles" [ngValue]="esp.id">
-            {{ esp.especialidad }}
-          </option>
-        </select>
-      </div>
+        <div class="form-group flex-grow-1">
+          <label for="especialidadId" class="form-label">Nueva especialidad</label>
+          <select id="especialidadId" class="form-select" [(ngModel)]="especialidadSeleccionada" name="especialidadId" required>
+            <option [ngValue]="null" disabled>Seleccione una</option>
+            <option *ngFor="let esp of especialidadesDisponibles" [ngValue]="esp.id">
+              {{ esp.especialidad }}
+            </option>
+          </select>
+        </div>
 
-      <div class="form-group" style="min-width: 120px;">
-        <label for="duracion" class="form-label">Duración (min)</label>
-        <input id="duracion" type="number" class="form-control" [(ngModel)]="duracionSeleccionada" name="duracion" min="5" max="60" required />
-      </div>
+        <div class="form-group" style="min-width: 120px;">
+          <label for="duracion" class="form-label">Duración (min)</label>
+          <input id="duracion" type="number" class="form-control" [(ngModel)]="duracionSeleccionada" name="duracion" min="5" max="60" required />
+        </div>
 
-      <button type="submit" class="btn btn-primary">Agregar</button>
-    </form>
+        <button type="submit" class="btn btn-primary">Agregar</button>
+      </form>
     </div>
   </main>
 </div>
